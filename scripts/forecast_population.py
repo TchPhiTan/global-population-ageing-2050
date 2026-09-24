@@ -173,6 +173,44 @@ def main() -> None:
                     "Model": "constant_fallback",
                 })
 
+        # Also include UN WPP projected benchmark for 2027 to 2050 to allow direct comparison in Tableau
+        for yr in range(2027, 2051):
+            if yr in country_pop[entity]:
+                forecast_rows.append({
+                    "Entity": entity,
+                    "Code": code,
+                    "Year": yr,
+                    "Population": round(country_pop[entity][yr]),
+                    "Older_People_65plus": round(country_older[entity].get(yr, 0)),
+                    "Share_65plus": country_share65[entity].get(yr, 0),
+                    "DataStatus": "projected",
+                    "Model": "un_wpp_medium",
+                })
+
+    # Build side-by-side comparison table for 2027 - 2050
+    comparison_rows = []
+    for entity in countries:
+        code = code_map[entity]
+        for yr in range(2027, 2051):
+            un_p = country_pop[entity].get(yr)
+            un_s = country_share65[entity].get(yr)
+            ml_p_rows = [r for r in forecast_rows if r["Entity"] == entity and r["Year"] == yr and r["Model"] in ("linear_regression", "constant_fallback")]
+            if un_p and ml_p_rows:
+                ml_p = ml_p_rows[0]["Population"]
+                ml_s = ml_p_rows[0]["Share_65plus"]
+                comparison_rows.append({
+                    "Entity": entity,
+                    "Code": code,
+                    "Year": yr,
+                    "Population_UN": round(un_p),
+                    "Population_ML": round(ml_p),
+                    "Population_Diff": round(ml_p - un_p),
+                    "Population_Diff_Pct": round(((ml_p - un_p) / un_p) * 100, 2),
+                    "Share65_UN": round(un_s, 2) if un_s else None,
+                    "Share65_ML": round(ml_s, 2),
+                    "Share65_Diff": round(ml_s - un_s, 2) if un_s else None,
+                })
+
     # Save population_forecast_2050.csv
     forecast_path = OUTPUT_DIR / "population_forecast_2050.csv"
     with forecast_path.open("w", encoding="utf-8", newline="") as f:
@@ -180,6 +218,17 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(forecast_rows)
     print(f"Đã lưu bảng dự báo dân số và già hóa đến 2050 tại: {forecast_path} ({len(forecast_rows):,} dòng)")
+
+    # Save model_vs_un_wpp_comparison_2050.csv
+    comp_path = OUTPUT_DIR / "model_vs_un_wpp_comparison_2050.csv"
+    with comp_path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=[
+            "Entity", "Code", "Year", "Population_UN", "Population_ML", "Population_Diff", "Population_Diff_Pct",
+            "Share65_UN", "Share65_ML", "Share65_Diff"
+        ])
+        writer.writeheader()
+        writer.writerows(comparison_rows)
+    print(f"Đã lưu bảng so sánh chi tiết Model vs UN WPP tại: {comp_path} ({len(comparison_rows):,} dòng)")
 
     # -------------------------------------------------------------
     # 2. LOGISTIC REGRESSION: DEPOPULATION RISK & SUPER-AGED RISK
@@ -306,6 +355,29 @@ def main() -> None:
     plt.legend(frameon=True, facecolor="white")
     plt.tight_layout()
     plt.savefig(REPORTS_DIR / "forecast_trends_2050.png", dpi=180)
+    plt.close()
+
+    # Comparative Ageing Plot: Our Model vs UN WPP (2027 - 2050)
+    plt.figure(figsize=(11, 6))
+    comp_countries = ["Vietnam", "Japan", "China", "United States"]
+    styles = {"Vietnam": "#d62828", "Japan": "#003049", "China": "#f77f00", "United States": "#2a9d8f"}
+    for ent in comp_countries:
+        un_data = [r for r in comparison_rows if r["Entity"] == ent and r["Share65_UN"] is not None]
+        un_yrs = [r["Year"] for r in un_data]
+        un_shares = [r["Share65_UN"] for r in un_data]
+        ml_shares = [r["Share65_ML"] for r in un_data]
+
+        col = styles.get(ent, "gray")
+        plt.plot(un_yrs, un_shares, label=f"{ent} (UN WPP)", color=col, linewidth=2.2, linestyle="-")
+        plt.plot(un_yrs, ml_shares, label=f"{ent} (Mô hình ML)", color=col, linewidth=1.8, linestyle="--")
+
+    plt.axhline(20.0, color="purple", linestyle=":", linewidth=1.5, label="Ngưỡng Siêu già (>=20%)")
+    plt.title("So sánh Dự báo Tỷ lệ Người cao tuổi (65+): Mô hình Học máy vs UN WPP (2027 - 2050)", fontsize=12, fontweight="bold")
+    plt.xlabel("Năm")
+    plt.ylabel("Tỷ lệ dân số 65+ (%)")
+    plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", frameon=True)
+    plt.tight_layout()
+    plt.savefig(REPORTS_DIR / "forecast_comparison_ageing.png", dpi=180)
     plt.close()
 
     # -------------------------------------------------------------
