@@ -7,4 +7,3 @@ Value,Indicator value,float
 Unit,"Measurement unit (people, percent, years, children per woman)",string
 DataStatus,estimate (1950-2023) or projected (2024-2100),string
 Source,Data provider and processing,string
-SourceUrl,Source reference link,string

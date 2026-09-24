@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw"
 PROCESSED_DIR = ROOT / "data" / "processed"
 
-# Format: (filename, indicator_name, unit, estimate_col, projected_col, source_url)
+# Format: (filename, indicator_name, unit, estimate_col, projected_col)
 SOURCE_SPECS = (
     (
         "population-with-un-projections.csv",
@@ -19,7 +19,6 @@ SOURCE_SPECS = (
         "people",
         "Population",
         "Population (Projected)",
-        "https://ourworldindata.org/grapher/population-with-un-projections",
     ),
     (
         "population-growth-rates.csv",
@@ -27,7 +26,6 @@ SOURCE_SPECS = (
         "percent",
         "Population growth rate",
         "Population growth rate (%) (Projected)",
-        "https://ourworldindata.org/grapher/population-growth-rates",
     ),
     (
         "children-born-per-woman.csv",
@@ -35,7 +33,6 @@ SOURCE_SPECS = (
         "children per woman",
         "Total fertility rate",
         None,
-        "https://ourworldindata.org/grapher/children-born-per-woman",
     ),
     (
         "median-age.csv",
@@ -43,7 +40,6 @@ SOURCE_SPECS = (
         "years",
         "Median age",
         "Median age (Projected)",
-        "https://ourworldindata.org/grapher/median-age",
     ),
     (
         "life-expectancy.csv",
@@ -51,7 +47,6 @@ SOURCE_SPECS = (
         "years",
         "Life expectancy",
         None,
-        "https://ourworldindata.org/grapher/life-expectancy",
     ),
     (
         "population-young-working-elderly-with-projections.csv",
@@ -59,7 +54,6 @@ SOURCE_SPECS = (
         "people",
         "Older people (65+ years)",
         "Older people (65+ years) (Projected)",
-        "https://ourworldindata.org/grapher/population-young-working-elderly-with-projections",
     ),
     (
         "population-young-working-elderly-with-projections.csv",
@@ -67,7 +61,6 @@ SOURCE_SPECS = (
         "people",
         "Working-age adults (15-64 years)",
         "Working-age adults (15-64 years) (Projected)",
-        "https://ourworldindata.org/grapher/population-young-working-elderly-with-projections",
     ),
     (
         "population-young-working-elderly-with-projections.csv",
@@ -75,7 +68,6 @@ SOURCE_SPECS = (
         "people",
         "Children (Under-15s)",
         "Children (under-15s) (Projected)",
-        "https://ourworldindata.org/grapher/population-young-working-elderly-with-projections",
     ),
 )
 
@@ -95,9 +87,9 @@ def normalize_name(value: str) -> str:
 
 def load_main_records() -> list[dict[str, object]]:
     records: list[dict[str, object]] = []
-    
+
     # 1. Load from source specs
-    for filename, indicator, unit, estimate_column, projected_column, source_url in SOURCE_SPECS:
+    for filename, indicator, unit, estimate_column, projected_column in SOURCE_SPECS:
         path = RAW_DIR / filename
         if not path.exists():
             continue
@@ -120,8 +112,7 @@ def load_main_records() -> list[dict[str, object]]:
                     "Value": round(value, 4) if unit in ("percent", "years", "children per woman") else value,
                     "Unit": unit,
                     "DataStatus": status,
-                    "Source": "UN WPP 2024 processed by OWID",
-                    "SourceUrl": source_url,
+                    "Source": "UN WPP 2024 (OWID)",
                 })
 
     # 2. Derive key Ageing Indicators: "Share of population aged 65+" and "Old-age dependency ratio"
@@ -136,7 +127,7 @@ def load_main_records() -> list[dict[str, object]]:
         older = groups.get("Older people (65+ years)")
         working = groups.get("Working-age adults (15-64 years)")
         children = groups.get("Children (under-15s)")
-        
+
         if older is not None and working is not None and children is not None:
             total = older + working + children
             if total > 0:
@@ -149,8 +140,7 @@ def load_main_records() -> list[dict[str, object]]:
                     "Value": share_65,
                     "Unit": "percent",
                     "DataStatus": status,
-                    "Source": "UN WPP 2024 processed by OWID (derived)",
-                    "SourceUrl": "https://ourworldindata.org/age-structure",
+                    "Source": "UN WPP 2024 (OWID)",
                 })
             if working > 0:
                 dep_ratio = round((older / working) * 100, 2)
@@ -162,8 +152,7 @@ def load_main_records() -> list[dict[str, object]]:
                     "Value": dep_ratio,
                     "Unit": "percent",
                     "DataStatus": status,
-                    "Source": "UN WPP 2024 processed by OWID (derived)",
-                    "SourceUrl": "https://ourworldindata.org/age-structure",
+                    "Source": "UN WPP 2024 (OWID)",
                 })
 
     records.extend(derived_records)
@@ -207,7 +196,6 @@ def load_wpr_validation(main_records: list[dict[str, object]]) -> list[dict[str,
             "Code": match["Code"] if match else None,
             "Year": int(row["year"]),
             "PopulationWPR": float(row["population"]),
-            "SourceUrl": row["source_url"],
             "MatchStatus": "matched" if match else "unmatched",
         })
     return validation
@@ -261,7 +249,6 @@ def write_dictionary() -> None:
         {"Column": "Unit", "Description": "Measurement unit (people, percent, years, children per woman)", "Type": "string"},
         {"Column": "DataStatus", "Description": "estimate (1950-2023) or projected (2024-2100)", "Type": "string"},
         {"Column": "Source", "Description": "Data provider and processing", "Type": "string"},
-        {"Column": "SourceUrl", "Description": "Source reference link", "Type": "string"},
     ]
     write_csv(PROCESSED_DIR / "data_dictionary.csv", rows, ["Column", "Description", "Type"])
 
@@ -298,7 +285,7 @@ def main() -> None:
     write_csv(
         PROCESSED_DIR / "population_fact_long.csv",
         records,
-        ["Entity", "Code", "Year", "Indicator", "Value", "Unit", "DataStatus", "Source", "SourceUrl"],
+        ["Entity", "Code", "Year", "Indicator", "Value", "Unit", "DataStatus", "Source"],
     )
     write_csv(
         PROCESSED_DIR / "population_fact_wide.csv",
@@ -308,7 +295,7 @@ def main() -> None:
     write_csv(
         PROCESSED_DIR / "world_population_review_validation.csv",
         validation,
-        ["Entity", "Code", "Year", "PopulationWPR", "SourceUrl", "MatchStatus"],
+        ["Entity", "Code", "Year", "PopulationWPR", "MatchStatus"],
     )
     write_dictionary()
     report = build_quality_report(records, duplicates, validation)
