@@ -291,87 +291,238 @@ Tạo worksheet phụ `[Tooltip - Population Trend Mini]`:
 
 ---
 
-## 7. KPI Cards (Thẻ Chỉ số Chính)
+## 7. KPI Cards (Thẻ Chỉ số Chính Động theo Quốc gia & Năm)
 
-Tạo 4 KPI Cards ở đầu Dashboard:
+4 Thẻ KPI được thiết kế **hoàn toàn tương tác (Dynamic Interaction)**. Khi người dùng thay đổi bộ lọc `[Entity]` (mặc định là `World`, hoặc chọn `Vietnam`) và thanh trượt `[Year]` (ví dụ `2026` hoặc `2020`), toàn bộ 4 thẻ KPI sẽ tức thời tính toán lại theo đúng quốc gia và năm đã chọn:
 
-| # | Tên KPI | Giá trị (Year = 2026) | Calculated Field |
-| :---: | :--- | :--- | :--- |
-| 1 | 🌍 Dân số Toàn cầu | 8.30 tỷ | `SUM([Population (Billions)])` filter Entity = "World" |
-| 2 | 📈 Tốc độ Tăng trưởng TB | 0.88% | `AVG([Growth Rate (%)])` filter Is Country |
-| 3 | 📉 Quốc gia Suy giảm | 65 | `COUNTD(IF [Growth Rate (%)] < 0 THEN [Entity] END)` |
-| 4 | 👶 TFR Trung vị Toàn cầu | 2.14 | `MEDIAN([TFR])` |
+| # | Thẻ KPI | Công thức Calculated Field trên Tableau | Ví dụ: World (2026) | Ví dụ: Vietnam (2020) | Định dạng hiển thị (Format) |
+| :---: | :--- | :--- | :---: | :---: | :--- |
+| **KPI 1** | 🌍 **Quy mô Dân số** | `SUM(IF [Indicator] = "Population" THEN [Value] END)` | **8.30 Tỷ** | **97.47 Triệu** | Number (Custom): Đơn vị Triệu / Tỷ |
+| **KPI 2** | 📈 **Tốc độ Tăng trưởng** | `AVG(IF [Indicator] = "Population growth rate" THEN [Value] END) / 100` | **+0.88%** | **+0.92%** | Percentage (2 chữ số thập phân) |
+| **KPI 3** | 👵 **Tỷ lệ Người già 65+** | `AVG(IF [Indicator] = "Share of population aged 65+" THEN [Value] END) / 100` | **10.32%**<br>*(Đang già hoá)* | **8.84%**<br>*(Đang già hoá)* | Percentage kèm subtitle phân loại `[Ageing Stage]` |
+| **KPI 4** | 👶 **Mức sinh (TFR)** | `AVG(IF [Indicator] = "Total fertility rate" THEN [Value] END)` | **2.14** | **1.94**<br>*(Dưới thay thế)* | Number (Decimal, 2 số) kèm `[Below Replacement]` |
 
-**Thiết kế KPI Card**:
-- Nền: `#16213E` với viền trái 4px màu accent
-- Giá trị chính: Font 36pt Bold, màu trắng
-- Label phụ: Font 10pt, màu `#8B8B9E`
-- Icon: Emoji hoặc icon font
-
----
-
-## 8. Story Points (Tableau Story)
-
-Tạo Tableau Story với 5 Story Points kể câu chuyện tuần tự:
-
-### Story Point 1: "Bức tranh Tổng quan"
-- Dashboard: KPI Cards + Global Trend + Map
-- Caption: *"Dân số thế giới đã vượt 8.3 tỷ người vào năm 2026, nhưng tốc độ tăng trưởng đang chậm lại đáng kể so với đỉnh điểm thập niên 1960."*
-
-### Story Point 2: "Những Gã Khổng lồ"
-- Dashboard: Top 15 Bar Chart + Bump Chart
-- Caption: *"India chính thức vượt China vào 2023. Nigeria được dự báo sẽ vươn lên vị trí thứ 3 vào 2050."*
-
-### Story Point 3: "Làn sóng Suy giảm"
-- Dashboard: Growth Distribution + Scatter TFR vs Growth
-- Caption: *"65 quốc gia đang trong chu kỳ suy giảm dân số. 130/237 quốc gia có mức sinh dưới ngưỡng thay thế (TFR < 2.1)."*
-
-### Story Point 4: "Bản đồ Phân hóa"
-- Dashboard: Map (màu = Growth Rate) + Heatmap + Treemap
-- Caption: *"Châu Phi cận Sahara tiếp tục bùng nổ dân số trong khi Đông Á và Châu Âu thu hẹp – thế giới đang phân hóa sâu sắc."*
-
-### Story Point 5: "Nhìn về Tương lai 2050"
-- Dashboard: Forecast Comparison + Donut 2026 vs 2050
-- Caption: *"Mô hình dự báo cho thấy sự chuyển dịch trọng tâm dân số từ Châu Á sang Châu Phi sẽ định hình lại trật tự kinh tế – xã hội toàn cầu."*
+**Thiết kế Thẻ KPI trên Tableau**:
+- Tạo 4 worksheet con độc lập: `KPI-01-Population`, `KPI-02-Growth`, `KPI-03-Share65`, `KPI-04-TFR`.
+- Kéo Calculated Field tương ứng vào thẻ **Text** trên Marks Card.
+- Định dạng Text: Giá trị chính cỡ chữ 28pt Bold, màu trắng `#FFFFFF`; Phụ đề bên dưới 10pt `#8B8B9E`.
+- Tô màu nền thẻ trên Dashboard: Container màu `#16213E`, bo góc nhẹ, viền trái 4px màu Accent (`#4ECDC4` cho Dân số, `#2196F3` cho Tăng trưởng, `#E94560` cho Già hóa, `#F5A623` cho Mức sinh).
 
 ---
 
-## 9. Hướng dẫn Triển khai từng Bước
+## 8. Story Points (Tableau Storyboard Kể chuyện Dữ liệu)
 
-### Bước 1: Chuẩn bị Dữ liệu
-1. Mở Tableau Desktop → Connect → Text file
-2. Nạp `data/processed/population_fact_long.csv`
-3. Nạp `data/processed/population_forecast_2050.csv` (New Data Source hoặc Join)
-4. Kiểm tra data type: `Year` = Number (Whole), `Value` = Number (Decimal), `Code` = String
+Tạo Tableau Story với 5 Story Points nối tiếp nhau theo tiến trình logic:
 
-### Bước 2: Tạo Calculated Fields
-1. Tạo tất cả Calculated Fields từ Mục 3
-2. Kiểm tra `[Is Country]` filter hoạt động đúng (237 quốc gia)
-3. Tạo `[Continent]` Group hoặc tải `continent_mapping.csv`
+### Story Point 1: "Bức tranh Tổng quan & Quy mô Địa lý" (Cụm 1)
+- **Worksheets ghép**: KPI Cards + `01-GeoMap` + `02-Treemap` + `03-TopPopulations`.
+- **Thông điệp (Caption)**: *"Dân số thế giới đã vượt 8.3 tỷ người vào năm 2026, với hơn 55% dân số tập trung tại Top 10 quốc gia, dẫn đầu bởi Ấn Độ và Trung Quốc."*
 
-### Bước 3: Tạo Individual Worksheets
-1. Tạo 10 worksheet theo đặc tả ở Mục 4
-2. Đặt tên worksheet có tiền tố số thứ tự: `01-GlobalTrend`, `02-GeoMap`, ...
-3. Thiết lập tooltip với Viz in Tooltip cho Map
+### Story Point 2: "Tiến trình Lịch sử & Đổi ngôi Quyền lực" (Cụm 2)
+- **Worksheets ghép**: `04-GlobalTrend` (Area + Line) + `05-RankBumpChart`.
+- **Thông điệp (Caption)**: *"Thế kỷ bùng nổ dân số đang dần khép lại. Dấu mốc lịch sử 2023–2026 chứng kiến Ấn Độ chính thức soán ngôi Trung Quốc; đến 2050, Nigeria sẽ vượt Mỹ để lọt vào Top 3 thế giới."*
 
-### Bước 4: Ghép Dashboard
-1. Tạo Dashboard mới → kích thước 1920 × 1080 (hoặc Automatic)
-2. Kéo thả các worksheet theo layout ở Mục 4
-3. Thêm Filter Actions, Highlight Actions
-4. Thêm KPI Cards (dùng worksheet riêng cho mỗi KPI)
-5. Thêm Header text box và Footer
+### Story Point 3: "Nguyên nhân Gốc rễ: Mức sinh Suy giảm & Phân hóa Toàn cầu" (Cụm 3)
+- **Worksheets ghép**: `06-GrowthHistogram` + `07-FertilityGrowthQuadrant`.
+- **Thông điệp (Caption)**: *"Phân cực nhân khẩu học: 65 quốc gia đã bước vào chu kỳ suy giảm dân số. Hơn 55% các nước có mức sinh rơi xuống dưới ngưỡng thay thế (TFR < 2.1), đẩy thế giới vào bẫy già hóa."*
 
-### Bước 5: Tạo Story
-1. Tạo Tableau Story với 5 Story Points
-2. Thêm caption cho mỗi Story Point
-3. Thiết lập Navigator style
+### Story Point 4: "Làn sóng Già hóa & Xã hội Siêu già 2050" (Cụm 4)
+- **Worksheets ghép**: `08-AgeBracketsTransition` + `09-AgeingDecadeMatrix`.
+- **Thông điệp (Caption)**: *"Đến năm 2050, tỷ lệ người cao tuổi (65+) sẽ tăng gấp 3 lần so với năm 1950, chiếm 16.4% dân số toàn cầu. Hơn 60 quốc gia (bao gồm Việt Nam, Nhật Bản, Hàn Quốc, Đức) sẽ chính thức trở thành Xã hội Siêu già."*
 
-### Bước 6: Kiểm tra & Xuất bản
-1. Kiểm tra cross-filtering hoạt động giữa Map ↔ Bar ↔ Scatter
-2. Kiểm tra tooltip hiển thị đúng giá trị
-3. Kiểm tra bộ lọc Year slider hoạt động trơn tru
-4. Export dưới dạng `.twbx` (Packaged Workbook)
-5. Hoặc publish lên Tableau Public
+### Story Point 5: "Dự phóng Tương lai: So sánh Mô hình Học máy (ML) & Chuẩn Liên Hợp Quốc (UN)" (Cụm 4)
+- **Worksheets ghép**: `10-ForecastComparisonMLvsUN`.
+- **Thông điệp (Caption)**: *"Mô hình Linear Regression của nhóm bám sát kịch bản chuẩn của UN WPP với độ lệch MAE < 0.8% về tỷ lệ người già, đồng thuận khẳng định tốc độ già hóa của Việt Nam thuộc nhóm nhanh nhất thế giới."*
+
+---
+
+## 9. Hướng dẫn Triển khai Từng Bước trên Tableau (Step-by-Step Implementation Guide)
+
+### Bước 1: Làm mới & Chuẩn hóa Nguồn Dữ liệu (Data Source Setup)
+1. Mở Tableau Desktop / Tableau Public và mở tệp [`TTDLTQ FINAL.twb`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT%20CU%E1%BB%90I%20K%E1%BB%B2%20-%20BASIC/TTDLTQ%20FINAL.twb).
+2. Vào thẻ **Data** trên menu $\rightarrow$ Bấm chuột phải vào `population_fact_long` $\rightarrow$ Chọn **Refresh** (hoặc bấm `F5`).
+   > **Lưu ý**: Dữ liệu hiện tại đã được loại bỏ hoàn toàn 2 cột tĩnh thừa (`Source` và `SourceUrl`), chỉ còn đúng 7 cột chuẩn: `Entity`, `Code`, `Year`, `Indicator`, `Value`, `Unit`, `DataStatus`. Kích thước tệp đã giảm xuống còn 23MB giúp Tableau tải và tính toán cực nhanh.
+3. Kiểm tra kiểu dữ liệu của các cột:
+   - `Code`: Bấm vào biểu tượng kiểu dữ liệu $\rightarrow$ Chọn **Geographic Role** $\rightarrow$ **Country/Region**.
+   - `Year`: Đảm bảo là **Number (Whole)** hoặc Date/Year.
+   - `Value`: **Number (Decimal)**.
+   - `Indicator`, `DataStatus`, `Unit`, `Entity`: **String**.
+4. Nạp thêm nguồn phụ `data/processed/population_forecast_2050.csv`:
+   - Data $\rightarrow$ New Data Source $\rightarrow$ Text File $\rightarrow$ Chọn `population_forecast_2050.csv` (dùng riêng cho Chart 10).
+
+---
+
+### Bước 2: Tạo Trọn bộ Calculated Fields (Sẵn sàng Copy-Paste)
+Vào Data Pane $\rightarrow$ Bấm mũi tên cạnh Search $\rightarrow$ **Create Calculated Field**:
+
+```tableau
+// 1. [Population (Millions)]
+IF [Indicator] = "Population" THEN [Value] / 1000000 END
+
+// 2. [Population (Billions)]
+IF [Indicator] = "Population" THEN [Value] / 1000000000 END
+
+// 3. [Growth Rate (%)]
+IF [Indicator] = "Population growth rate" THEN [Value] END
+
+// 4. [TFR]
+IF [Indicator] = "Total fertility rate" THEN [Value] END
+
+// 5. [Median Age]
+IF [Indicator] = "Median age" THEN [Value] END
+
+// 6. [Share 65+ (%)]
+IF [Indicator] = "Share of population aged 65+" THEN [Value] END
+
+// 7. [Old-age Dependency Ratio]
+IF [Indicator] = "Old-age dependency ratio" THEN [Value] END
+
+// 8. [Ageing Stage] - Phân cấp Già hoá chuẩn Liên Hợp Quốc
+IF [Share 65+ (%)] >= 20 THEN "4. Siêu già (>=20%)"
+ELSEIF [Share 65+ (%)] >= 14 THEN "3. Xã hội già (14-20%)"
+ELSEIF [Share 65+ (%)] >= 7 THEN "2. Đang già hoá (7-14%)"
+ELSE "1. Dân số trẻ (<7%)"
+END
+
+// 9. [Below Replacement] - Phân loại Mức sinh
+IF [TFR] < 2.1 THEN "Dưới mức thay thế (<2.1)"
+ELSE "Trên mức thay thế (>=2.1)"
+END
+
+// 10. [Is Country] - Lọc bỏ các thực thể vùng/châu lục để tránh trùng lắp khi xếp hạng
+NOT ISNULL([Code]) AND [Code] != "OWID_WRL" AND [Code] != ""
+
+// 11. [Data Period] - Phân tách giai đoạn hiển thị
+IF [DataStatus] = "estimate" THEN "1. Lịch sử (1950-2023)"
+ELSEIF [DataStatus] = "projected" THEN "2. Dự phóng UN (2024-2100)"
+ELSE "3. Dự báo ML (2027-2050)"
+END
+```
+
+---
+
+### Bước 3: Thao tác Kéo Thả Chi tiết cho Từng Sheet (10 Biểu đồ Khác biệt)
+
+#### 🏛️ CỤM 1: QUY MÔ & PHÂN BỐ KHÔNG GIAN
+1. **Sheet 1: `01-GeoMap` (Filled Map - Bản đồ Địa lý)**:
+   - Thẻ Marks: Chọn **Map**.
+   - Kéo `[Code]` vào **Detail**.
+   - Kéo `[Population (Millions)]` vào **Color** (chọn bảng màu Palette: *Blues* hoặc *Teal*).
+   - Thẻ Filters: Kéo `[Is Country]` $\rightarrow$ Chọn `True`; Kéo `[Indicator]` $\rightarrow$ Chọn `"Population"`.
+   - Cài đặt Tooltip: Kéo `[Entity]`, `[Population (Millions)]`, `[Year]` vào Tooltip.
+
+2. **Sheet 2: `02-Treemap` (Cây Tỷ trọng Dân số)**:
+   - Thẻ Marks: Chọn **Square**.
+   - Kéo `[Entity]` vào **Detail** và **Label**.
+   - Kéo `[Population (Millions)]` vào **Size**.
+   - Kéo `[Continent]` (hoặc `[Entity]`) vào **Color**.
+   - Thẻ Filters: `[Is Country]` = `True`, `[Indicator]` = `"Population"`.
+
+3. **Sheet 3: `03-TopPopulations` (Horizontal Bar Chart - Top 10 Quốc gia)**:
+   - Rows: Kéo `[Entity]`.
+   - Columns: Kéo `SUM([Population (Millions)])`.
+   - Lọc Top 10: Nhấp chuột phải vào `[Entity]` trên Rows $\rightarrow$ Filter $\rightarrow$ Tab **Top** $\rightarrow$ Chọn *By field: Top 10 by SUM([Population (Millions)])*.
+   - Sắp xếp: Bấm biểu tượng Sort Descending trên thanh công cụ để đưa nước đông nhất lên đầu.
+   - Color: Tô màu nhấn `#2B5C8F`, gắn nhãn giá trị ở cuối mỗi thanh ngang.
+
+---
+
+#### ⏳ CỤM 2: TIẾN TRÌNH & ĐỔI NGÔI LỊCH SỬ
+4. **Sheet 4: `04-GlobalTrend` (Area + Line Chart - Xu hướng Quy mô 1950–2050)**:
+   - Columns: Kéo `[Year]` (Continuous - Màu xanh lá cây, dải 1950–2050).
+   - Rows: Kéo `SUM([Population (Billions)])`.
+   - Thẻ Marks: Chọn **Area**.
+   - Kéo `[Data Period]` vào **Color** để phân tách vùng *Lịch sử (1950–2023)* màu Teal `#4ECDC4` và vùng *Dự phóng (2024–2050)* màu Cam `#FF6B6B`.
+   - Reference Line: Nhấp chuột phải trục X $\rightarrow$ Add Reference Line $\rightarrow$ Chọn giá trị cố định `Year = 2026` với nhãn *"Hiện tại (2026: 8.3 Tỷ)"*.
+
+5. **Sheet 5: `05-RankBumpChart` (Bump Chart - Hoán đổi Thứ hạng Top Quốc gia)**:
+   - Thẻ Filters: Chọn Top 7 quốc gia lớn nhất (Ấn Độ, Trung Quốc, Mỹ, Nigeria, Indonesia, Pakistan, Brazil).
+   - Columns: Kéo `[Year]` (chọn các mốc 1950, 1970, 1990, 2010, 2026, 2040, 2050).
+   - Rows: Kéo `SUM([Population])` $\rightarrow$ Nhấp chuột phải $\rightarrow$ **Quick Table Calculation** $\rightarrow$ **Rank**.
+   - Nhấp chuột phải lại vào viên thuốc Rank $\rightarrow$ **Compute Using** $\rightarrow$ Chọn `[Entity]`.
+   - Đảo trục Rank: Nhấp chuột phải trục Y $\rightarrow$ Edit Axis $\rightarrow$ Tích chọn **Reversed** (để Hạng 1 nằm ở trên đỉnh).
+   - Marks: Chọn **Line**, kéo `[Entity]` vào **Color** và **Label**.
+
+---
+
+#### ⚖️ CỤM 3: NGUYÊN NHÂN & PHÂN HÓA TĂNG TRƯỞNG
+6. **Sheet 6: `06-GrowthHistogram` (Histogram - Phân phối Tốc độ Tăng trưởng)**:
+   - Tạo Bin: Trong Data Pane, nhấp chuột phải vào `[Growth Rate (%)]` $\rightarrow$ Create $\rightarrow$ **Bins...** $\rightarrow$ Đặt Size of bins = `0.25`.
+   - Columns: Kéo viên thuốc `[Growth Rate (%) (bin)]` vừa tạo.
+   - Rows: Kéo `COUNTD([Entity])`.
+   - Thẻ Marks: Chọn **Bar**.
+   - Reference Line: Nhấp chuột phải vào trục X $\rightarrow$ Add Reference Line $\rightarrow$ Hằng số `0.0` (Vạch đỏ nét đứt) đánh dấu ngưỡng tăng trưởng bằng 0: Bên trái là 65 nước suy giảm dân số, bên phải là các nước tăng trưởng.
+
+7. **Sheet 7: `07-FertilityGrowthQuadrant` (Scatter Plot - Ma trận 4 Góc Phần tư)**:
+   - Columns: Kéo `AVG([TFR])` (Trục X: Mức sinh).
+   - Rows: Kéo `AVG([Growth Rate (%)])` (Trục Y: Tốc độ tăng trưởng).
+   - Thẻ Marks: Chọn **Circle**. Kéo `[Entity]` vào **Detail**, kéo `SUM([Population (Millions)])` vào **Size**.
+   - Kéo `[Below Replacement]` vào **Color**.
+   - Tạo 2 Đường Tham chiếu (Reference Lines):
+     * Trục X: Đường đứng tại $TFR = 2.1$ (Ngưỡng sinh thay thế).
+     * Trục Y: Đường ngang tại $Growth = 0.0\%$ (Ngưỡng suy giảm dân số).
+
+---
+
+#### 👵 CỤM 4: CƠ CẤU TUỔI & DỰ BÁO GIÀ HOÁ 2050
+8. **Sheet 8: `08-AgeBracketsTransition` (100% Stacked Area Chart - Chuyển dịch 3 Khối Tuổi)**:
+   - Thẻ Filters: Kéo `[Indicator]` $\rightarrow$ Chỉ chọn 3 chỉ số:
+     * `Children (under-15s)`
+     * `Working-age adults (15-64 years)`
+     * `Older people (65+ years)`
+   - Columns: Kéo `[Year]` (1950 – 2050).
+   - Rows: Kéo `SUM([Value])` $\rightarrow$ Nhấp chuột phải $\rightarrow$ **Quick Table Calculation** $\rightarrow$ **Percent of Total** $\rightarrow$ Compute Using **Table (Down)**.
+   - Thẻ Marks: Chọn **Area**. Kéo `[Indicator]` vào **Color**:
+     * Trẻ em: Xanh lá `#76C893`.
+     * Lao động: Xanh navy `#1E6091`.
+     * Người già 65+: Đỏ đậm `#D00000`.
+
+9. **Sheet 9: `09-AgeingDecadeMatrix` (Heatmap / Highlight Table - Ma trận Già hóa)**:
+   - Thẻ Filters: Lọc Top 15 quốc gia già hoá tiêu biểu (Nhật, Hàn, Ý, Đức, Việt Nam, Trung Quốc, Mỹ,...).
+   - Rows: Kéo `[Entity]`.
+   - Columns: Kéo `[Year]` (chọn Discrete các mốc: 1970, 1990, 2010, 2026, 2040, 2050).
+   - Thẻ Marks: Chọn **Square**.
+   - Kéo `AVG([Share 65+ (%)])` vào **Color** và vào **Label**.
+   - Edit Colors: Chọn Palette *Red-Yellow-Green Diverging* (Đảo ngược để giá trị cao tỷ lệ già hóa tô màu đỏ sẫm cảnh báo).
+
+10. **Sheet 10: `10-ForecastComparisonMLvsUN` (Dual-Axis Line - Đối chiếu Mô hình ML vs Kịch bản Chuẩn UN)**:
+    - Chuyển sang nguồn dữ liệu: `population_forecast_2050.csv`.
+    - Columns: Kéo `[Year]` (dải 2000 – 2050).
+    - Rows: Kéo `AVG([Share_65plus])`.
+    - Thẻ Marks: Chọn **Line**.
+    - Kéo `[Model]` vào **Color**:
+      * `un_wpp_medium`: Màu Xanh Navy `#0F3460` (Kịch bản Chuẩn của Liên Hợp Quốc).
+      * `linear_regression`: Màu Cam `#F5A623` (Mô hình Machine Learning do nhóm xây dựng).
+    - Reference Line: Thêm đường ngang tại `Y = 20%` đánh dấu ngưỡng **Xã hội Siêu già (Super-Aged Society)**.
+    - Insight hiển thị: So sánh trực tiếp độ lệch giữa mô hình của nhóm và UN (toàn cầu lệch <0.8%, khẳng định độ tin cậy của thuật toán).
+
+---
+
+### Bước 4: Ghép Dashboard & Cấu hình Tương tác Toàn cục (Global Filter & Actions)
+1. **Tạo Dashboard mới**:
+   - Size: Chọn **Fixed Size** $\rightarrow$ **1920 × 1080 (Full HD)**.
+   - Đặt nền Dashboard màu tối sang trọng: `#1A1A2E`.
+2. **Bố trí Khung Header & 4 KPI Cards**:
+   - Kéo Text Box tiêu đề: *"PHÂN TÍCH BIẾN ĐỘNG DÂN SỐ TOÀN CẦU & XU HƯỚNG GIÀ HOÁ DÂN SỐ ĐẾN NĂM 2050"*.
+   - Kéo 1 Horizontal Container đặt 4 thẻ KPI (`KPI-01`, `KPI-02`, `KPI-03`, `KPI-04`) nằm ngang trên cùng.
+3. **Bố trí 4 Cụm Chuyên đề**:
+   - Kéo các Horizontal / Vertical Container xếp thành 4 ô lưới trực quan tương ứng với 4 Cụm chuyên đề (như khung Wireframe mục 4).
+4. **Cài đặt Bộ lọc Toàn cục (Global Filters)**:
+   - Bấm vào Sheet Bản đồ $\rightarrow$ Bật bộ lọc `[Entity]` và `[Year]`.
+   - Nhấp vào mũi tên trên menu bộ lọc $\rightarrow$ **Apply to Worksheets** $\rightarrow$ Chọn **"Selected Worksheets..."** $\rightarrow$ Tích chọn **TẤT CẢ** các Sheet trong Dashboard (kể cả 4 Thẻ KPI).
+   - **Kết quả tương tác**:
+     * Mặc định chọn `World` $\rightarrow$ Thẻ KPI và biểu đồ thể hiện số liệu Toàn cầu 8.3 tỷ người năm 2026.
+     * Khi người dùng chọn `Vietnam` và kéo thanh trượt về `2020` $\rightarrow$ Toàn bộ 4 thẻ KPI và các biểu đồ tự động chuyển đổi thành 97.47 triệu dân, tăng trưởng 0.92%, mức sinh 1.94 con và tỷ lệ người già 8.84%!
+5. **Cài đặt Dashboard Filter Action (Click-to-Filter)**:
+   - Trên thanh menu: Dashboard $\rightarrow$ **Actions...** $\rightarrow$ **Add Action** $\rightarrow$ **Filter**.
+   - Source Sheets: Chọn `01-GeoMap`, `02-Treemap`, `03-TopPopulations`.
+   - Run action on: **Select**.
+   - Target Sheets: Tích chọn tất cả các Sheet còn lại trên Dashboard.
+   - Clearing the selection will: **Show all values** (hoặc chuyển về World).
+6. **Thêm Chú thích Nguồn Dữ liệu ở Chân trang (Footer Note)**:
+   - Kéo một Text Box nhỏ ở góc dưới Dashboard (font 9pt, màu `#8B8B9E`):
+     * *"Nguồn dữ liệu: Liên Hợp Quốc UN World Population Prospects (2024 Revision) via Our World in Data & World Population Review. Mô hình dự báo: Linear Regression & Logistic Regression (2027–2050)."*
+   - Cách làm này đáp ứng 100% tiêu chuẩn báo cáo khoa học mà không làm nặng Fact Table trong cơ sở dữ liệu.
 
 ---
 
