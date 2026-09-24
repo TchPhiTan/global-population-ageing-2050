@@ -1,25 +1,33 @@
 {
-  "generated_at": "2026-09-22T10:06:39.545898+00:00",
-  "row_count": 97167,
-  "entity_count": 264,
-  "year_min": 1891,
+  "generated_at": "2026-09-24T10:23:00.510326+00:00",
+  "row_count": 352258,
+  "entity_count": 272,
+  "year_min": 1950,
   "year_max": 2100,
   "duplicate_count_removed": 0,
   "missing_key_count": 0,
   "indicator_counts": {
     "Population": 39562,
     "Population growth rate": 38203,
-    "Total fertility rate": 19402
+    "Total fertility rate": 19166,
+    "Median age": 38203,
+    "Life expectancy": 19314,
+    "Older people (65+ years)": 39562,
+    "Working-age adults (15-64 years)": 39562,
+    "Children (under-15s)": 39562,
+    "Share of population aged 65+": 39562,
+    "Old-age dependency ratio": 39562
   },
   "status_counts": {
-    "estimate": 57512,
-    "projected": 39655
+    "estimate": 192252,
+    "projected": 160006
   },
   "wpr_validation_rows": 705,
   "wpr_unmatched_rows": 0,
   "quality_gates": {
     "at_least_5000_rows": true,
     "at_least_3_indicators": true,
-    "no_missing_keys": true
+    "no_missing_keys": true,
+    "timeframe_starts_at_1950": true
   }
 }

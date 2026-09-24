@@ -1,31 +1,25 @@
-# Đặc tả Dashboard Tableau: Xu hướng Dân số Toàn cầu (1950 – 2050)
+# Đặc tả Dashboard Tableau: Biến động Dân số & Xu hướng Già hoá Dân số Toàn cầu (1950 – 2050)
 
 ## 1. Tổng quan & Câu chuyện Dữ liệu (Data Story)
 
 ### 1.1 Mục tiêu Dashboard
-Dashboard kể câu chuyện về **sự chuyển đổi nhân khẩu học toàn cầu** qua 3 chương chính:
+Dashboard kết hợp hài hòa hai chủ đề cốt lõi:
+1. **Biến động Dân số Toàn cầu**: Quy mô dân số, tốc độ tăng trưởng, mức sinh TFR qua 3 chương lịch sử - hiện tại - tương lai.
+2. **Xu hướng Già hoá Dân số**: Tốc độ chuyển dịch cơ cấu tuổi, tuổi trung vị, tỷ số phụ thuộc và làn sóng các xã hội siêu già đến năm 2050.
 
 | Chương | Thời kỳ | Câu chuyện chính |
 | :---: | :--- | :--- |
-| **Chương 1** | 1950 – 2023 | *"Thế kỷ bùng nổ dân số"* – Dân số tăng gấp 4 lần trong vòng một thế kỷ |
-| **Chương 2** | 2024 – 2026 | *"Bước ngoặt hiện tại"* – Ấn Độ vượt Trung Quốc, 65 quốc gia đã suy giảm |
-| **Chương 3** | 2027 – 2050 | *"Tương lai phân hóa"* – Châu Phi bùng nổ, Đông Á & Châu Âu thu hẹp |
+| **Chương 1** | 1950 – 2023 | *"Thế kỷ bùng nổ dân số & Mở màn già hóa"* – Dân số tăng 3.3 lần, tuổi thọ tăng, mức sinh bắt đầu giảm |
+| **Chương 2** | 2024 – 2026 | *"Bước ngoặt hiện tại"* – Ấn Độ vượt Trung Quốc, 65 quốc gia suy giảm, tỷ lệ 65+ vượt 10% |
+| **Chương 3** | 2027 – 2050 | *"Tương lai phân hóa & Làn sóng Siêu già"* – Thế giới bước vào ngưỡng Xã hội Già (16.4%), >60 nước siêu già |
 
 ### 1.2 Thông điệp chính (Key Insights)
-
-> *"Dân số toàn cầu không còn tăng theo hàm mũ – tốc độ tăng trưởng đã đạt đỉnh vào thập niên 1960 và liên tục giảm kể từ đó."*
-> — Lấy cảm hứng từ Our World in Data
-
-1. **8.3 tỷ người** (2026) → Dự kiến đạt đỉnh **~10.3 tỷ** vào năm 2084 rồi giảm dần
-2. **Ấn Độ** chính thức vượt **Trung Quốc** thành quốc gia đông dân nhất thế giới
-3. **65 quốc gia** đang trong chu kỳ suy giảm dân số tính đến năm 2026 (tăng từ 54 quốc gia năm 2023)
-4. **130/237** quốc gia (54.9%) có tỷ suất sinh dưới mức thay thế (TFR < 2.1)
-5. **Châu Phi cận Sahara** là động lực tăng trưởng duy nhất còn mạnh, trong khi Đông Á và Châu Âu thu hẹp
-
-### 1.3 Đối tượng sử dụng
-- Giảng viên và sinh viên môn Thống kê / Dân số học
-- Nhà hoạch định chính sách (tham khảo)
-- Bất kỳ ai quan tâm đến xu hướng dân số toàn cầu
+1. **8.3 tỷ người** (2026) → Dự kiến đạt đỉnh **~10.3 tỷ** vào năm 2084 rồi giảm dần.
+2. **Ấn Độ** chính thức vượt **Trung Quốc** thành quốc gia đông dân nhất thế giới.
+3. **65 quốc gia** đang trong chu kỳ suy giảm dân số tính đến năm 2026.
+4. **130/237** quốc gia có tỷ suất sinh dưới mức thay thế (TFR < 2.1).
+5. **Già hoá tăng tốc**: Tỷ lệ người cao tuổi (65+) tăng từ 5.0% (1950) lên 10.3% (2026) và đạt **16.4% vào năm 2050**.
+6. **Tuổi trung vị toàn cầu**: Tăng từ 23.5 tuổi (1950) lên **36.2 tuổi (2050)** (Châu Âu và Đông Á vượt 45-48 tuổi).
 
 ---
 
@@ -35,53 +29,30 @@ Dashboard kể câu chuyện về **sự chuyển đổi nhân khẩu học toà
 
 | # | Tên file | Vai trò | Hàng | Cột chính |
 | :---: | :--- | :--- | :---: | :--- |
-| 1 | `population_fact_long.csv` | Fact table chính (1950–2100) | ~154,000 | Entity, Code, Year, Indicator, Value, Unit, DataStatus |
-| 2 | `population_fact_wide.csv` | Phiên bản wide cho heatmap | ~14,500 | Entity, Code, Year, Population, GrowthRate, TFR, DataStatus |
-| 3 | `population_forecast_2050.csv` | Dự báo Linear Regression | ~24,000 | Entity, Code, Year, Population, DataStatus, Model |
-
-### 2.2 Kết nối trong Tableau
-- **Kết nối chính**: Drag `population_fact_long.csv` làm nguồn primary.
-- **Blend/Join**: Left join `population_forecast_2050.csv` trên khóa `(Entity, Code, Year)` để có cột `Model` và giá trị `forecast`.
-- **Pivot**: Nếu dùng `population_fact_wide.csv`, không cần pivot – đã sẵn các cột chỉ tiêu riêng.
-
-### 2.3 Phân loại Entity (Country vs Region)
-Sử dụng **Calculated Field** để phân biệt quốc gia khỏi nhóm tổng hợp khu vực:
-
-```
-// [Is Country]
-IF LEN([Code]) = 3
-   AND UPPER([Code]) = [Code]
-   AND NOT STARTSWITH([Code], "OWID_")
-   AND NOT STARTSWITH([Code], "UN_")
-   AND [Code] != ""
-THEN "Country"
-ELSEIF [Code] = "OWID_KOS" THEN "Country"  // Kosovo ngoại lệ
-ELSE "Region/Aggregate"
-END
-```
+| 1 | `population_fact_long.csv` | Fact table chính (1950–2100) | **~352,000** | Entity, Code, Year, Indicator, Value, Unit, DataStatus |
+| 2 | `population_fact_wide.csv` | Phiên bản wide cho phân tích | **~39,000** | Entity, Code, Year, Population, GrowthRate, TFR, MedianAge, Share65, DepRatio |
+| 3 | `population_forecast_2050.csv` | Dự báo Linear Regression | **~24,000** | Entity, Code, Year, Population, Older_People_65plus, Share_65plus, DataStatus, Model |
+| 4 | `country_risk_classification_2050.csv` | Phân loại rủi ro Logistic Regression | **237** | Entity, Code, Depopulation_Risk_Score, Super_Aged_Risk_Score, Super_Aged_Category |
 
 ---
 
 ## 3. Calculated Fields (Trường tính toán)
 
-### 3.1 Danh sách Calculated Fields
+### 3.1 Danh sách Calculated Fields Cốt lõi
 
 | # | Tên trường | Công thức Tableau | Mục đích |
 | :---: | :--- | :--- | :--- |
-| 1 | `[Is Country]` | *(Xem mục 2.3 ở trên)* | Lọc quốc gia vs khu vực |
-| 2 | `[Population (Millions)]` | `IF [Indicator] = "Population" THEN [Value] / 1000000 END` | Hiển thị dân số theo đơn vị triệu |
-| 3 | `[Population (Billions)]` | `IF [Indicator] = "Population" THEN [Value] / 1000000000 END` | Hiển thị dân số theo đơn vị tỷ |
-| 4 | `[Growth Rate (%)]` | `IF [Indicator] = "Population growth rate" THEN [Value] END` | Trích tốc độ tăng trưởng |
-| 5 | `[TFR]` | `IF [Indicator] = "Total fertility rate" THEN [Value] END` | Trích tỷ suất sinh |
-| 6 | `[Data Period]` | `IF [DataStatus] = "estimate" THEN "Lịch sử (Ước tính)" ELSEIF [DataStatus] = "projected" THEN "Dự phóng (UN WPP)" ELSE "Dự báo (Mô hình)" END` | Phân loại giai đoạn cho legend |
-| 7 | `[Below Replacement]` | `IF [TFR] < 2.1 THEN "Dưới mức thay thế" ELSE "Trên mức thay thế" END` | Phân loại TFR cho màu sắc |
-| 8 | `[Growth Category]` | `IF [Growth Rate (%)] < -1 THEN "Suy giảm mạnh" ELSEIF [Growth Rate (%)] < 0 THEN "Suy giảm nhẹ" ELSEIF [Growth Rate (%)] < 1 THEN "Tăng trưởng thấp" ELSEIF [Growth Rate (%)] < 2 THEN "Tăng trưởng vừa" ELSE "Tăng trưởng cao" END` | Phân nhóm tăng trưởng |
-| 9 | `[Continent]` | *Dùng Group hoặc Calculated Field dựa trên Code (xem 3.2)* | Nhóm theo châu lục |
-| 10 | `[Population Rank]` | `RANK(SUM([Population (Millions)]))` | Xếp hạng cho top N |
-| 11 | `[Reference TFR = 2.1]` | `2.1` | Đường tham chiếu mức sinh thay thế |
-| 12 | `[Reference Growth = 0]` | `0` | Đường tham chiếu zero growth |
-| 13 | `[Year Label]` | `STR([Year])` | Nhãn năm dạng text |
-| 14 | `[Decade]` | `INT([Year] / 10) * 10` | Nhóm theo thập kỷ |
+| 1 | `[Is Country]` | *(Xem mục 2.3)* | Lọc quốc gia vs khu vực |
+| 2 | `[Population (Millions)]` | `IF [Indicator] = "Population" THEN [Value] / 1000000 END` | Hiển thị dân số theo triệu người |
+| 3 | `[Growth Rate (%)]` | `IF [Indicator] = "Population growth rate" THEN [Value] END` | Tốc độ tăng trưởng hàng năm |
+| 4 | `[TFR]` | `IF [Indicator] = "Total fertility rate" THEN [Value] END` | Mức sinh (con/phụ nữ) |
+| 5 | `[Median Age]` | `IF [Indicator] = "Median age" THEN [Value] END` | Tuổi trung vị |
+| 6 | `[Share 65+ (%)]` | `IF [Indicator] = "Share of population aged 65+" THEN [Value] END` | Tỷ lệ người cao tuổi |
+| 7 | `[Old-age Dependency Ratio]` | `IF [Indicator] = "Old-age dependency ratio" THEN [Value] END` | Tỷ số phụ thuộc người cao tuổi |
+| 8 | `[Ageing Stage]` | `IF [Share 65+ (%)] >= 20 THEN "4. Xã hội Siêu già (>=20%)" ELSEIF [Share 65+ (%)] >= 14 THEN "3. Xã hội Già (14-20%)" ELSEIF [Share 65+ (%)] >= 7 THEN "2. Đang già hoá (7-14%)" ELSE "1. Dân số trẻ (<7%)" END` | Phân cấp già hoá chuẩn UN |
+| 9 | `[Data Period]` | `IF [DataStatus] = "estimate" THEN "Lịch sử (Ước tính)" ELSEIF [DataStatus] = "projected" THEN "Dự phóng (UN WPP)" ELSE "Dự báo (Mô hình)" END` | Phân loại giai đoạn cho Legend |
+| 10 | `[Below Replacement]` | `IF [TFR] < 2.1 THEN "Dưới mức thay thế" ELSE "Trên mức thay thế" END` | Phân loại TFR |
+| 11 | `[Continent]` | *Left Join với `continent_mapping.csv` trên Code* | Nhóm 6 châu lục |
 
 ### 3.2 Phân nhóm Châu lục (Continent Grouping)
 

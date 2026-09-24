@@ -1,88 +1,67 @@
-# Population Trends Project Implementation Plan
+# Kế hoạch Thực thi Dự án: Phân tích Biến động Dân số Toàn cầu & Xu hướng Già hoá Dân số đến năm 2050
 
-## 1. Muc tieu
+## 1. Mục tiêu Đề tài
+Nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu theo hai trụ cột song song:
+1. **Biến động dân số**: Quy mô dân số, tốc độ tăng trưởng, mức sinh (TFR) trong giai đoạn 1950 – 2026 và so sánh với kịch bản chuẩn UN WPP Medium Scenario.
+2. **Xu hướng già hoá dân số**: Sự biến đổi cơ cấu 3 nhóm tuổi (0-14, 15-64, 65+), tốc độ tăng trưởng tuổi trung vị (Median age), tỷ số phụ thuộc người cao tuổi (Old-age dependency ratio), và dự phóng làn sóng các Xã hội Siêu già (Super-aged societies) đến năm 2050.
 
-Phan tich xu huong dan so, toc do tang dan so va muc sinh theo quoc gia trong giai doan 1950-2026; so sanh du lieu uoc tinh voi du lieu du bao UN WPP medium scenario; xay dung bo du lieu san sang cho Tableau va mo hinh du bao dan so den nam 2050.
+## 2. Phạm vi & Nguyên tắc Dữ liệu
+- **Nguồn chính**: UN World Population Prospects (bản sửa đổi 2024 do Our World in Data biên tập).
+- **Khung thời gian chuẩn hóa**: **1950 – 2050** (chuỗi dữ liệu kéo dài đến 2100).
+- **Phân định trạng thái**: Luôn phân tách rõ ràng `DataStatus` gồm `estimate` (1950–2023), `projected` (2024–2026/2100) và `forecast` (kết quả mô hình học máy).
+- **Nguồn kiểm chứng độc lập**: World Population Review (2024–2026) dùng để đối chiếu chéo số liệu thực tế hiện tại.
+- Khóa chính logic của bảng Fact: `Entity`, `Code`, `Year`, `Indicator`, `DataStatus`.
 
-## 2. Pham vi va nguyen tac
+## 3. Danh mục Sản phẩm Bàn giao (Deliverables)
 
-- Du lieu OWID/UN WPP la nguon phan tich chinh.
-- World Population Review chi dung de doi chieu cac gia tri 2024-2026.
-- Khong ghi de hoac sua cac file trong `data/raw/`.
-- Khong noi tiep estimate va projected ma khong co cot `DataStatus`.
-- Khoa chinh logic cua fact table la `Entity`, `Code`, `Year`.
-- Tat ca script co the chay lai tu dau.
+### 3.1 Dữ liệu & Xử lý (Data Processing)
+- `scripts/preprocess_population_data.py`: Pipeline làm sạch, trích xuất và chuẩn hóa dữ liệu.
+- `data/processed/population_fact_long.csv`: Bảng fact dạng long (>350.000 dòng, 10 chỉ số).
+- `data/processed/population_fact_wide.csv`: Bảng fact dạng wide phục vụ Tableau & Heatmap.
+- `data/processed/world_population_review_validation.csv`: Kết quả đối chiếu chéo WPR (100% khớp).
+- `data/processed/data_dictionary.csv`: Từ điển dữ liệu định nghĩa từng trường.
+- `data/processed/data_quality_report.json`: Báo cáo kiểm định chất lượng dữ liệu vượt qua mọi Quality Gates.
 
-## 3. Deliverables
+**10 Chỉ số trong Fact Table**:
+1. `Population` (người)
+2. `Population growth rate` (%)
+3. `Total fertility rate` (con/phụ nữ)
+4. `Median age` (tuổi)
+5. `Life expectancy` (tuổi)
+6. `Older people (65+ years)` (người)
+7. `Working-age adults (15-64 years)` (người)
+8. `Children (under-15s)` (người)
+9. `Share of population aged 65+` (%)
+10. `Old-age dependency ratio` (%)
 
-### 3.1 Data processing
+### 3.2 Phân tích Khám phá Dữ liệu (EDA)
+- `scripts/run_eda.py`: Kịch bản phân tích và vẽ biểu đồ.
+- 8 Biểu đồ chuyên sâu tại `reports/eda/`:
+  - `01-global-population-trend.png`: Xu hướng quy mô dân số thế giới (1950–2050).
+  - `02-top-populations.png`: Top 10 quốc gia đông dân nhất năm 2026.
+  - `03-growth-rate-distribution.png`: Phân phối tốc độ tăng trưởng quốc gia năm 2026.
+  - `04-fertility-growth-scatter.png`: Tương quan mức sinh (TFR) và tăng trưởng dân số.
+  - `05-population-heatmap.png`: Ma trận quy mô dân số top 15 nước qua các thập kỷ.
+  - `06-global-ageing-trend-2050.png`: Chuyển dịch cơ cấu 3 nhóm tuổi toàn cầu (1950–2050).
+  - `07-median-age-by-continent.png`: Tăng trưởng tuổi trung vị của các châu lục đến 2050.
+  - `08-top-super-aged-societies-2050.png`: Top 10 quốc gia già nhất thế giới năm 2050.
+- `reports/eda/eda_summary.md`: Báo cáo phân tích insight chi tiết.
 
-- `scripts/preprocess_population_data.py`
-- `data/processed/population_fact_long.csv`
-- `data/processed/population_fact_wide.csv`
-- `data/processed/world_population_review_validation.csv`
-- `data/processed/data_dictionary.csv`
-- `data/processed/data_quality_report.json`
+### 3.3 Mô hình Hóa Học máy (Modeling)
+- `scripts/forecast_population.py`: Pipeline huấn luyện mô hình và dự phóng đến 2050.
+- `data/processed/population_forecast_2050.csv`: Chuỗi dự báo quy mô dân số và người cao tuổi.
+- `data/processed/country_risk_classification_2050.csv`: Điểm rủi ro suy giảm dân số & xã hội siêu già.
+- `reports/modeling/model_report.md`: Báo cáo đánh giá mô hình học máy.
+- `reports/modeling/confusion_matrix.png`: Ma trận nhầm lẫn của 2 mô hình phân loại Logistic Regression.
+- `reports/modeling/forecast_trends_2050.png`: Đồ thị xu hướng dự phóng tương lai.
 
-Fact table long co cac cot:
+### 3.4 Đặc tả Dashboard Tableau (Dashboard Specification)
+- `docs/tableau-dashboard-spec.md`: Đặc tả chi tiết 4 Dashboard Tab, 10 loại biểu đồ, bản đồ địa lý, bộ lọc liên động, công thức tính toán và kịch bản thuyết trình.
 
-`Entity`, `Code`, `Year`, `Indicator`, `Value`, `Unit`, `DataStatus`, `Source`, `SourceUrl`.
-
-### 3.2 EDA
-
-- `scripts/run_eda.py`
-- `reports/eda/01-global-population-trend.png`
-- `reports/eda/02-top-populations.png`
-- `reports/eda/03-growth-rate-distribution.png`
-- `reports/eda/04-fertility-growth-scatter.png`
-- `reports/eda/05-population-heatmap.png`
-- `reports/eda/eda_summary.md`
-
-### 3.3 Modeling
-
-- `scripts/forecast_population.py`
-- `data/processed/population_forecast_2050.csv`
-- `reports/modeling/model_report.md`
-
-Linear regression dung de du bao gia tri dan so. Logistic regression dung de phan loai nguy co suy giam dan so, khong dung de du bao truc tiep population.
-
-### 3.4 Dashboard specification
-
-- `docs/tableau-dashboard-spec.md`
-
-Dashboard can co it nhat 8 loai bieu do, geographic map, bo loc nhieu cap, tooltip, drill-down va cross-filtering.
-
-## 4. Pipeline
-
-1. Doc va kiem tra schema raw.
-2. Chuan hoa ten cot, kieu du lieu va gia tri rong.
-3. Chuyen ba bang OWID/UN thanh long format.
-4. Gan `DataStatus=estimate` cho cot historical va `DataStatus=projected` cho cot medium scenario.
-5. Loai bo dong trung khoa va ghi so lieu vao quality report.
-6. Doi chieu WPR voi population projected nam 2024-2026 va ghi sai lech.
-7. Tao bang wide phuc vu Tableau.
-8. Chay EDA truoc khi tao dashboard.
-9. Huan luyen mo hinh tren du lieu historical, danh rieng cac nam projected khi danh gia.
-10. Tao forecast den 2050 va tai vao Tableau.
-
-## 5. Quality gates
-
-- Dataset chinh co it nhat 5.000 dong.
-- Co it nhat 3 bang processed co y nghia.
-- `Year` la so nguyen, `Value` la so, khong co khoa trung.
-- Moi indicator co don vi va DataStatus.
-- Khong co missing trong cac cot khoa.
-- Missing value trong cot chi tieu duoc bao cao, khong tu dong dien gia tri neu khong co co so.
-- EDA co 3-5 bieu do va file tom tat.
-- Mo hinh co train/test split theo thoi gian va metric phu hop.
-- Dashboard co map va it nhat 8 loai chart.
-
-## 6. Thu tu thuc thi
-
-- [ ] Tao preprocessing pipeline va data dictionary.
-- [ ] Chay preprocessing va vuot quality gates.
-- [ ] Tao EDA va insight summary.
-- [ ] Tao mo hinh du bao va danh gia.
-- [ ] Tao dashboard specification va calculated fields.
-- [ ] Nap cac file processed vao Tableau va kiem tra tuong tac.
-- [ ] Cap nhat README va tai lieu nguon.
+## 4. Trạng thái Triển khai
+- [x] Thiết lập Git repository và đẩy lên GitHub: `TchPhiTan/global-population-ageing-2050`.
+- [x] Tải bổ sung dữ liệu già hóa (Median age, Age groups, Life expectancy).
+- [x] Cập nhật pipeline preprocessing và đạt mọi Quality Gates.
+- [x] Tạo 8 biểu đồ EDA và báo cáo insight toàn diện.
+- [x] Huấn luyện 2 mô hình học máy (Linear Regression R2=0.9956, Logistic Regression Acc=98.3%).
+- [x] Cập nhật đặc tả Tableau Dashboard với 2 trụ cột Biến động & Già hóa.
