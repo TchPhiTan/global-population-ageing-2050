@@ -1,0 +1,25 @@
+{
+  "source": "World Population Review",
+  "source_url": "https://worldpopulationreview.com/countries",
+  "retrieved_at": "2026-09-22T08:59:37.602057+00:00",
+  "years": [
+    2024,
+    2025,
+    2026
+  ],
+  "country_count": 235,
+  "record_count": 705,
+  "error_count": 1,
+  "notes": [
+    "Population values are extracted from embedded page data and rounded to whole people.",
+    "The source includes countries, dependent territories, special administrative regions and disputed territories.",
+    "Country names and codes in this file are URL-based labels from the source page."
+  ],
+  "errors": [
+    {
+      "slug": "by-gdp",
+      "url": "https://worldpopulationreview.com/countries/by-gdp",
+      "error": "Expected 3 years, found 0"
+    }
+  ]
+}

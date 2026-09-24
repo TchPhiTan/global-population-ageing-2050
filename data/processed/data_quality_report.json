@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-09-22T10:06:39.545898+00:00",
+  "row_count": 97167,
+  "entity_count": 264,
+  "year_min": 1891,
+  "year_max": 2100,
+  "duplicate_count_removed": 0,
+  "missing_key_count": 0,
+  "indicator_counts": {
+    "Population": 39562,
+    "Population growth rate": 38203,
+    "Total fertility rate": 19402
+  },
+  "status_counts": {
+    "estimate": 57512,
+    "projected": 39655
+  },
+  "wpr_validation_rows": 705,
+  "wpr_unmatched_rows": 0,
+  "quality_gates": {
+    "at_least_5000_rows": true,
+    "at_least_3_indicators": true,
+    "no_missing_keys": true
+  }
+}

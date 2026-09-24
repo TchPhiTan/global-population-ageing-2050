@@ -1,0 +1,10 @@
+table_name,column_name,data_type,description
+population_fact_long,Entity,string,Tên quốc gia hoặc thực thể khu vực
+population_fact_long,Code,string,Mã ISO-3 hoặc mã định danh của OWID/UN
+population_fact_long,Year,integer,Năm quan sát hoặc năm dự phóng
+population_fact_long,Indicator,string,Tên chỉ tiêu dân số
+population_fact_long,Value,float,Giá trị của chỉ tiêu tương ứng
+population_fact_long,Unit,string,Đơn vị đo lường
+population_fact_long,DataStatus,string,Phân loại trạng thái: estimate hoặc projected
+population_fact_long,Source,string,Nguồn cung cấp dữ liệu gốc
+population_fact_long,SourceUrl,string,Đường dẫn tham chiếu đến dữ liệu gốc
