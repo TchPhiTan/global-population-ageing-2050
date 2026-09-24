@@ -112,7 +112,6 @@ def load_main_records() -> list[dict[str, object]]:
                     "Value": round(value, 4) if unit in ("percent", "years", "children per woman") else value,
                     "Unit": unit,
                     "DataStatus": status,
-                    "Source": "UN WPP 2024 (OWID)",
                 })
 
     # 2. Derive key Ageing Indicators: "Share of population aged 65+" and "Old-age dependency ratio"
@@ -140,7 +139,6 @@ def load_main_records() -> list[dict[str, object]]:
                     "Value": share_65,
                     "Unit": "percent",
                     "DataStatus": status,
-                    "Source": "UN WPP 2024 (OWID)",
                 })
             if working > 0:
                 dep_ratio = round((older / working) * 100, 2)
@@ -152,7 +150,6 @@ def load_main_records() -> list[dict[str, object]]:
                     "Value": dep_ratio,
                     "Unit": "percent",
                     "DataStatus": status,
-                    "Source": "UN WPP 2024 (OWID)",
                 })
 
     records.extend(derived_records)
@@ -248,7 +245,6 @@ def write_dictionary() -> None:
         {"Column": "Value", "Description": "Indicator value", "Type": "float"},
         {"Column": "Unit", "Description": "Measurement unit (people, percent, years, children per woman)", "Type": "string"},
         {"Column": "DataStatus", "Description": "estimate (1950-2023) or projected (2024-2100)", "Type": "string"},
-        {"Column": "Source", "Description": "Data provider and processing", "Type": "string"},
     ]
     write_csv(PROCESSED_DIR / "data_dictionary.csv", rows, ["Column", "Description", "Type"])
 
@@ -285,7 +281,7 @@ def main() -> None:
     write_csv(
         PROCESSED_DIR / "population_fact_long.csv",
         records,
-        ["Entity", "Code", "Year", "Indicator", "Value", "Unit", "DataStatus", "Source"],
+        ["Entity", "Code", "Year", "Indicator", "Value", "Unit", "DataStatus"],
     )
     write_csv(
         PROCESSED_DIR / "population_fact_wide.csv",

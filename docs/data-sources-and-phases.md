@@ -34,8 +34,8 @@ Tất cả các chuỗi dữ liệu lịch sử (1950 – 2023) và dự phóng 
 ## 3. Quy chuẩn Thiết kế Dữ liệu trong Tableau (Data Design Principles)
 
 1. **Tối ưu hóa Hiệu năng & Dung lượng**:
-   - Trường URL tĩnh lặp lại (`SourceUrl`) đã được lược bỏ khỏi Fact Table để giảm 50% kích thước tệp (từ 55MB xuống 29MB), giúp Tableau nạp dữ liệu nhanh tức thì.
-   - Toàn bộ nguồn gốc, đường dẫn và tài liệu tham khảo được quy chuẩn hóa trong file Markdown này và mục Giới thiệu (About/Methodology) trong Báo cáo Đồ án.
+   - Các trường tĩnh lặp lại (`Source`, `SourceUrl`) đã được lược bỏ khỏi Fact Table để giảm hơn 58% kích thước tệp (từ 55MB xuống còn 23MB), loại bỏ chiều phân loại rác và giúp Tableau nạp dữ liệu mượt mà, tối ưu bộ nhớ.
+   - Toàn bộ nguồn gốc, đường dẫn và tài liệu tham khảo được quy chuẩn hóa tập trung trong tài liệu Markdown này và phần Phương pháp luận (Methodology) trong Báo cáo Đồ án.
 2. **Phân tách Rạch ròi Trạng thái Dữ liệu (`DataStatus`)**:
    - `estimate`: Dữ liệu điều tra thống kê lịch sử (1950 – 2023).
    - `projected`: Dữ liệu viễn cảnh tương lai theo Kịch bản Chuẩn của Liên Hợp Quốc UN WPP (2024 – 2100).
