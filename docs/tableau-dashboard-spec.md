@@ -1,5 +1,7 @@
 # Đặc tả Dashboard Tableau: Biến động Dân số & Xu hướng Già hoá Dân số Toàn cầu (1950 – 2050)
 
+> **Cập nhật lần cuối**: 2026-09-26 | **Phiên bản**: v2.0 | **Workbook**: `TTDLTQ FINAL.twb`
+
 ## 1. Tổng quan & Câu chuyện Dữ liệu (Data Story)
 
 ### 1.1 Mục tiêu Dashboard
@@ -21,18 +23,47 @@ Dashboard kết hợp hài hòa hai chủ đề cốt lõi:
 5. **Già hoá tăng tốc**: Tỷ lệ người cao tuổi (65+) tăng từ 5.0% (1950) lên 10.3% (2026) và đạt **16.4% vào năm 2050**.
 6. **Tuổi trung vị toàn cầu**: Tăng từ 23.5 tuổi (1950) lên **36.2 tuổi (2050)** (Châu Âu và Đông Á vượt 45-48 tuổi).
 
+### 1.3 Ánh xạ Chi tiết: Chart Tableau ↔ Nguồn Our World in Data
+
+Bảng dưới đây liệt kê cụ thể **mỗi chart trên Tableau Dashboard** tham khảo chart nào trên Our World in Data, sử dụng chỉ số và bảng dữ liệu gì:
+
+| Chart # | Tên Chart | Loại Biểu đồ | Chart/Bài viết OWID Tham khảo | Chỉ số (Indicator) | File Dữ liệu Tableau |
+| :---: | :--- | :--- | :--- | :--- | :--- |
+| **1** | Bản đồ Dân số | Filled Map | [Population with UN Projections](https://ourworldindata.org/grapher/population-with-un-projections) | `Population` | `population_fact_wide.csv` |
+| **2** | Chuyển đổi Nhân khẩu học | Animated Scatter Plot | [Life Expectancy vs Fertility](https://ourworldindata.org/grapher/fertility-rate-vs-life-expectancy) *(Gapminder / Hans Rosling style)* | `Life expectancy` (X) + `TFR` (Y) + `Population` (Size) | `population_fact_wide.csv` |
+| **3** | Top 10 Đông dân | Horizontal Bar | [Population with UN Projections](https://ourworldindata.org/grapher/population-with-un-projections) → Tab Table | `Population` | `population_fact_wide.csv` |
+| **4** | Xu hướng 1950–2050 | Area + Line | [World Population over Time](https://ourworldindata.org/grapher/population-with-un-projections?tab=chart&time=1950..2100&country=~OWID_WRL) | `Population` | `population_fact_wide.csv` |
+| **5** | Đổi ngôi Thứ hạng | Bump Chart | [Population Growth](https://ourworldindata.org/population-growth) *(bài viết rank qua thời gian)* | `Population` (Rank) | `population_fact_wide.csv` |
+| **6** | Phân phối Tăng trưởng | Histogram | [Population Growth Rates](https://ourworldindata.org/grapher/population-growth-rates) → Distribution | `Population growth rate` | `population_fact_wide.csv` |
+| **7** | TFR vs Tăng trưởng | Scatter Plot | [Children Born per Woman](https://ourworldindata.org/grapher/children-born-per-woman) + [Growth Rates](https://ourworldindata.org/grapher/population-growth-rates) | `TFR` (X) + `Growth Rate` (Y) + `Population` (Size) | `population_fact_wide.csv` |
+| **8** | 3 Khối Tuổi | 100% Stacked Area | [Age Groups with Projections](https://ourworldindata.org/grapher/population-young-working-elderly-with-projections) → Relative | `Children <15`, `Working 15-64`, `Older 65+` | `population_fact_wide.csv` |
+| **9** | Ma trận Già hoá | Heatmap | [Age Structure](https://ourworldindata.org/age-structure) + [Median Age](https://ourworldindata.org/grapher/median-age) | `Share 65+` hoặc `Median Age` | `population_fact_wide.csv` |
+| **10** | ML vs UN WPP | Dual-Axis Line | *(Biểu đồ riêng – đối chiếu kết quả ML với UN WPP)* | `Share_65plus`, `Population` | `population_forecast_2050.csv` + `model_vs_un_wpp_comparison_2050.csv` |
+| **KPI 1** | Quy mô Dân số | KPI Card | [Population with UN Projections](https://ourworldindata.org/grapher/population-with-un-projections) | `Population` | `population_fact_wide.csv` |
+| **KPI 2** | Tốc độ Tăng trưởng | KPI Card | [Population Growth Rates](https://ourworldindata.org/grapher/population-growth-rates) | `Population growth rate` | `population_fact_wide.csv` |
+| **KPI 3** | Tỷ lệ Người già 65+ | KPI Card | [Age Structure](https://ourworldindata.org/age-structure) | `Share of population aged 65+` | `population_fact_wide.csv` |
+| **KPI 4** | Mức sinh TFR | KPI Card | [Children Born per Woman](https://ourworldindata.org/grapher/children-born-per-woman) | `Total fertility rate` | `population_fact_wide.csv` |
+
+> **Cách sử dụng bảng này**: Khi cần truy xuất hoặc trích dẫn nguồn cho bất kỳ chart nào trong Dashboard, tra cứu cột "Chart/Bài viết OWID Tham khảo" để lấy URL gốc và phương pháp luận.
+
 ---
 
 ## 2. Nguồn Dữ liệu & Cấu trúc
 
 ### 2.1 Bảng dữ liệu chính
 
-| # | Tên file | Vai trò | Hàng | Cột chính |
-| :---: | :--- | :--- | :---: | :--- |
-| 1 | `population_fact_long.csv` | Fact table chính (1950–2100) | **~352,000** | Entity, Code, Year, Indicator, Value, Unit, DataStatus |
-| 2 | `population_fact_wide.csv` | Phiên bản wide cho phân tích | **~39,000** | Entity, Code, Year, Population, GrowthRate, TFR, MedianAge, Share65, DepRatio |
-| 3 | `population_forecast_2050.csv` | Dự báo Linear Regression | **~24,000** | Entity, Code, Year, Population, Older_People_65plus, Share_65plus, DataStatus, Model |
-| 4 | `country_risk_classification_2050.csv` | Phân loại rủi ro Logistic Regression | **237** | Entity, Code, Depopulation_Risk_Score, Super_Aged_Risk_Score, Super_Aged_Category |
+| # | Tên file | Vai trò | Hàng | Cột chính | Dùng cho |
+| :---: | :--- | :--- | :---: | :--- | :--- |
+| 1 | **`population_fact_wide.csv`** | **⭐ Data source chính cho Dashboard** (1950–2100) | **~39,500** | Entity, Code, Year, Population, GrowthRate, TFR, MedianAge, LifeExpectancy, Share65, DepRatio | **Chart 1–9, KPI 1–4** |
+| 2 | `population_fact_long.csv` | Backup / Phân tích Python-R (định dạng long) | **~348,000** | Entity, Code, Year, Indicator, Value, Unit, DataStatus | Không load vào Tableau |
+| 3 | `population_forecast_2050.csv` | Dự báo Linear Regression | **~24,000** | Entity, Code, Year, Population, Older_People_65plus, Share_65plus, DataStatus, Model | **Chart 10** |
+| 4 | `country_risk_classification_2050.csv` | Phân loại rủi ro Logistic Regression | **237** | Entity, Code, Depopulation_Risk_Score, Super_Aged_Risk_Score, Super_Aged_Category | Bổ trợ |
+
+> **⚠️ Quan trọng — Tại sao dùng `wide.csv` làm data source chính?**
+> - **1 data source duy nhất** → Tất cả filter (Year, Entity) tự động đồng bộ giữa các worksheet mà không cần Data Blending.
+> - Mỗi dòng chứa đầy đủ **10 indicators** → Chart 2 (LE vs TFR) chỉ cần kéo đúng cột, không cần Self-Join.
+> - File nhẹ (~39,500 dòng) → Tableau xử lý mượt.
+> - Đã merge data từ các bản `(UN)` → Các khu vực (Asia, Europe...) có đầy đủ tất cả fields.
 
 ---
 
@@ -40,21 +71,43 @@ Dashboard kết hợp hài hòa hai chủ đề cốt lõi:
 
 ### 3.1 Danh sách Calculated Fields Cốt lõi
 
-| # | Tên trường | Công thức Tableau | Mục đích |
+> **Lưu ý**: Vì data source chính là file **`population_fact_wide.csv`** (mỗi dòng đã có sẵn các cột riêng), nên các Calculated Field đơn giản hơn (không cần `IF [Indicator] = ...`).
+
+| # | Tên trường | Công thức Tableau (file wide) | Mục đích |
 | :---: | :--- | :--- | :--- |
 | 1 | `[Is Country]` | *(Xem mục 2.3)* | Lọc quốc gia vs khu vực |
-| 2 | `[Population (Millions)]` | `IF [Indicator] = "Population" THEN [Value] / 1000000 END` | Hiển thị dân số theo triệu người |
-| 3 | `[Growth Rate (%)]` | `IF [Indicator] = "Population growth rate" THEN [Value] END` | Tốc độ tăng trưởng hàng năm |
-| 4 | `[TFR]` | `IF [Indicator] = "Total fertility rate" THEN [Value] END` | Mức sinh (con/phụ nữ) |
-| 5 | `[Median Age]` | `IF [Indicator] = "Median age" THEN [Value] END` | Tuổi trung vị |
-| 6 | `[Share 65+ (%)]` | `IF [Indicator] = "Share of population aged 65+" THEN [Value] END` | Tỷ lệ người cao tuổi |
-| 7 | `[Old-age Dependency Ratio]` | `IF [Indicator] = "Old-age dependency ratio" THEN [Value] END` | Tỷ số phụ thuộc người cao tuổi |
-| 8 | `[Ageing Stage]` | `IF [Share 65+ (%)] >= 20 THEN "4. Xã hội Siêu già (>=20%)" ELSEIF [Share 65+ (%)] >= 14 THEN "3. Xã hội Già (14-20%)" ELSEIF [Share 65+ (%)] >= 7 THEN "2. Đang già hoá (7-14%)" ELSE "1. Dân số trẻ (<7%)" END` | Phân cấp già hoá chuẩn UN |
-| 9 | `[Data Period]` | `IF [DataStatus] = "estimate" THEN "Lịch sử (Ước tính)" ELSEIF [DataStatus] = "projected" THEN "Dự phóng (UN WPP)" ELSE "Dự báo (Mô hình)" END` | Phân loại giai đoạn cho Legend |
-| 10 | `[Below Replacement]` | `IF [TFR] < 2.1 THEN "Dưới mức thay thế" ELSE "Trên mức thay thế" END` | Phân loại TFR |
-| 11 | `[Continent]` | *Left Join với `continent_mapping.csv` trên Code* | Nhóm 6 châu lục |
+| 2 | `[Population (Millions)]` | `[Population] / 1000000` | Hiển thị dân số theo triệu người |
+| 3 | `[Population (Billions)]` | `[Population] / 1000000000` | Hiển thị dân số theo tỷ người |
+| 4 | `[Growth Rate (%)]` | `[Population growth rate]` *(cột có sẵn)* | Tốc độ tăng trưởng hàng năm |
+| 5 | `[TFR]` | `[Total fertility rate]` *(cột có sẵn)* | Mức sinh (con/phụ nữ) |
+| 6 | `[LE]` | `[Life expectancy]` *(cột có sẵn)* | Tuổi thọ trung bình |
+| 7 | `[Median Age]` | `[Median age]` *(cột có sẵn)* | Tuổi trung vị |
+| 8 | `[Share 65+ (%)]` | `[Share of population aged 65+]` *(cột có sẵn)* | Tỷ lệ người cao tuổi |
+| 9 | `[Old-age Dependency Ratio]` | `[Old-age dependency ratio]` *(cột có sẵn)* | Tỷ số phụ thuộc người cao tuổi |
+| 10 | `[Ageing Stage]` | `IF [Share 65+ (%)] >= 20 THEN "4. Xã hội Siêu già (>=20%)" ELSEIF [Share 65+ (%)] >= 14 THEN "3. Xã hội Già (14-20%)" ELSEIF [Share 65+ (%)] >= 7 THEN "2. Đang già hoá (7-14%)" ELSE "1. Dân số trẻ (<7%)" END` | Phân cấp già hoá chuẩn UN |
+| 11 | `[Data Period]` | `IF [DataStatus] = "estimate" THEN "Lịch sử (Ước tính)" ELSEIF [DataStatus] = "projected" THEN "Dự phóng (UN WPP)" ELSE "Dự báo (Mô hình)" END` | Phân loại giai đoạn cho Legend |
+| 12 | `[Below Replacement]` | `IF [TFR] < 2.1 THEN "Dưới mức thay thế" ELSE "Trên mức thay thế" END` | Phân loại TFR |
+| 13 | `[Continent]` | *Left Join với `continent_mapping.csv` trên Code* | Nhóm 6 châu lục |
+| 14 | `[TFR Display]` | `IF [Year] <= 2023 THEN [Total fertility rate] ELSE { FIXED [Entity]: MAX(IF [Year] = 2023 THEN [Total fertility rate] END) } END` | TFR fallback cho KPI4 khi Year > 2023 |
+| 15 | `[TFR Label]` | `IF [Year] <= 2023 THEN STR(ROUND([TFR], 2)) + " con/phụ nữ" ELSE STR(ROUND([TFR Display], 2)) + " (2023*)" END` | Nhãn KPI4 có chú thích khi dùng data cũ |
+| 16 | `[LE Display]` | `IF [Year] <= 2023 THEN [Life expectancy] ELSE { FIXED [Entity]: MAX(IF [Year] = 2023 THEN [Life expectancy] END) } END` | Tuổi thọ fallback khi Year > 2023 |
+| 17 | `[Share of World Pop (%)]` | `SUM([Population]) / SUM({ FIXED [Year]: SUM(IF [Entity] = "World" THEN [Population] END) }) * 100` | **LOD**: Tỷ trọng dân số so với toàn cầu |
+| 18 | `[Ageing Diff from World (%)]` | `[Share of population aged 65+] - { FIXED [Year]: AVG(IF [Entity] = "World" THEN [Share of population aged 65+] END) }` | **LOD**: Độ lệch già hóa so với mức trung bình thế giới |
 
-### 3.2 Phân nhóm Châu lục (Continent Grouping)
+### 3.2 Các Biểu thức LOD Nâng cao (Level of Detail Expressions - FIXED)
+
+> **💡 Điểm nhấn kỹ thuật nâng cao**: Trong Tableau, LOD cho phép tính toán các chỉ số vĩ mô (toàn cầu, châu lục) độc lập với bộ lọc trên màn hình, giúp thẻ KPI và các phân tích tương quan không bị gãy dữ liệu:
+> 1. **LOD Fallback (`[TFR Display]`, `[LE Display]`)**: Dùng `{ FIXED [Entity]: MAX(...) }` để tự động lấy giá trị thực tế mới nhất (2023) khi người dùng kéo thanh trượt năm lên 2024–2050 (thay vì dùng Table Calculation `WINDOW_MAX` dễ bị lỗi `Null` trên thẻ KPI).
+> 2. **LOD Tỷ trọng Thế giới (`[Share of World Pop (%)]`)**: Tính tỷ lệ % dân số của một quốc gia trên tổng dân số toàn cầu tại năm được chọn.
+> 3. **LOD Độ lệch Già hóa (`[Ageing Diff from World (%)]`)**: Đánh giá một quốc gia đang già nhanh hơn hay chậm hơn mức trung bình toàn cầu bao nhiêu điểm phần trăm.
+
+### 3.3 Phân cấp Địa lý & Drill-down (Geographic Hierarchy)
+
+Tạo **Hierarchy** trong Tableau để hỗ trợ tính năng **Drill-down** tự nhiên:
+1. Nhấp chuột phải vào trường `[Continent]` $\rightarrow$ **Hierarchy** $\rightarrow$ **Create Hierarchy...** $\rightarrow$ Đặt tên: `Địa lý (Geographic)`.
+2. Kéo trường `[Entity]` và trường `[Code]` thả vào bên trong Hierarchy vừa tạo theo thứ tự phân cấp:
+   `[Continent]` (Châu lục) $\rightarrow$ `[Entity]` (Quốc gia/Vùng) $\rightarrow$ `[Code]` (Mã ISO-3).
+3. **Hiệu ứng Drill-down**: Khi kéo trường `[Continent]` vào bất kỳ biểu đồ nào, người dùng có thể bấm vào biểu tượng dấu cộng **`[+]`** trên tiêu đề để mở rộng từ 6 Châu lục xuống chi tiết 237 Quốc gia.
 
 Tạo **Group** trong Tableau bằng cách:
 1. Right-click cột `Entity` → Create → Group
@@ -76,28 +129,32 @@ END
 
 ---
 
-## 4. Thiết kế Dashboard – 4 Cụm Chuyên đề & 10 Loại Biểu đồ Khác biệt
+## 4. Kiến trúc Triển khai: 2-Tab Dashboard lồng trong Tableau Story (Phương án B)
 
-Để đáp ứng hoàn hảo tiêu chuẩn **tối thiểu 8 loại biểu đồ khác nhau** (đạt 10 loại) và phục vụ kịch bản Storytelling khoa học, toàn bộ Dashboard được tổ chức thành **4 Cụm Chuyên đề (4 Analytical Clusters)**:
+Để tối ưu hóa trải nghiệm thị giác (UI/UX), tránh quá tải thông tin mà vẫn đáp ứng hoàn hảo tiêu chí **đủ 10 loại biểu đồ khác biệt**, đồ án được triển khai theo **Phương án B: Chia thành 2 Dashboards chuyên đề (mỗi Dashboard đúng 5 biểu đồ + Thẻ KPI) và kết nối qua Tableau Story**:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  TIÊU ĐỀ: "BIẾN ĐỘNG DÂN SỐ TOÀN CẦU & XU HƯỚNG GIÀ HOÁ DÂN SỐ ĐẾN NĂM 2050"                    │
-│  [Bộ lọc Toàn cục: Thực thể / Quốc gia (World / Vietnam / ...)] [Thanh trượt Năm: 1950 – 2050] │
-├─────────────────────────────────────────────────────────────────────────────────────────────────┤
-│  THẺ KPI CHÍNH (4 Cards Đồng bộ theo Quốc gia & Năm):                                            │
-│  [1. Quy mô Dân số]      [2. Tốc độ Tăng trưởng (%)]   [3. Tỷ lệ Người già 65+ (%)]   [4. Mức sinh TFR]  │
-├────────────────────────────────────────────────┬────────────────────────────────────────────────┤
-│  CỤM 1: QUY MÔ & PHÂN BỐ KHÔNG GIAN            │  CỤM 2: TIẾN TRÌNH & ĐỔI NGÔI LỊCH SỬ          │
-│  - Chart 1: Filled Map (Bản đồ Địa lý Thế giới)│  - Chart 4: Area + Line Chart (Xu hướng 1950-50│
-│  - Chart 2: Treemap (Cây Tỷ trọng Dân số)      │  - Chart 5: Bump Chart (Hoán đổi Thứ hạng)     │
-│  - Chart 3: Horizontal Bar (Top 10 Dân số)     │                                                │
-├────────────────────────────────────────────────┼────────────────────────────────────────────────┤
-│  CỤM 3: NGUYÊN NHÂN & PHÂN HÓA TĂNG TRƯỞNG     │  CỤM 4: CƠ CẤU TUỔI & DỰ BÁO GIÀ HÓA 2050      │
-│  - Chart 6: Histogram (Phân phối Tăng trưởng)  │  - Chart 8: 100% Stacked Area (3 Khối Tuổi)    │
-│  - Chart 7: Scatter Plot (Mức sinh TFR vs Grow)│  - Chart 9: Heatmap (Ma trận Già hóa Thập kỷ)  │
-│                                                │  - Chart 10: Dual-Axis Line (So sánh ML vs UN) │
-└────────────────────────────────────────────────┴────────────────────────────────────────────────┘
+                                ┌────────────────────────────────────────────────────────┐
+                                │             TABLEAU STORY (BỘ TRUYỆN DỮ LIỆU)          │
+                                │  [Story 1: Quy mô & Tiến trình]  [Story 2: Già hóa & ML 2050]   │
+                                └───────────────────────────┬────────────────────────────┘
+                                                            │
+                 ┌──────────────────────────────────────────┴──────────────────────────────────────────┐
+                 ▼                                                                                     ▼
+┌─────────────────────────────────────────────────────────────────┐   ┌─────────────────────────────────────────────────────────────────┐
+│ DASHBOARD 1: QUY MÔ & CHUYỂN DỊCH NHÂN KHẨU HỌC LỊCH SỬ         │   │ DASHBOARD 2: NGUYÊN NHÂN, KHỦNG HOẢNG GIÀ HÓA & DỰ BÁO ML 2050  │
+│ [Bộ lọc Toàn cục: Entity (World) | Year (2026)]                 │   │ [Bộ lọc Toàn cục: Entity (World) | Year (2026)]                 │
+├─────────────────────────────────────────────────────────────────┤   ├─────────────────────────────────────────────────────────────────┤
+│ 4 Thẻ KPI: [Dân số]  [Tăng trưởng %]  [Tỷ lệ 65+]  [Mức sinh TFR]│   │ 4 Thẻ KPI: [Tỷ lệ 65+]  [Tuổi trung vị]  [Phụ thuộc già]  [TFR] │
+├────────────────────────────────┬────────────────────────────────┤   ├────────────────────────────────┬────────────────────────────────┤
+│ Chart 1: Filled Map (Bản đồ)   │ Chart 4: Area + Line (Xu hướng)│   │ Chart 6: Histogram (Phân phối) │ Chart 8: 100% Stacked Area     │
+│ (Tích hợp Viz in Tooltip)      │ (Phân tách Lịch sử vs Dự phóng)│   │ (65 nước âm vs 172 nước dương) │ (3 Khối tuổi: Trẻ, Lao động, 65│
+├────────────────────────────────┼────────────────────────────────┤   ├────────────────────────────────┼────────────────────────────────┤
+│ Chart 2: Animated Scatter Plot │ Chart 5: Bump Chart            │   │ Chart 7: 4-Quadrant Scatter    │ Chart 9: Heatmap Ma trận Già   │
+│ (Hans Rosling: Tuổi thọ vs TFR)│ (Đổi ngôi thứ hạng Top 7 nước) │   │ (TFR vs Tốc độ Tăng trưởng)    │ (Top 15 nước qua các thập kỷ)  │
+├────────────────────────────────┴────────────────────────────────┤   ├────────────────────────────────┴────────────────────────────────┤
+│ Chart 3: Horizontal Bar Chart (Top 10 Đông dân nhất)            │   │ Chart 10: Dual-Axis Line (So sánh Mô hình ML vs Chuẩn UN WPP)   │
+└─────────────────────────────────────────────────────────────────┘   └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -111,10 +168,27 @@ END
 * **Màu sắc**: Sequential Palette (Xanh nhạt $\rightarrow$ Xanh navy sẫm).
 * **Tính năng Drill-down**: Click vào bất kỳ quốc gia nào (ví dụ Việt Nam) $\rightarrow$ Tự động lọc tất cả biểu đồ còn lại trong Dashboard.
 
-#### Chart 2: Phân bổ Tỷ trọng Dân số (Treemap)
-* **Loại biểu đồ**: Treemap (Biểu đồ diện tích hình chữ nhật lồng ghép).
-* **Fields**: Dimension `[Entity]`, Size: `SUM([Population (Millions)])`, Color: `[Continent]`.
-* **Ý nghĩa**: Diện tích ô thể hiện trực quan đóng góp của quốc gia vào dân số thế giới (Ấn Độ & Trung Quốc chiếm >35%).
+#### Chart 2: Chuyển đổi Nhân khẩu học – Tuổi thọ vs Mức sinh (Animated Scatter Plot)
+* **Loại biểu đồ**: Animated Scatter Plot (Biểu đồ phân tán bong bóng có Animation theo thời gian – phong cách Hans Rosling / Gapminder).
+* **Tham khảo OWID**: [Life Expectancy vs Fertility Rate](https://ourworldindata.org/grapher/fertility-rate-vs-life-expectancy)
+* **Fields**:
+  - Trục X: `[Life expectancy]` (Tuổi thọ trung bình – Continuous).
+  - Trục Y: `[TFR]` (Tổng tỷ suất sinh – Continuous).
+  - Size: `SUM([Population (Millions)])` (Kích thước bong bóng theo quy mô dân số).
+  - Color: `[Continent]` (Phân nhóm theo châu lục).
+  - Pages: `[Year]` (Trục animation cho phép bấm Play chạy từ 1950 → 2023).
+  - Label: `[Entity]` (Chỉ hiện cho các mark đang được chọn).
+  - Tooltip: `[Entity]`, `[Year]`, `[Life expectancy]`, `[TFR]`, `[Population (Millions)]`.
+* **Reference Lines**:
+  - Vạch ngang tại $TFR = 2.1$ (Ngưỡng sinh thay thế – dưới ngưỡng này dân số sẽ thu hẹp về dài hạn).
+  - Vạch dọc tại $LE = 70$ tuổi (Ngưỡng tuổi thọ cao theo phân loại WHO).
+* **Filters**: `[Is Country]` = `True` (chỉ quốc gia, bỏ khu vực); `[Year]` range 1950–2023 (data `Life expectancy` và `TFR` chỉ có đến 2023).
+* **Ý nghĩa – Câu chuyện Chuyển đổi Nhân khẩu học (Demographic Transition)**:
+  - **Năm 1950**: Gần như tất cả các nước co cụm ở **góc trái-trên** (tuổi thọ thấp ~45, sinh nhiều ~5–7 con) → *"Sinh nhiều, chết sớm"*.
+  - **Chạy animation theo thập kỷ**: Các nước từ từ di chuyển sang **góc phải-dưới** (tuổi thọ tăng >70, mức sinh giảm <2.1) → *"Sinh ít, sống lâu"* = **Gốc rễ của Già hóa dân số**.
+  - **Năm 2023**: Châu Phi (vùng lớn nhất còn lại ở góc trái-trên), Đông Á dẫn đầu đường chuyển đổi (TFR <1.2, LE >80 tuổi), ASEAN (Việt Nam) ở vùng chuyển tiếp.
+  - Chart này giải đáp câu hỏi: *"Tại sao thế giới già đi?"* — Vì sự kết hợp đồng thời của tuổi thọ tăng + mức sinh giảm.
+* **Indicators được khai thác**: ✅ `Life expectancy` (chưa dùng ở chart nào khác) + ✅ `TFR` (góc nhìn mới so với Chart 7) + ✅ `Population` (Size) + ✅ `Continent` (Color). Tổng cộng khai thác **3 indicators** trong đó 1 indicator hoàn toàn mới (`Life expectancy`).
 
 #### Chart 3: Top 10 Quốc gia Đông dân nhất (Horizontal Bar Chart)
 * **Loại biểu đồ**: Horizontal Bar Chart (Thanh ngang xếp hạng).
@@ -206,7 +280,7 @@ END
 | STT | Tên Biểu đồ | Loại Biểu đồ trong Tableau | Cụm Chuyên đề | Giá trị Phân tích Cốt lõi |
 | :---: | :--- | :--- | :--- | :--- |
 | **1** | Bản đồ Dân số Thế giới | **Filled Map** (Choropleth) | Cụm 1: Quy mô & Phân bố | Mật độ phân bố địa lý toàn cầu |
-| **2** | Cây Tỷ trọng Dân số | **Treemap** (Rectangles) | Cụm 1: Quy mô & Phân bố | Đóng góp tỷ trọng của từng quốc gia |
+| **2** | Chuyển đổi Nhân khẩu học (LE vs TFR) | **Animated Scatter Plot** (Bubbles + Pages) | Cụm 1: Quy mô & Phân bố | Gốc rễ già hóa: Tuổi thọ tăng + Mức sinh giảm |
 | **3** | Top 10 Nước Đông dân | **Horizontal Bar Chart** | Cụm 1: Quy mô & Phân bố | Xếp hạng quy mô tuyệt đối |
 | **4** | Xu hướng Dân số 1950–50 | **Area + Line Chart** | Cụm 2: Tiến trình Lịch sử | Đỉnh tăng trưởng và bão hòa |
 | **5** | Đổi ngôi Thứ hạng Dân số | **Bump Chart** (Rank Line) | Cụm 2: Tiến trình Lịch sử | Ấn Độ vượt TQ, Nigeria vượt Mỹ |
@@ -218,33 +292,96 @@ END
 
 ## 5. Bộ lọc & Tương tác (Filters & Interactivity)
 
-### 5.1 Bộ lọc chính (Dashboard-level)
+### 5.1 Phân loại 3 Nhóm Phản ứng với Bộ lọc
 
-| # | Tên bộ lọc | Loại | Mặc định | Áp dụng cho |
+Do đặc thù dữ liệu (một số indicators chỉ có đến 2023, một số chart cần hiện nhiều quốc gia cùng lúc), 10 charts được chia thành **3 nhóm phản ứng khác nhau** với bộ lọc toàn cục:
+
+| Nhóm | Charts | Year filter | Entity filter | Lý do |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Năm (Year)** | Slider (range) | 1950 – 2050 | Tất cả worksheet |
-| 2 | **Châu lục (Continent)** | Multi-select dropdown | Tất cả | Tất cả worksheet (trừ Global Trend) |
-| 3 | **Trạng thái dữ liệu (DataStatus)** | Multi-select checkbox | Tất cả | Tất cả worksheet |
-| 4 | **Quốc gia (Entity)** | Search & select | Không chọn | Chart cụ thể |
-| 5 | **Loại thực thể (Is Country)** | Single select | "Country" | Tất cả worksheet |
+| **A – Đồng bộ 100%** | Chart 1 (Map), 4 (Trend), 8 (Stacked Area), 10 (ML vs UN), KPI 1-3 | ✅ Áp dụng | ✅ Áp dụng (Filter) | Data đầy đủ 1950–2100, hiện 1 entity |
+| **B – Chỉ Highlight** | Chart 2 (LE vs TFR), 6 (Histogram), 7 (TFR vs GR) | ❌ Không áp dụng | ✅ Áp dụng (Highlight, không Filter) | Cần hiện nhiều nước cùng lúc; TFR/LE chỉ đến 2023 |
+| **C – Độc lập** | Chart 3 (Top 10), 5 (Bump), 9 (Heatmap), KPI 4 (TFR) | ❌ Không áp dụng | ❌ Bộ lọc riêng | Danh sách nước cố định; Year ở mốc thập kỷ cố định |
 
-### 5.2 Tương tác nâng cao
+### 5.2 Bộ lọc chính (Dashboard-level)
 
-| Tính năng | Mô tả | Cách cài đặt |
-| :--- | :--- | :--- |
-| **Cross-filtering** | Click vào quốc gia trên Map → filter tất cả chart khác | Dashboard Action → Filter |
-| **Highlight** | Hover trên 1 quốc gia → highlight đường/điểm tương ứng trên chart khác | Dashboard Action → Highlight |
-| **Drill-down** | Click Châu lục trên Donut → hiển thị chi tiết quốc gia trong châu lục | Set Action hoặc Filter Action với detail sheet |
-| **Tooltip Action** | Hover trên Map → hiển thị mini line chart trong tooltip | Viz in Tooltip |
-| **Parameter** | Cho phép người dùng chọn năm mục tiêu (2026, 2030, 2040, 2050) | Parameter + Calculated Field |
-| **URL Action** | Click vào quốc gia → mở trang Our World in Data tương ứng | Dashboard Action → URL: `https://ourworldindata.org/grapher/population?country=<Code>` |
+| # | Tên bộ lọc | Loại | Mặc định | Apply to Worksheets |
+| :---: | :--- | :--- | :--- | :--- |
+| 1 | **Năm (Year)** | Slider (single year) | 2026 | **Nhóm A only**: `01-GeoMap`, `04-GlobalTrend`, `06-GrowthHistogram`, `08-AgeBrackets`, `10-ForecastML`, `KPI-01`, `KPI-02`, `KPI-03` |
+| 2 | **Quốc gia (Entity)** | Search & multi-select | World | **Nhóm A only**: `01-GeoMap`, `04-GlobalTrend`, `08-AgeBrackets`, `10-ForecastML`, `KPI-01` ~ `KPI-04` |
+| 3 | **Châu lục (Continent)** | Multi-select dropdown | Tất cả | Nhóm A + B (trừ Chart 4 Global Trend) |
+| 4 | **Loại thực thể (Is Country)** | Single select | "Country" | Tất cả worksheet |
 
-### 5.3 Viz in Tooltip (Biểu đồ mini trong Tooltip)
-Tạo worksheet phụ `[Tooltip - Population Trend Mini]`:
-- Line chart nhỏ (300×200 px)
-- X = Year (1950–2050), Y = Population (Millions)
-- Filter theo Entity từ worksheet chính
-- Nhúng vào tooltip bằng: `Insert` → `Sheets` → `[Tooltip - Population Trend Mini]`
+### 5.3 Dashboard Actions (Tương tác nâng cao)
+
+| # | Loại Action | Source | Target | Run on | Mô tả |
+| :---: | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Filter** | `01-GeoMap`, `03-TopPopulations` | **Nhóm A**: Chart 4, 8, 10, KPI 1-4 | Select | Click quốc gia trên Map/Bar → lọc toàn bộ Nhóm A |
+| 2 | **Highlight** | `01-GeoMap`, `03-TopPopulations` | **Nhóm B**: Chart 2, 6, 7 | Select | Click quốc gia → highlight sáng trên Scatter/Histogram, các nước khác mờ nhạt |
+| 3 | **URL** | `01-GeoMap` | External | Select | Mở `https://ourworldindata.org/grapher/population?country=<Code>` |
+| 4 | **Tooltip (Viz in Tooltip)** | `01-GeoMap` | `Tooltip-PopTrendMini` | Hover | Hiện mini line chart dân số trong tooltip |
+
+> **Tại sao Nhóm B dùng Highlight thay vì Filter?**
+> - Chart 2 (LE vs TFR Scatter) cần hiện **nhiều nước cùng lúc** để so sánh. Nếu filter chỉ còn 1 nước → chỉ thấy 1 bong bóng duy nhất → mất ý nghĩa.
+> - Chart 6 (Histogram) cần phân phối của **tất cả nước** → filter 1 nước = 1 bin duy nhất.
+> - Chart 7 (TFR vs Growth) tương tự Chart 2.
+> - **Highlight Action** giải quyết bằng cách: vẫn hiện tất cả, nhưng quốc gia được chọn sẽ **sáng rõ**, các nước khác **mờ 30%**.
+
+### 5.4 Xử lý KPI 4 (TFR) khi Year > 2023
+
+Do `Total fertility rate` chỉ có data đến 2023, khi Year filter chọn 2040/2050 thì KPI 4 sẽ trống. Giải pháp:
+
+```
+// Calculated Field: [TFR Display]
+IF [Year] <= 2023 THEN 
+    [Total fertility rate]
+ELSE 
+    { FIXED [Entity]: MAX(IF [Year] = 2023 THEN [Total fertility rate] END) }
+END
+
+// Calculated Field: [TFR Label]  
+IF [Year] <= 2023 THEN 
+    STR(ROUND([Total fertility rate], 2)) + " con/phụ nữ"
+ELSE
+    STR(ROUND([TFR Display], 2)) + " con/phụ nữ (2023*)"
+END
+```
+
+→ KPI 4 sẽ hiện giá trị TFR cuối cùng có data (năm 2023) kèm dấu `*` để người dùng biết đây là data lịch sử.
+
+### 5.5 Hướng dẫn Cài đặt Viz in Tooltip (Biểu đồ con nhúng trong Tooltip)
+
+Viz in Tooltip giúp nâng cấp trải nghiệm người dùng: Khi hover vào bất kỳ quốc gia nào trên **Bản đồ (`01-GeoMap`)** hoặc **Bong bóng (`02-DemographicTransition`)**, thay vì chỉ hiện con số khô khan, một **biểu đồ Sparkline thu nhỏ** sẽ hiện ra trực tiếp:
+
+1. **Tạo Worksheet con `Tooltip-CountryTrend`**:
+   - Columns: Kéo `[Year]` (Continuous, 1950 – 2050).
+   - Rows: Kéo `SUM([Population (Millions)])`.
+   - Thẻ Marks: Chọn **Area** (Tô màu xanh `#4ECDC4`, độ mờ Opacity = 60%).
+   - Định dạng: Ẩn Header trục X và trục Y để biểu đồ gọn gàng, kích thước thiết kế chuẩn 300 × 160 px.
+2. **Nhúng vào Sheet Bản đồ (`01-GeoMap`) và Scatter Plot (`02-DemographicTransition`)**:
+   - Mở Sheet `01-GeoMap` $\rightarrow$ Bấm nút **Tooltip** trên thẻ Marks Card.
+   - Bấm vào menu **Insert** ở góc trên bên phải hộp thoại Tooltip $\rightarrow$ Chọn **Sheets** $\rightarrow$ `Tooltip-CountryTrend`.
+   - Cú pháp Tableau tự sinh:
+     ```tableau
+     <Sheet name="Tooltip-CountryTrend" maxwidth="320" maxheight="160" filter="<All Fields>">
+     ```
+   - Định dạng văn bản Tooltip đi kèm:
+     ```text
+     Quốc gia: <Entity> (<Code>) | Năm: <Year>
+     Quy mô Dân số: <SUM(Population (Millions))> Triệu người
+     Xu hướng Dân số 1950 – 2050:
+     <Sheet name="Tooltip-CountryTrend" maxwidth="320" maxheight="160" filter="<All Fields>">
+     ```
+
+### 5.6 Hướng dẫn Cài đặt Drill-down Địa lý (Geographic Drill-down)
+
+Có 2 phương thức Drill-down chuyên nghiệp được triển khai:
+1. **Drill-down bằng Hierarchy (Thao tác trục [+] và [-])**:
+   - Sau khi tạo Hierarchy `Địa lý (Geographic)` gồm `[Continent] -> [Entity] -> [Code]` (xem mục 3.3).
+   - Kéo trường `[Continent]` vào Rows trên Chart 3 (Bar Chart) hoặc Chart 9 (Heatmap).
+   - Người xem chỉ cần bấm vào nút **`[+]`** trên nhãn trục để tự động bung từ cấp Châu lục xuống danh sách Quốc gia.
+2. **Drill-down tương tác qua Dashboard Action (Click-to-Drill)**:
+   - Trên Dashboard 1: Bấm chọn một quốc gia trên Bản đồ $\rightarrow$ Tự động lọc toàn bộ các biểu đồ Trend (Chart 4), Tháp tuổi (Chart 8) và Thẻ KPI theo đúng quốc gia đó.
+   - Bấm ra vùng trống ngoài bản đồ $\rightarrow$ Tự động hoàn lại góc nhìn Toàn cầu (`World`).
 
 ---
 
@@ -295,12 +432,12 @@ Tạo worksheet phụ `[Tooltip - Population Trend Mini]`:
 
 4 Thẻ KPI được thiết kế **hoàn toàn tương tác (Dynamic Interaction)**. Khi người dùng thay đổi bộ lọc `[Entity]` (mặc định là `World`, hoặc chọn `Vietnam`) và thanh trượt `[Year]` (ví dụ `2026` hoặc `2020`), toàn bộ 4 thẻ KPI sẽ tức thời tính toán lại theo đúng quốc gia và năm đã chọn:
 
-| # | Thẻ KPI | Công thức Calculated Field trên Tableau | Ví dụ: World (2026) | Ví dụ: Vietnam (2020) | Định dạng hiển thị (Format) |
+| # | Thẻ KPI | Công thức Calculated Field trên Tableau (file wide) | Ví dụ: World (2026) | Ví dụ: Vietnam (2020) | Định dạng hiển thị (Format) |
 | :---: | :--- | :--- | :---: | :---: | :--- |
-| **KPI 1** | 🌍 **Quy mô Dân số** | `SUM(IF [Indicator] = "Population" THEN [Value] END)` | **8.30 Tỷ** | **97.47 Triệu** | Number (Custom): Đơn vị Triệu / Tỷ |
-| **KPI 2** | 📈 **Tốc độ Tăng trưởng** | `AVG(IF [Indicator] = "Population growth rate" THEN [Value] END) / 100` | **+0.88%** | **+0.92%** | Percentage (2 chữ số thập phân) |
-| **KPI 3** | 👵 **Tỷ lệ Người già 65+** | `AVG(IF [Indicator] = "Share of population aged 65+" THEN [Value] END) / 100` | **10.32%**<br>*(Đang già hoá)* | **8.84%**<br>*(Đang già hoá)* | Percentage kèm subtitle phân loại `[Ageing Stage]` |
-| **KPI 4** | 👶 **Mức sinh (TFR)** | `AVG(IF [Indicator] = "Total fertility rate" THEN [Value] END)` | **2.14** | **1.94**<br>*(Dưới thay thế)* | Number (Decimal, 2 số) kèm `[Below Replacement]` |
+| **KPI 1** | 🌍 **Quy mô Dân số** | `SUM([Population])` | **8.30 Tỷ** | **97.47 Triệu** | Number (Custom): Đơn vị Triệu / Tỷ |
+| **KPI 2** | 📈 **Tốc độ Tăng trưởng** | `AVG([Population growth rate]) / 100` | **+0.88%** | **+0.92%** | Percentage (2 chữ số thập phân) |
+| **KPI 3** | 👵 **Tỷ lệ Người già 65+** | `AVG([Share of population aged 65+]) / 100` | **10.32%**<br>*(Đang già hoá)* | **8.84%**<br>*(Đang già hoá)* | Percentage kèm subtitle phân loại `[Ageing Stage]` |
+| **KPI 4** | 👶 **Mức sinh (TFR)** | `AVG([TFR Display])` | **2.14** | **1.94**<br>*(Dưới thay thế)* | Number (Decimal, 2 số) kèm nhãn `[TFR Label]` |
 
 **Thiết kế Thẻ KPI trên Tableau**:
 - Tạo 4 worksheet con độc lập: `KPI-01-Population`, `KPI-02-Growth`, `KPI-03-Share65`, `KPI-04-TFR`.
@@ -315,8 +452,8 @@ Tạo worksheet phụ `[Tooltip - Population Trend Mini]`:
 Tạo Tableau Story với 5 Story Points nối tiếp nhau theo tiến trình logic:
 
 ### Story Point 1: "Bức tranh Tổng quan & Quy mô Địa lý" (Cụm 1)
-- **Worksheets ghép**: KPI Cards + `01-GeoMap` + `02-Treemap` + `03-TopPopulations`.
-- **Thông điệp (Caption)**: *"Dân số thế giới đã vượt 8.3 tỷ người vào năm 2026, với hơn 55% dân số tập trung tại Top 10 quốc gia, dẫn đầu bởi Ấn Độ và Trung Quốc."*
+- **Worksheets ghép**: KPI Cards + `01-GeoMap` + `02-DemographicTransition` + `03-TopPopulations`.
+- **Thông điệp (Caption)**: *"Dân số thế giới đã vượt 8.3 tỷ người vào năm 2026, với hơn 55% tập trung tại Top 10 quốc gia. Quá trình Chuyển đổi Nhân khẩu học cho thấy toàn cầu đang dịch chuyển từ 'sinh nhiều, chết sớm' sang 'sinh ít, sống lâu' — gốc rễ của làn sóng già hóa."*
 
 ### Story Point 2: "Tiến trình Lịch sử & Đổi ngôi Quyền lực" (Cụm 2)
 - **Worksheets ghép**: `04-GlobalTrend` (Area + Line) + `05-RankBumpChart`.
@@ -339,14 +476,15 @@ Tạo Tableau Story với 5 Story Points nối tiếp nhau theo tiến trình lo
 ## 9. Hướng dẫn Triển khai Từng Bước trên Tableau (Step-by-Step Implementation Guide)
 
 ### Bước 1: Làm mới & Chuẩn hóa Nguồn Dữ liệu (Data Source Setup)
-1. Mở Tableau Desktop / Tableau Public và mở tệp [`TTDLTQ FINAL.twb`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT%20CU%E1%BB%90I%20K%E1%BB%B2%20-%20BASIC/TTDLTQ%20FINAL.twb).
-2. Vào thẻ **Data** trên menu $\rightarrow$ Bấm chuột phải vào `population_fact_long` $\rightarrow$ Chọn **Refresh** (hoặc bấm `F5`).
-   > **Lưu ý**: Dữ liệu hiện tại đã được loại bỏ hoàn toàn 2 cột tĩnh thừa (`Source` và `SourceUrl`), chỉ còn đúng 7 cột chuẩn: `Entity`, `Code`, `Year`, `Indicator`, `Value`, `Unit`, `DataStatus`. Kích thước tệp đã giảm xuống còn 23MB giúp Tableau tải và tính toán cực nhanh.
+1. Mở Tableau Desktop / Tableau Public và kết nối tệp [`data/processed/population_fact_wide.csv`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT%20CU%E1%BB%90I%20K%E1%BB%B2%20-%20BASIC/data/processed/population_fact_wide.csv).
+2. Vào thẻ **Data** trên menu $\rightarrow$ Bấm chuột phải vào `population_fact_wide` $\rightarrow$ Chọn **Refresh** (hoặc bấm `F5`).
+   > **Lưu ý**: Dữ liệu file Wide có 39,478 dòng và 14 cột được gom nhóm theo Entity - Year, bao gồm đầy đủ tất cả chỉ số (Population, TFR, Life expectancy, Median age, Age groups, 65+...). Giúp Tableau tải nhẹ (~3.9MB), tính toán cực nhanh và đồng bộ bộ lọc tự động 100%.
 3. Kiểm tra kiểu dữ liệu của các cột:
    - `Code`: Bấm vào biểu tượng kiểu dữ liệu $\rightarrow$ Chọn **Geographic Role** $\rightarrow$ **Country/Region**.
    - `Year`: Đảm bảo là **Number (Whole)** hoặc Date/Year.
-   - `Value`: **Number (Decimal)**.
-   - `Indicator`, `DataStatus`, `Unit`, `Entity`: **String**.
+   - `Population`, `Older people (65+ years)`, `Working-age adults (15-64 years)`, `Children (under-15s)`: **Number (Whole)**.
+   - `Population growth rate`, `Total fertility rate`, `Life expectancy`, `Median age`, `Share of population aged 65+`, `Old-age dependency ratio`: **Number (Decimal)**.
+   - `Entity`, `DataStatus`: **String**.
 4. Nạp thêm nguồn phụ `data/processed/population_forecast_2050.csv`:
    - Data $\rightarrow$ New Data Source $\rightarrow$ Text File $\rightarrow$ Chọn `population_forecast_2050.csv` (dùng riêng cho Chart 10).
 
@@ -357,45 +495,58 @@ Vào Data Pane $\rightarrow$ Bấm mũi tên cạnh Search $\rightarrow$ **Creat
 
 ```tableau
 // 1. [Population (Millions)]
-IF [Indicator] = "Population" THEN [Value] / 1000000 END
+[Population] / 1000000
 
 // 2. [Population (Billions)]
-IF [Indicator] = "Population" THEN [Value] / 1000000000 END
+[Population] / 1000000000
 
 // 3. [Growth Rate (%)]
-IF [Indicator] = "Population growth rate" THEN [Value] END
+[Population growth rate]
 
 // 4. [TFR]
-IF [Indicator] = "Total fertility rate" THEN [Value] END
+[Total fertility rate]
 
-// 5. [Median Age]
-IF [Indicator] = "Median age" THEN [Value] END
+// 5. [LE]
+[Life expectancy]
 
-// 6. [Share 65+ (%)]
-IF [Indicator] = "Share of population aged 65+" THEN [Value] END
+// 6. [Median Age]
+[Median age]
 
-// 7. [Old-age Dependency Ratio]
-IF [Indicator] = "Old-age dependency ratio" THEN [Value] END
+// 7. [Share 65+ (%)]
+[Share of population aged 65+]
 
-// 8. [Ageing Stage] - Phân cấp Già hoá chuẩn Liên Hợp Quốc
+// 8. [Old-age Dependency Ratio]
+[Old-age dependency ratio]
+
+// 9. [Ageing Stage] - Phân cấp Già hoá chuẩn Liên Hợp Quốc
 IF [Share 65+ (%)] >= 20 THEN "4. Siêu già (>=20%)"
 ELSEIF [Share 65+ (%)] >= 14 THEN "3. Xã hội già (14-20%)"
 ELSEIF [Share 65+ (%)] >= 7 THEN "2. Đang già hoá (7-14%)"
 ELSE "1. Dân số trẻ (<7%)"
 END
 
-// 9. [Below Replacement] - Phân loại Mức sinh
+// 10. [Below Replacement] - Phân loại Mức sinh
 IF [TFR] < 2.1 THEN "Dưới mức thay thế (<2.1)"
 ELSE "Trên mức thay thế (>=2.1)"
 END
 
-// 10. [Is Country] - Lọc bỏ các thực thể vùng/châu lục để tránh trùng lắp khi xếp hạng
+// 11. [Is Country] - Lọc bỏ các thực thể vùng/châu lục để tránh trùng lắp khi xếp hạng
 NOT ISNULL([Code]) AND [Code] != "OWID_WRL" AND [Code] != ""
 
-// 11. [Data Period] - Phân tách giai đoạn hiển thị
+// 12. [Data Period] - Phân tách giai đoạn hiển thị
 IF [DataStatus] = "estimate" THEN "1. Lịch sử (1950-2023)"
 ELSEIF [DataStatus] = "projected" THEN "2. Dự phóng UN (2024-2100)"
 ELSE "3. Dự báo ML (2027-2050)"
+END
+
+// 13. [TFR Display] - Fallback cho KPI4 khi Year > 2023
+IF [Year] <= 2023 THEN [Total fertility rate]
+ELSE { FIXED [Entity]: MAX(IF [Year] = 2023 THEN [Total fertility rate] END) }
+END
+
+// 14. [TFR Label] - Nhãn hiển thị cho KPI4 kèm chú thích nếu dùng dữ liệu cố định 2023
+IF [Year] <= 2023 THEN STR(ROUND([TFR], 2)) + " con/phụ nữ"
+ELSE STR(ROUND([TFR Display], 2)) + " con/phụ nữ (2023*)"
 END
 ```
 
@@ -408,15 +559,24 @@ END
    - Thẻ Marks: Chọn **Map**.
    - Kéo `[Code]` vào **Detail**.
    - Kéo `[Population (Millions)]` vào **Color** (chọn bảng màu Palette: *Blues* hoặc *Teal*).
-   - Thẻ Filters: Kéo `[Is Country]` $\rightarrow$ Chọn `True`; Kéo `[Indicator]` $\rightarrow$ Chọn `"Population"`.
+   - Thẻ Filters: Kéo `[Is Country]` $\rightarrow$ Chọn `True`.
    - Cài đặt Tooltip: Kéo `[Entity]`, `[Population (Millions)]`, `[Year]` vào Tooltip.
 
-2. **Sheet 2: `02-Treemap` (Cây Tỷ trọng Dân số)**:
-   - Thẻ Marks: Chọn **Square**.
-   - Kéo `[Entity]` vào **Detail** và **Label**.
-   - Kéo `[Population (Millions)]` vào **Size**.
-   - Kéo `[Continent]` (hoặc `[Entity]`) vào **Color**.
-   - Thẻ Filters: `[Is Country]` = `True`, `[Indicator]` = `"Population"`.
+2. **Sheet 2: `02-DemographicTransition` (Animated Scatter Plot – Tuổi thọ vs Mức sinh)**:
+   - Thẻ Marks: Chọn **Circle**.
+   - Columns: Kéo `[Life expectancy]` (hoặc `[LE]`) $\rightarrow$ Chọn Continuous.
+   - Rows: Kéo `[Total fertility rate]` (hoặc `[TFR]`) $\rightarrow$ Chọn Continuous.
+   - Kéo `SUM([Population (Millions)])` vào **Size** (chỉnh kích thước bong bóng phù hợp).
+   - Kéo `[Continent]` vào **Color** (hoặc tạo bảng màu tùy chỉnh cho 6 châu lục).
+   - Kéo `[Entity]` vào **Detail**.
+   - Kéo `[Entity]` vào **Label** $\rightarrow$ Click Label $\rightarrow$ Chọn **"Selected"** ở mục *Marks to Label* (chỉ hiện nhãn khi hover/click).
+   - **Animation (Pages Shelf)**: Kéo `[Year]` vào **Pages** shelf $\rightarrow$ Tableau tự tạo thanh điều khiển Play/Pause.
+     * Cài đặt: Bấm nút History trên thanh Pages $\rightarrow$ Tích chọn **Show trails** để thấy vết di chuyển của mỗi quốc gia qua thời gian.
+   - Thẻ Filters: `[Is Country]` = `True`; `[Year]` range 1950–2023.
+   - **Reference Lines** (Tab Analytics $\rightarrow$ Kéo Reference Line):
+     * Vạch ngang Y = `2.1` (Ngưỡng sinh thay thế) — nhãn: *"TFR = 2.1 (Mức thay thế)"*, nét đứt đỏ.
+     * Vạch dọc X = `70` (Ngưỡng tuổi thọ cao) — nhãn: *"LE = 70 (Tuổi thọ cao)"*, nét đứt xanh.
+   - **Tooltip**: Chỉnh nội dung Tooltip hiển thị `Entity`, `Year`, `Life Expectancy`, `TFR`, `Population`.
 
 3. **Sheet 3: `03-TopPopulations` (Horizontal Bar Chart - Top 10 Quốc gia)**:
    - Rows: Kéo `[Entity]`.
@@ -466,16 +626,19 @@ END
 
 #### 👵 CỤM 4: CƠ CẤU TUỔI & DỰ BÁO GIÀ HOÁ 2050
 8. **Sheet 8: `08-AgeBracketsTransition` (100% Stacked Area Chart - Chuyển dịch 3 Khối Tuổi)**:
-   - Thẻ Filters: Kéo `[Indicator]` $\rightarrow$ Chỉ chọn 3 chỉ số:
+   - Columns: Kéo `[Year]` (Continuous, 1950 – 2050).
+   - Rows: Kéo `Measure Values`.
+   - Thẻ Marks: Chọn **Area**.
+   - Thẻ Filters: Kéo `Measure Names` vào Filters $\rightarrow$ Chỉ chọn 3 trường:
      * `Children (under-15s)`
      * `Working-age adults (15-64 years)`
      * `Older people (65+ years)`
-   - Columns: Kéo `[Year]` (1950 – 2050).
-   - Rows: Kéo `SUM([Value])` $\rightarrow$ Nhấp chuột phải $\rightarrow$ **Quick Table Calculation** $\rightarrow$ **Percent of Total** $\rightarrow$ Compute Using **Table (Down)**.
-   - Thẻ Marks: Chọn **Area**. Kéo `[Indicator]` vào **Color**:
-     * Trẻ em: Xanh lá `#76C893`.
-     * Lao động: Xanh navy `#1E6091`.
-     * Người già 65+: Đỏ đậm `#D00000`.
+   - Kéo `Measure Names` vào **Color**:
+     * Trẻ em (`Children (under-15s)`): Xanh lá `#76C893`.
+     * Lao động (`Working-age adults (15-64 years)`): Xanh navy `#1E6091`.
+     * Người già 65+ (`Older people (65+ years)`): Đỏ đậm `#D00000`.
+   - Đổi sang tỷ lệ 100%: Nhấp chuột phải vào `Measure Values` trên Rows $\rightarrow$ **Quick Table Calculation** $\rightarrow$ **Percent of Total** $\rightarrow$ Compute Using **Table (Down)**.
+   - Thẻ Filters: Kéo `[Entity]` $\rightarrow$ Mặc định chọn `World`.
 
 9. **Sheet 9: `09-AgeingDecadeMatrix` (Heatmap / Highlight Table - Ma trận Già hóa)**:
    - Thẻ Filters: Lọc Top 15 quốc gia già hoá tiêu biểu (Nhật, Hàn, Ý, Đức, Việt Nam, Trung Quốc, Mỹ,...).
@@ -507,18 +670,33 @@ END
    - Kéo 1 Horizontal Container đặt 4 thẻ KPI (`KPI-01`, `KPI-02`, `KPI-03`, `KPI-04`) nằm ngang trên cùng.
 3. **Bố trí 4 Cụm Chuyên đề**:
    - Kéo các Horizontal / Vertical Container xếp thành 4 ô lưới trực quan tương ứng với 4 Cụm chuyên đề (như khung Wireframe mục 4).
-4. **Cài đặt Bộ lọc Toàn cục (Global Filters)**:
+4. **Cài đặt Bộ lọc Toàn cục (Global Filters) — Theo Chiến lược 3 Nhóm (Xem Mục 5.1)**:
    - Bấm vào Sheet Bản đồ $\rightarrow$ Bật bộ lọc `[Entity]` và `[Year]`.
-   - Nhấp vào mũi tên trên menu bộ lọc $\rightarrow$ **Apply to Worksheets** $\rightarrow$ Chọn **"Selected Worksheets..."** $\rightarrow$ Tích chọn **TẤT CẢ** các Sheet trong Dashboard (kể cả 4 Thẻ KPI).
+   - **Year filter** $\rightarrow$ **Apply to Worksheets** $\rightarrow$ **Selected Worksheets...** $\rightarrow$ Chỉ tích chọn **Nhóm A**:
+     * ✅ `01-GeoMap`, `04-GlobalTrend`, `06-GrowthHistogram`, `08-AgeBracketsTransition`, `10-ForecastComparisonMLvsUN`, `KPI-01`, `KPI-02`, `KPI-03`.
+     * ❌ **KHÔNG tích**: `02-DemographicTransition` (dùng Pages shelf riêng), `05-RankBumpChart` (mốc thập kỷ cố định), `07-FertilityGrowthQuadrant` (TFR chỉ đến 2023), `09-AgeingDecadeMatrix` (mốc thập kỷ cố định), `KPI-04-TFR` (dùng `[TFR Display]` có fallback riêng).
+   - **Entity filter** $\rightarrow$ **Apply to Worksheets** $\rightarrow$ **Selected Worksheets...** $\rightarrow$ Chỉ tích chọn **Nhóm A**:
+     * ✅ `01-GeoMap`, `04-GlobalTrend`, `08-AgeBracketsTransition`, `10-ForecastComparisonMLvsUN`, `KPI-01` ~ `KPI-04`.
+     * ❌ **KHÔNG tích**: `02-DemographicTransition`, `06-GrowthHistogram`, `07-FertilityGrowthQuadrant` (Nhóm B dùng Highlight), `03-TopPopulations`, `05-RankBumpChart`, `09-AgeingDecadeMatrix` (Nhóm C độc lập).
    - **Kết quả tương tác**:
-     * Mặc định chọn `World` $\rightarrow$ Thẻ KPI và biểu đồ thể hiện số liệu Toàn cầu 8.3 tỷ người năm 2026.
-     * Khi người dùng chọn `Vietnam` và kéo thanh trượt về `2020` $\rightarrow$ Toàn bộ 4 thẻ KPI và các biểu đồ tự động chuyển đổi thành 97.47 triệu dân, tăng trưởng 0.92%, mức sinh 1.94 con và tỷ lệ người già 8.84%!
-5. **Cài đặt Dashboard Filter Action (Click-to-Filter)**:
-   - Trên thanh menu: Dashboard $\rightarrow$ **Actions...** $\rightarrow$ **Add Action** $\rightarrow$ **Filter**.
-   - Source Sheets: Chọn `01-GeoMap`, `02-Treemap`, `03-TopPopulations`.
-   - Run action on: **Select**.
-   - Target Sheets: Tích chọn tất cả các Sheet còn lại trên Dashboard.
-   - Clearing the selection will: **Show all values** (hoặc chuyển về World).
+     * Mặc định chọn `World` năm `2026` $\rightarrow$ Nhóm A hiện số liệu toàn cầu 8.3 tỷ người. Nhóm B hiện tất cả nước với World được highlight.
+     * Khi chọn `Vietnam` năm `2020` $\rightarrow$ Nhóm A chuyển sang Vietnam (97.47M, GR 0.92%, Share65 8.84%). Nhóm B highlight Vietnam trên nền các nước khác mờ. Nhóm C giữ nguyên.
+5. **Cài đặt Dashboard Actions — Filter & Highlight (Xem Mục 5.3)**:
+   - **Action 1 — Filter Action (Click-to-Filter cho Nhóm A)**:
+     * Dashboard $\rightarrow$ Actions $\rightarrow$ Add Action $\rightarrow$ **Filter**.
+     * Source Sheets: `01-GeoMap`, `03-TopPopulations`.
+     * Target Sheets: **Nhóm A** — `04-GlobalTrend`, `08-AgeBracketsTransition`, `10-ForecastComparisonMLvsUN`, `KPI-01` ~ `KPI-04`.
+     * Run action on: **Select**.
+     * Clearing the selection will: **Show all values**.
+   - **Action 2 — Highlight Action (Click-to-Highlight cho Nhóm B)**:
+     * Dashboard $\rightarrow$ Actions $\rightarrow$ Add Action $\rightarrow$ **Highlight**.
+     * Source Sheets: `01-GeoMap`, `03-TopPopulations`.
+     * Target Sheets: **Nhóm B** — `02-DemographicTransition`, `06-GrowthHistogram`, `07-FertilityGrowthQuadrant`.
+     * Run action on: **Select**.
+     * Clearing the selection will: **Show all highlights**.
+   - **Action 3 — URL Action**:
+     * Source Sheets: `01-GeoMap`.
+     * URL: `https://ourworldindata.org/grapher/population?country=<Code>`.
 6. **Thêm Chú thích Nguồn Dữ liệu ở Chân trang (Footer Note)**:
    - Kéo một Text Box nhỏ ở góc dưới Dashboard (font 9pt, màu `#8B8B9E`):
      * *"Nguồn dữ liệu: Liên Hợp Quốc UN World Population Prospects (2024 Revision) via Our World in Data & World Population Review. Mô hình dự báo: Linear Regression & Logistic Regression (2027–2050)."*
@@ -556,4 +734,42 @@ END
 
 ---
 
-*Tài liệu này được tạo tự động bởi pipeline phân tích dân số. Phiên bản: 2026-09-22.*
+*Tài liệu này được tạo tự động bởi pipeline phân tích dân số. Phiên bản: 2026-09-26.*
+
+---
+
+## PHỤ LỤC: Tóm tắt Nhanh Cách Làm Dashboard trên Tableau
+
+### A. Quy trình Tổng quát (5 Bước)
+
+```text
+1. Nạp dữ liệu  →  2. Tạo Calculated Fields  →  3. Dựng 10 Sheet  →  4. Ghép Dashboard  →  5. Cấu hình Story
+     ↓                      ↓                         ↓                     ↓                     ↓
+  Refresh CSV          Copy-paste 11            Kéo thả theo          Global Filter        5 Story Points
+  + Set Code           công thức từ              hướng dẫn            + Click-to-Filter     + Caption
+  = Geographic          mục 3.1                 Bước 3 ở trên         + Highlight Action
+```
+
+### B. Checklist File Cần Nạp vào Tableau
+
+| # | File | Cách nạp | Ghi chú |
+| :---: | :--- | :--- | :--- |
+| 1 | `population_fact_wide.csv` | **⭐ Data Source chính duy nhất** (Text file) | Set `Code` = Geographic Role: Country/Region |
+| 2 | `continent_mapping.csv` | Left Join vào bảng 1 trên cột `Code` | Thêm chiều Continent |
+| 3 | `population_forecast_2050.csv` | Data Source riêng (cho Chart 10) | Chứa 2 Model: `un_wpp_medium` + `linear_regression` |
+| 4 | `model_vs_un_wpp_comparison_2050.csv` | *(Tuỳ chọn)* Blend hoặc Join cho Tooltip Chart 10 | Chứa sẵn cột `Share65_Diff`, `Population_Diff_Pct` |
+
+### C. Bảng Tham khảo Nhanh: Chart → Marks Type → Trục
+
+| Chart # | Marks Type | Rows | Columns | Color | Size | Detail | Pages (Animation) |
+| :---: | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+| 1 | Map | *(auto)* | *(auto)* | SUM(Population M) | – | Code | – |
+| 2 | Circle | Total fertility rate | Life expectancy | Continent | SUM(Population M) | Entity | Year |
+| 3 | Bar | Entity | SUM(Population M) | #2B5C8F | – | – | – |
+| 4 | Area | SUM(Population B) | Year | Data Period | – | – | – |
+| 5 | Line | RANK(Population) | Year | Entity | – | – | – |
+| 6 | Bar | COUNTD(Entity) | Growth Rate (bin) | – | – | – | – |
+| 7 | Circle | Growth Rate (%) | Total fertility rate | Below Replacement | SUM(Population M) | Entity | – |
+| 8 | Area | Measure Values (% Total) | Year | Measure Names | – | – | – |
+| 9 | Square | Entity | Year (discrete) | AVG(Share 65+) | – | – | – |
+| 10 | Line | AVG(Share_65plus) | Year | Model | – | – | – |
