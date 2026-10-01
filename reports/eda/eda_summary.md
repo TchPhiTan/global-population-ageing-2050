@@ -38,7 +38,7 @@
 
 ---
 
-## 3. Danh mục 8 Biểu đồ EDA Đã Tạo
+## 3. Danh mục 10 Biểu đồ EDA Đã Tạo
 1. [`01-global-population-trend.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/01-global-population-trend.png): Xu hướng Quy mô Dân số Toàn cầu (1950 – 2050).
 2. [`02-top-populations.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/02-top-populations.png): Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2023).
 3. [`03-growth-rate-distribution.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/03-growth-rate-distribution.png): Phân phối Tốc độ Tăng trưởng Quốc gia năm 2023.
@@ -47,3 +47,5 @@
 6. [`06-global-ageing-trend-2050.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/06-global-ageing-trend-2050.png): Chuyển dịch Cơ cấu 3 Khối Tuổi Toàn cầu (1950 – 2050).
 7. [`07-median-age-by-continent.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/07-median-age-by-continent.png): Xu hướng Tăng trưởng Tuổi Trung vị theo Khu vực.
 8. [`08-top-super-aged-societies-2050.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/08-top-super-aged-societies-2050.png): Top 10 Quốc gia có Tỷ lệ Dân số Già (65+) Cao nhất Thế giới năm 2050.
+9. [`09-births-vs-deaths-scissors.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/09-births-vs-deaths-scissors.png): Biểu đồ "Cái Kéo Dân Số" – Số ca Sinh vs Số ca Tử Toàn cầu (1950 – 2050).
+10. [`10-natural-growth-vs-median-age.png`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT CUỐI KỲ - BASIC/reports/eda/10-natural-growth-vs-median-age.png): Scatter Plot Tốc độ Tăng tự nhiên vs Tuổi Trung vị theo Quốc gia (2023).

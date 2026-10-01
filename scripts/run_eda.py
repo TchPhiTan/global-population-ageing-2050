@@ -239,6 +239,153 @@ def plot_top_aged_societies_2050(wide_rows: list[dict[str, str]]) -> None:
     save_figure("08-top-super-aged-societies-2050.png")
 
 
+# ----------------------------------------------------------------------
+# 9. SINH - TỬ: Biểu đồ "Cái Kéo Dân Số" Toàn cầu (1950 - 2050)
+#    Births vs Deaths – The Demographic Scissors
+# ----------------------------------------------------------------------
+def plot_births_vs_deaths(wide_rows: list[dict[str, str]]) -> None:
+    world_rows = [
+        r for r in wide_rows
+        if r["Entity"] == "World" and int(r["Year"]) <= 2050
+        and r.get("Births") and r.get("Deaths")
+    ]
+    world_rows.sort(key=lambda r: int(r["Year"]))
+
+    years = [int(r["Year"]) for r in world_rows]
+    births = [float(r["Births"]) / 1_000_000 for r in world_rows]
+    deaths = [float(r["Deaths"]) / 1_000_000 for r in world_rows]
+
+    # Identify the split between estimate and projected
+    split_idx = next((i for i, r in enumerate(world_rows) if r.get("DataStatus") == "projected"), len(world_rows))
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Births line (solid = history, dashed = projection)
+    ax.plot(years[:split_idx], births[:split_idx], color="#2196F3", linewidth=2.5, label="Số ca Sinh (Thực tế)")
+    ax.plot(years[split_idx - 1:], births[split_idx - 1:], color="#2196F3", linewidth=2.5,
+            linestyle="--", label="Số ca Sinh (Dự phóng)")
+
+    # Deaths line (solid = history, dashed = projection)
+    ax.plot(years[:split_idx], deaths[:split_idx], color="#E53935", linewidth=2.5, label="Số ca Tử (Thực tế)")
+    ax.plot(years[split_idx - 1:], deaths[split_idx - 1:], color="#E53935", linewidth=2.5,
+            linestyle="--", label="Số ca Tử (Dự phóng)")
+
+    # Fill the gap between births and deaths
+    ax.fill_between(years, births, deaths,
+                    where=[b > d for b, d in zip(births, deaths)],
+                    alpha=0.15, color="#2196F3", label="Tăng trưởng tự nhiên")
+    ax.fill_between(years, births, deaths,
+                    where=[b <= d for b, d in zip(births, deaths)],
+                    alpha=0.15, color="#E53935", label="Suy giảm tự nhiên")
+
+    # Reference lines
+    ax.axvline(x=2023, color="gray", linestyle=":", linewidth=1.5, alpha=0.8)
+    ax.text(2023.5, max(births) * 0.97, "2023", color="gray", fontsize=9)
+
+    # Find crossover year (if any in projection)
+    crossover_years = [years[i] for i in range(1, len(years)) if births[i - 1] > deaths[i - 1] and births[i] <= deaths[i]]
+    if crossover_years:
+        ax.axvline(x=crossover_years[0], color="darkred", linestyle="-.", linewidth=1.8, alpha=0.9)
+        ax.text(crossover_years[0] + 0.5, max(births) * 0.9,
+                f"Giao điểm\n{crossover_years[0]}", color="darkred", fontsize=9, fontweight="bold")
+
+    ax.set_title("Biểu đồ \"Cái Kéo Dân Số\" Toàn cầu: Sinh vs Tử (1950 - 2050)\n"
+                 "The Demographic Scissors — Khi tỷ suất tử cắt qua tỷ suất sinh",
+                 fontsize=12, fontweight="bold")
+    ax.set_xlabel("Năm")
+    ax.set_ylabel("Số người (triệu)")
+    ax.legend(frameon=True, fontsize=9)
+    save_figure("09-births-vs-deaths-scissors.png")
+
+
+# ----------------------------------------------------------------------
+# 10. SINH - TỬ: Tốc độ Tăng tự nhiên vs Tuổi Trung vị (2023)
+#     Natural Population Growth Rate vs Median Age – Scatter
+# ----------------------------------------------------------------------
+def plot_natural_growth_vs_median_age(wide_rows: list[dict[str, str]]) -> None:
+    pairs = [
+        {
+            "entity": r["Entity"],
+            "nat_growth": float(r["Natural population growth rate"]),
+            "median_age": float(r["Median age"]),
+            "population": float(r["Population"]),
+            "continent": r.get("Continent", "Others"),
+        }
+        for r in wide_rows
+        if int(r["Year"]) == 2023
+        and is_country(r.get("Code"))
+        and r.get("Natural population growth rate")
+        and r.get("Median age")
+        and r.get("Population")
+    ]
+
+    continent_colors = {
+        "Asia": "#2196F3",
+        "Europe": "#9C27B0",
+        "Africa": "#FF9800",
+        "North America": "#4CAF50",
+        "South America": "#00BCD4",
+        "Oceania": "#795548",
+        "Others": "#9E9E9E",
+    }
+
+    fig, ax = plt.subplots(figsize=(11, 7))
+
+    # Plot each continent separately for legend
+    for continent, color in continent_colors.items():
+        subset = [p for p in pairs if p["continent"] == continent]
+        if not subset:
+            continue
+        sizes = [max(20, p["population"] / 4_000_000) for p in subset]
+        ax.scatter(
+            [p["median_age"] for p in subset],
+            [p["nat_growth"] for p in subset],
+            s=sizes, alpha=0.65, color=color, label=continent, edgecolors="white", linewidths=0.5
+        )
+
+    # Reference lines
+    ax.axhline(y=0, color="red", linestyle="--", linewidth=1.5, alpha=0.8, label="Tăng trưởng tự nhiên = 0%")
+    ax.axvline(x=40, color="orange", linestyle=":", linewidth=1.5, alpha=0.8, label="Tuổi trung vị = 40")
+
+    # Annotate key countries
+    key_countries = {
+        "Vietnam": "Việt Nam", "South Korea": "Hàn Quốc",
+        "Japan": "Nhật Bản", "China": "Trung Quốc",
+        "Germany": "Đức", "Nigeria": "Nigeria",
+        "India": "Ấn Độ", "United States": "Mỹ"
+    }
+    for p in pairs:
+        if p["entity"] in key_countries:
+            ax.annotate(
+                key_countries[p["entity"]],
+                xy=(p["median_age"], p["nat_growth"]),
+                xytext=(5, 5), textcoords="offset points",
+                fontsize=8, color="#212121",
+                arrowprops=dict(arrowstyle="-", color="gray", lw=0.8)
+            )
+
+    # Quadrant labels
+    ax.text(18, max(p["nat_growth"] for p in pairs) * 0.85,
+            "Trẻ & Tăng trưởng nhanh\n(Châu Phi)",
+            fontsize=8, color="gray", alpha=0.7, ha="left")
+    ax.text(44, max(p["nat_growth"] for p in pairs) * 0.85,
+            "Già & Vẫn tăng\n(Ngưỡng nguy hiểm)",
+            fontsize=8, color="#E53935", alpha=0.7, ha="left")
+    ax.text(44, -1.2,
+            "Già & Suy giảm\n(Châu Âu, Đông Á)",
+            fontsize=8, color="#9C27B0", alpha=0.7, ha="left")
+
+    ax.set_title(
+        "Tốc độ Tăng tự nhiên vs Tuổi Trung vị theo Quốc gia (2023)\n"
+        "Khi tuổi trung vị vượt 40: Tăng trưởng tự nhiên tiến về 0 hoặc âm",
+        fontsize=12, fontweight="bold"
+    )
+    ax.set_xlabel("Tuổi trung vị - Median Age (năm)")
+    ax.set_ylabel("Tốc độ tăng trưởng tự nhiên (%, Sinh - Tử)")
+    ax.legend(frameon=True, fontsize=8, ncol=2, loc="lower left")
+    save_figure("10-natural-growth-vs-median-age.png")
+
+
 def write_summary(
     wide_rows: list[dict[str, str]],
     top_2023: list[tuple[str, float]],
@@ -303,7 +450,7 @@ def write_summary(
 
 ---
 
-## 3. Danh mục 8 Biểu đồ EDA Đã Tạo
+## 3. Danh mục 10 Biểu đồ EDA Đã Tạo
 1. [`01-global-population-trend.png`](file://{OUTPUT}/01-global-population-trend.png): Xu hướng Quy mô Dân số Toàn cầu (1950 – 2050).
 2. [`02-top-populations.png`](file://{OUTPUT}/02-top-populations.png): Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2023).
 3. [`03-growth-rate-distribution.png`](file://{OUTPUT}/03-growth-rate-distribution.png): Phân phối Tốc độ Tăng trưởng Quốc gia năm 2023.
@@ -312,6 +459,8 @@ def write_summary(
 6. [`06-global-ageing-trend-2050.png`](file://{OUTPUT}/06-global-ageing-trend-2050.png): Chuyển dịch Cơ cấu 3 Khối Tuổi Toàn cầu (1950 – 2050).
 7. [`07-median-age-by-continent.png`](file://{OUTPUT}/07-median-age-by-continent.png): Xu hướng Tăng trưởng Tuổi Trung vị theo Khu vực.
 8. [`08-top-super-aged-societies-2050.png`](file://{OUTPUT}/08-top-super-aged-societies-2050.png): Top 10 Quốc gia có Tỷ lệ Dân số Già (65+) Cao nhất Thế giới năm 2050.
+9. [`09-births-vs-deaths-scissors.png`](file://{OUTPUT}/09-births-vs-deaths-scissors.png): Biểu đồ "Cái Kéo Dân Số" – Số ca Sinh vs Số ca Tử Toàn cầu (1950 – 2050).
+10. [`10-natural-growth-vs-median-age.png`](file://{OUTPUT}/10-natural-growth-vs-median-age.png): Scatter Plot Tốc độ Tăng tự nhiên vs Tuổi Trung vị theo Quốc gia (2023).
 """
     (OUTPUT / "eda_summary.md").write_text(summary_md, encoding="utf-8")
 
@@ -320,19 +469,24 @@ def main() -> None:
     sns.set_theme(style="whitegrid")
     wide_rows = load_wide_rows()
 
+    # === Trụ cột 1: Biến động Quy mô & Tăng trưởng Dân số ===
     plot_global_population_trend(wide_rows)
     top_2023 = plot_top_populations(wide_rows)
     growth_info = plot_growth_distribution(wide_rows)
     plot_fertility_growth(wide_rows)
     plot_population_heatmap(wide_rows)
-    
-    # Ageing specific EDA
+
+    # === Trụ cột 2: Cơ cấu Tuổi & Già hóa ===
     plot_global_age_structure_trend(wide_rows)
     plot_median_age_by_region(wide_rows)
     plot_top_aged_societies_2050(wide_rows)
 
+    # === Trụ cột 3: Động lực Sinh - Tử (mới bổ sung) ===
+    plot_births_vs_deaths(wide_rows)
+    plot_natural_growth_vs_median_age(wide_rows)
+
     write_summary(wide_rows, top_2023, growth_info)
-    print("EDA hoàn tất: 8 biểu đồ chuẩn hóa và báo cáo tổng hợp eda_summary.md đã được xuất thành công!")
+    print("EDA hoàn tất: 10 biểu đồ chuẩn hóa và báo cáo tổng hợp eda_summary.md đã được xuất thành công!")
 
 
 if __name__ == "__main__":
