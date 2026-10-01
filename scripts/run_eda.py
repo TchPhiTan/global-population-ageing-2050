@@ -53,7 +53,7 @@ def plot_global_population_trend(wide_rows: list[dict[str, str]]) -> None:
 
     plt.plot(years[:split_idx], pops[:split_idx], color="#174a5b", linewidth=2.5, label="Thực tế (1950 - 2023)")
     plt.plot(years[split_idx - 1:], pops[split_idx - 1:], color="#d97941", linewidth=2.5, linestyle="--", label="Dự phóng UN Medium (2024 - 2050)")
-    plt.axvline(x=2026, color="red", linestyle=":", alpha=0.7, label="Mốc hiện tại (2026: ~8.3 tỷ)")
+    plt.axvline(x=2023, color="red", linestyle=":", alpha=0.7, label="Mốc hiện tại (2023: ~8.09 tỷ)")
 
     plt.title("Xu hướng Quy mô Dân số Toàn cầu (1950 - 2050)", fontsize=13, fontweight="bold")
     plt.xlabel("Năm")
@@ -63,20 +63,20 @@ def plot_global_population_trend(wide_rows: list[dict[str, str]]) -> None:
 
 
 # ----------------------------------------------------------------------
-# 2. Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2026)
+# 2. Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2023)
 # ----------------------------------------------------------------------
 def plot_top_populations(wide_rows: list[dict[str, str]]) -> list[tuple[str, float]]:
-    c_2026 = [
+    c_2023 = [
         r for r in wide_rows
-        if int(r["Year"]) == 2026 and is_country(r.get("Code")) and r.get("Population")
+        if int(r["Year"]) == 2023 and is_country(r.get("Code")) and r.get("Population")
     ]
-    c_2026.sort(key=lambda r: float(r["Population"]), reverse=True)
-    top10 = [(r["Entity"], float(r["Population"])) for r in c_2026[:10]]
+    c_2023.sort(key=lambda r: float(r["Population"]), reverse=True)
+    top10 = [(r["Entity"], float(r["Population"])) for r in c_2023[:10]]
     top10.reverse()
 
     plt.figure(figsize=(10, 6))
     bars = plt.barh([item[0] for item in top10], [item[1] / 1_000_000 for item in top10], color="#2b5c8f")
-    plt.title("Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2026)", fontsize=13, fontweight="bold")
+    plt.title("Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2023)", fontsize=13, fontweight="bold")
     plt.xlabel("Dân số (triệu người)")
     for bar in bars:
         w = bar.get_width()
@@ -87,45 +87,37 @@ def plot_top_populations(wide_rows: list[dict[str, str]]) -> list[tuple[str, flo
 
 
 # ----------------------------------------------------------------------
-# 3. Phân phối Tốc độ Tăng trưởng Dân số năm 2026
+# 3. Phân phối Tốc độ Tăng trưởng Dân số năm 2023
 # ----------------------------------------------------------------------
 def plot_growth_distribution(wide_rows: list[dict[str, str]]) -> tuple[int, float, float, int, int]:
-    growth_2026 = [
+    growth_2023 = [
         float(r["Population growth rate"])
         for r in wide_rows
-        if int(r["Year"]) == 2026 and is_country(r.get("Code")) and r.get("Population growth rate")
+        if int(r["Year"]) == 2023 and is_country(r.get("Code")) and r.get("Population growth rate")
     ]
-    neg_count = sum(1 for g in growth_2026 if g < 0)
-    pos_count = len(growth_2026) - neg_count
+    neg_count = sum(1 for g in growth_2023 if g < 0)
+    pos_count = len(growth_2023) - neg_count
 
     plt.figure(figsize=(10, 5))
-    sns.histplot(growth_2026, bins=30, kde=True, color="#3e8e7e")
+    sns.histplot(growth_2023, bins=30, kde=True, color="#3e8e7e")
     plt.axvline(x=0, color="red", linestyle="--", linewidth=1.5, label=f"Ngưỡng 0% (Âm: {neg_count} nước, Dương: {pos_count} nước)")
-    plt.title("Phân phối Tốc độ Tăng trưởng Dân số Quốc gia năm 2026", fontsize=13, fontweight="bold")
+    plt.title("Phân phối Tốc độ Tăng trưởng Dân số Quốc gia năm 2023", fontsize=13, fontweight="bold")
     plt.xlabel("Tốc độ tăng trưởng (%/năm)")
     plt.ylabel("Số lượng quốc gia")
     plt.legend()
     save_figure("03-growth-rate-distribution.png")
-    return 2026, min(growth_2026), max(growth_2026), neg_count, pos_count
+    return 2023, min(growth_2023), max(growth_2023), neg_count, pos_count
 
 
 # ----------------------------------------------------------------------
-# 4. Tương quan Mức sinh và Tốc độ Tăng trưởng (2026)
+# 4. Tương quan Mức sinh và Tốc độ Tăng trưởng (2023)
 # ----------------------------------------------------------------------
 def plot_fertility_growth(wide_rows: list[dict[str, str]]) -> None:
     pairs = [
         (float(r["Total fertility rate"]), float(r["Population growth rate"]))
         for r in wide_rows
-        if int(r["Year"]) == 2026 and is_country(r.get("Code")) and r.get("Total fertility rate") and r.get("Population growth rate")
+        if int(r["Year"]) == 2023 and is_country(r.get("Code")) and r.get("Total fertility rate") and r.get("Population growth rate")
     ]
-    # Fallback to 2023 fertility vs 2026 growth if TFR projected is missing
-    if not pairs:
-        tfr_map = {r["Entity"]: float(r["Total fertility rate"]) for r in wide_rows if int(r["Year"]) == 2023 and r.get("Total fertility rate")}
-        for r in wide_rows:
-            if int(r["Year"]) == 2026 and is_country(r.get("Code")) and r.get("Population growth rate"):
-                ent = r["Entity"]
-                if ent in tfr_map:
-                    pairs.append((tfr_map[ent], float(r["Population growth rate"])))
 
     plt.figure(figsize=(9, 6))
     x = [p[0] for p in pairs]
@@ -133,7 +125,7 @@ def plot_fertility_growth(wide_rows: list[dict[str, str]]) -> None:
     sns.scatterplot(x=x, y=y, alpha=0.7, color="#795290", s=60)
     plt.axvline(x=2.1, color="orange", linestyle="--", label="Mức sinh thay thế (TFR = 2.1)")
     plt.axhline(y=0, color="red", linestyle=":", label="Tăng trưởng 0%")
-    plt.title("Tương quan giữa Mức sinh (TFR) và Tốc độ Tăng trưởng Dân số", fontsize=12, fontweight="bold")
+    plt.title("Tương quan giữa Mức sinh (TFR) và Tốc độ Tăng trưởng Dân số (2023)", fontsize=12, fontweight="bold")
     plt.xlabel("Mức sinh (Số con trung bình / phụ nữ)")
     plt.ylabel("Tốc độ tăng trưởng dân số (%)")
     plt.legend()
@@ -146,18 +138,19 @@ def plot_fertility_growth(wide_rows: list[dict[str, str]]) -> None:
 def plot_population_heatmap(wide_rows: list[dict[str, str]]) -> None:
     top15_entities = [
         r["Entity"] for r in sorted(
-            [r for r in wide_rows if int(r["Year"]) == 2026 and is_country(r.get("Code")) and r.get("Population")],
+            [r for r in wide_rows if int(r["Year"]) == 2023 and is_country(r.get("Code")) and r.get("Population")],
             key=lambda r: float(r["Population"]),
             reverse=True
         )[:15]
     ]
-    years = [1970, 1990, 2010, 2026, 2040, 2050]
+    years = [1970, 1990, 2010, 2023, 2040, 2050]
     matrix: dict[str, dict[int, float]] = defaultdict(dict)
     for r in wide_rows:
         if r["Entity"] in top15_entities and int(r["Year"]) in years and r.get("Population"):
             matrix[r["Entity"]][int(r["Year"])] = float(r["Population"]) / 1_000_000
 
     values = [[matrix[ent].get(yr, 0) for yr in years] for ent in top15_entities]
+
     plt.figure(figsize=(10, 8))
     sns.heatmap(values, xticklabels=years, yticklabels=top15_entities, cmap="YlGnBu", annot=True, fmt=".0f")
     plt.title("Quy mô Dân số Top 15 Quốc gia qua các Mốc Thập kỷ (Triệu người)", fontsize=12, fontweight="bold")
@@ -188,7 +181,7 @@ def plot_global_age_structure_trend(wide_rows: list[dict[str, str]]) -> None:
         colors=["#76c893", "#1e6091", "#d00000"],
         alpha=0.85
     )
-    plt.axvline(x=2026, color="black", linestyle="--", linewidth=1.5, label="Hiện tại (2026)")
+    plt.axvline(x=2023, color="black", linestyle="--", linewidth=1.5, label="Hiện tại (2023)")
     plt.title("Sự Chuyển dịch Cơ cấu 3 Nhóm Tuổi Toàn cầu (1950 - 2050)", fontsize=13, fontweight="bold")
     plt.xlabel("Năm")
     plt.ylabel("Quy mô dân số (tỷ người)")
@@ -213,7 +206,7 @@ def plot_median_age_by_region(wide_rows: list[dict[str, str]]) -> None:
             meds = [float(r["Median age"]) for r in rows]
             plt.plot(yrs, meds, label=lbl, color=col, linewidth=2.2 if region == "World" else 1.8, linestyle="-" if region != "World" else "--")
 
-    plt.axvline(x=2026, color="gray", linestyle=":", alpha=0.8)
+    plt.axvline(x=2023, color="gray", linestyle=":", alpha=0.8)
     plt.title("Xu hướng Tăng trưởng Tuổi Trung vị (Median Age) theo Khu vực (1950 - 2050)", fontsize=13, fontweight="bold")
     plt.xlabel("Năm")
     plt.ylabel("Tuổi trung vị (năm)")
@@ -248,57 +241,62 @@ def plot_top_aged_societies_2050(wide_rows: list[dict[str, str]]) -> None:
 
 def write_summary(
     wide_rows: list[dict[str, str]],
-    top_2026: list[tuple[str, float]],
+    top_2023: list[tuple[str, float]],
     growth_info: tuple[int, float, float, int, int],
 ) -> None:
     # Key numbers for summary
-    world_2026 = next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 2026), {})
+    world_2023 = next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 2023), {})
     world_2050 = next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 2050), {})
     
-    pop_2026 = float(world_2026.get("Population", 8.3e9))
-    pop_2050 = float(world_2050.get("Population", 9.7e9))
+    pop_2023 = float(world_2023.get("Population", 8.09e9))
+    pop_2050 = float(world_2050.get("Population", 9.66e9))
     
-    share65_1950 = float(next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 1950), {}).get("Share of population aged 65+", 5.0))
-    share65_2026 = float(world_2026.get("Share of population aged 65+", 10.3))
-    share65_2050 = float(world_2050.get("Share of population aged 65+", 16.4))
+    share65_1950 = float(next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 1950), {}).get("Share of population aged 65+", 5.07))
+    share65_2023 = float(world_2023.get("Share of population aged 65+", 9.99))
+    share65_2050 = float(world_2050.get("Share of population aged 65+", 16.31))
 
-    dep_1950 = float(next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 1950), {}).get("Old-age dependency ratio", 8.0))
-    dep_2026 = float(world_2026.get("Old-age dependency ratio", 16.0))
-    dep_2050 = float(world_2050.get("Old-age dependency ratio", 26.0))
+    dep_1950 = float(next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 1950), {}).get("Old-age dependency ratio", 8.43))
+    dep_2023 = float(world_2023.get("Old-age dependency ratio", 15.37))
+    dep_2050 = float(world_2050.get("Old-age dependency ratio", 25.76))
 
-    med_1950 = float(next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 1950), {}).get("Median age", 23.5))
-    med_2026 = float(world_2026.get("Median age", 31.2))
-    med_2050 = float(world_2050.get("Median age", 36.2))
+    med_1950 = float(next((r for r in wide_rows if r["Entity"] == "World" and int(r["Year"]) == 1950), {}).get("Median age", 22.16))
+    med_2023 = float(world_2023.get("Median age", 30.36))
+    med_2050 = float(world_2050.get("Median age", 36.07))
 
     summary_md = f"""# Báo cáo Phân tích Khám phá Dữ liệu (EDA): Biến động Dân số & Xu hướng Già hoá Toàn cầu đến năm 2050
 
 ## 1. Trụ cột 1: Biến động Quy mô & Tăng trưởng Dân số Toàn cầu (1950 – 2050)
-* **Quy mô dân số mốc hiện tại (2026)**: Đạt xấp xỉ **{pop_2026:,.0f} người (~{pop_2026/1e9:.2f} tỷ người)**.
+* **Quy mô dân số mốc hiện tại (2023)**: Đạt xấp xỉ **{pop_2023:,.0f} người (~{pop_2023/1e9:.2f} tỷ người)**.
 * **Dự báo dân số đến năm 2050 (UN WPP Medium Scenario)**: Đạt xấp xỉ **{pop_2050:,.0f} người (~{pop_2050/1e9:.2f} tỷ người)**.
 * **Đỉnh tăng trưởng**: Tốc độ tăng trưởng hàng năm đạt đỉnh vào thập niên 1960 (~2.1%/năm) và liên tục giảm dần, dự kiến chỉ còn dưới 0.4%/năm vào năm 2050.
-* **Phân hóa tăng trưởng năm 2026**:
+* **Phân hóa tăng trưởng năm 2023**:
   - Đã có **{growth_info[3]} quốc gia/vùng lãnh thổ** ghi nhận mức tăng trưởng âm (suy giảm dân số), chủ yếu tập trung tại Đông Á (Hàn Quốc, Nhật Bản, Trung Quốc) và Đông/Nam Âu.
   - Còn **{growth_info[4]} quốc gia/vùng lãnh thổ** duy trì tăng trưởng dương, dẫn đầu bởi các nước Châu Phi cận Sahara.
-* **Top 10 quốc gia đông dân nhất 2026**: 
-  1. Ấn Độ ({top_2026[0][1]/1e6:,.1f}M) - chính thức vượt Trung Quốc
-  2. Trung Quốc ({top_2026[1][1]/1e6:,.1f}M)
-  3. Hoa Kỳ ({top_2026[2][1]/1e6:,.1f}M)
-  4. Indonesia ({top_2026[3][1]/1e6:,.1f}M)
-  5. Pakistan ({top_2026[4][1]/1e6:,.1f}M)
+* **Top 10 quốc gia đông dân nhất 2023**: 
+  1. Ấn Độ ({top_2023[0][1]/1e6:,.1f}M) - chính thức vượt Trung Quốc
+  2. Trung Quốc ({top_2023[1][1]/1e6:,.1f}M)
+  3. Hoa Kỳ ({top_2023[2][1]/1e6:,.1f}M)
+  4. Indonesia ({top_2023[3][1]/1e6:,.1f}M)
+  5. Pakistan ({top_2023[4][1]/1e6:,.1f}M)
+  6. Nigeria ({top_2023[5][1]/1e6:,.1f}M)
+  7. Brazil ({top_2023[6][1]/1e6:,.1f}M)
+  8. Bangladesh ({top_2023[7][1]/1e6:,.1f}M)
+  9. Nga ({top_2023[8][1]/1e6:,.1f}M)
+  10. Mexico ({top_2023[9][1]/1e6:,.1f}M)
 
 ---
 
 ## 2. Trụ cột 2: Xu hướng Già hoá Dân số Toàn diện đến Năm 2050
 * **Tỷ lệ người cao tuổi (65+ tuổi) tăng gấp 3 lần**:
   - Năm 1950: Chỉ chiếm **{share65_1950:.1f}%** dân số toàn cầu.
-  - Năm 2026: Đã tăng lên **{share65_2026:.1f}%** (vượt ngưỡng xã hội già hóa 7%).
+  - Năm 2023: Đã tăng lên **{share65_2023:.1f}%** (vượt ngưỡng xã hội già hóa 7%).
   - Đến năm 2050: Dự báo đạt **{share65_2050:.1f}%** dân số toàn cầu (chính thức bước vào ngưỡng Xã hội Già theo chuẩn LHQ >= 14%).
 * **Tuổi trung vị toàn cầu (Median Age)**:
   - Năm 1950: **{med_1950:.1f} tuổi**.
-  - Năm 2026: **{med_2026:.1f} tuổi**.
+  - Năm 2023: **{med_2023:.1f} tuổi**.
   - Năm 2050: **{med_2050:.1f} tuổi** (các khu vực như Châu Âu và Đông Á tuổi trung vị sẽ vượt ngưỡng 45-48 tuổi).
 * **Tỷ số phụ thuộc người cao tuổi (Old-age Dependency Ratio)**:
-  - Tăng từ **{dep_1950:.1f}%** (1950) lên **{dep_2026:.1f}%** (2026) và dự kiến đạt **{dep_2050:.1f}%** vào năm 2050.
+  - Tăng từ **{dep_1950:.1f}%** (1950) lên **{dep_2023:.1f}%** (2023) và dự kiến đạt **{dep_2050:.1f}%** vào năm 2050.
   - Nghĩa là vào năm 2050, cứ khoảng 4 người trong độ tuổi lao động sẽ phải gánh hơn 1 người cao tuổi, tạo áp lực khổng lồ lên an sinh xã hội và y tế.
 * **Làn sóng các Xã hội Siêu già (Super-aged Society - Tỷ lệ 65+ >= 20%)**:
   - Đến năm 2050, hơn **60 quốc gia** sẽ trở thành xã hội siêu già. Những nước đứng đầu bao gồm Hàn Quốc, Nhật Bản, Ý, Tây Ban Nha, Hồng Kông với tỷ lệ 65+ dự kiến vượt ngưỡng **35% - 40%**.
@@ -307,9 +305,9 @@ def write_summary(
 
 ## 3. Danh mục 8 Biểu đồ EDA Đã Tạo
 1. [`01-global-population-trend.png`](file://{OUTPUT}/01-global-population-trend.png): Xu hướng Quy mô Dân số Toàn cầu (1950 – 2050).
-2. [`02-top-populations.png`](file://{OUTPUT}/02-top-populations.png): Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2026).
-3. [`03-growth-rate-distribution.png`](file://{OUTPUT}/03-growth-rate-distribution.png): Phân phối Tốc độ Tăng trưởng Quốc gia năm 2026.
-4. [`04-fertility-growth-scatter.png`](file://{OUTPUT}/04-fertility-growth-scatter.png): Tương quan giữa Mức sinh (TFR) và Tốc độ Tăng trưởng.
+2. [`02-top-populations.png`](file://{OUTPUT}/02-top-populations.png): Top 10 Quốc gia Đông dân nhất Thế giới (Năm 2023).
+3. [`03-growth-rate-distribution.png`](file://{OUTPUT}/03-growth-rate-distribution.png): Phân phối Tốc độ Tăng trưởng Quốc gia năm 2023.
+4. [`04-fertility-growth-scatter.png`](file://{OUTPUT}/04-fertility-growth-scatter.png): Tương quan giữa Mức sinh (TFR) và Tốc độ Tăng trưởng (2023).
 5. [`05-population-heatmap.png`](file://{OUTPUT}/05-population-heatmap.png): Ma trận Quy mô Dân số Top 15 Quốc gia qua các Thập kỷ.
 6. [`06-global-ageing-trend-2050.png`](file://{OUTPUT}/06-global-ageing-trend-2050.png): Chuyển dịch Cơ cấu 3 Khối Tuổi Toàn cầu (1950 – 2050).
 7. [`07-median-age-by-continent.png`](file://{OUTPUT}/07-median-age-by-continent.png): Xu hướng Tăng trưởng Tuổi Trung vị theo Khu vực.
@@ -323,7 +321,7 @@ def main() -> None:
     wide_rows = load_wide_rows()
 
     plot_global_population_trend(wide_rows)
-    top_2026 = plot_top_populations(wide_rows)
+    top_2023 = plot_top_populations(wide_rows)
     growth_info = plot_growth_distribution(wide_rows)
     plot_fertility_growth(wide_rows)
     plot_population_heatmap(wide_rows)
@@ -333,7 +331,7 @@ def main() -> None:
     plot_median_age_by_region(wide_rows)
     plot_top_aged_societies_2050(wide_rows)
 
-    write_summary(wide_rows, top_2026, growth_info)
+    write_summary(wide_rows, top_2023, growth_info)
     print("EDA hoàn tất: 8 biểu đồ chuẩn hóa và báo cáo tổng hợp eda_summary.md đã được xuất thành công!")
 
 

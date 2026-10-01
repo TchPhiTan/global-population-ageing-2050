@@ -98,7 +98,7 @@ def main() -> None:
 
     print(f"Đánh giá Linear Regression trên Test Set (2016-2023): R2 = {r2_eval:.4f}, MAE = {mae_eval:,.0f} người")
 
-    # Fit on historical data (1996 - 2026) and generate forecast 2027 - 2050
+    # Fit on historical data (1994 - 2023) and generate forecast 2024 - 2050
     forecast_rows = []
     forecast_2050_pop = {}
     forecast_2050_share65 = {}
@@ -107,10 +107,9 @@ def main() -> None:
         code = code_map[entity]
         all_known_years = sorted(country_pop[entity].keys())
 
-        # Include historical + projected data up to 2026
+        # Include historical data up to 2023
         for y in all_known_years:
-            if y <= 2026:
-                status = "estimate" if y <= 2023 else "projected"
+            if y <= 2023:
                 forecast_rows.append({
                     "Entity": entity,
                     "Code": code,
@@ -118,12 +117,12 @@ def main() -> None:
                     "Population": round(country_pop[entity][y]),
                     "Older_People_65plus": round(country_older[entity].get(y, 0)),
                     "Share_65plus": country_share65[entity].get(y, 0),
-                    "DataStatus": status,
+                    "DataStatus": "estimate",
                     "Model": "actual_or_un_wpp",
                 })
 
-        # Fit linear regression model using past 30 years (1996 - 2026) for stable local trend
-        reg_years = [y for y in all_known_years if 1996 <= y <= 2026]
+        # Fit linear regression model using past 30 years (1994 - 2023) for stable local trend
+        reg_years = [y for y in all_known_years if 1994 <= y <= 2023]
         if len(reg_years) >= 10:
             X = np.array(reg_years).reshape(-1, 1)
             y_pop = np.array([country_pop[entity][yr] for yr in reg_years])
@@ -133,7 +132,7 @@ def main() -> None:
             y_old = np.array([country_older[entity].get(yr, 0) for yr in reg_years])
             reg_old = LinearRegression().fit(X, y_old)
 
-            future_years = list(range(2027, 2051))
+            future_years = list(range(2024, 2051))
             future_pop_preds = reg_pop.predict(np.array(future_years).reshape(-1, 1))
             future_old_preds = reg_old.predict(np.array(future_years).reshape(-1, 1))
 
@@ -156,12 +155,12 @@ def main() -> None:
                     forecast_2050_pop[entity] = pop_pred
                     forecast_2050_share65[entity] = share_pred
         else:
-            last_pop = country_pop[entity].get(2026, 0)
-            last_old = country_older[entity].get(2026, 0)
-            last_share = country_share65[entity].get(2026, 0)
+            last_pop = country_pop[entity].get(2023, 0)
+            last_old = country_older[entity].get(2023, 0)
+            last_share = country_share65[entity].get(2023, 0)
             forecast_2050_pop[entity] = last_pop
             forecast_2050_share65[entity] = last_share
-            for yr in range(2027, 2051):
+            for yr in range(2024, 2051):
                 forecast_rows.append({
                     "Entity": entity,
                     "Code": code,
@@ -173,8 +172,8 @@ def main() -> None:
                     "Model": "constant_fallback",
                 })
 
-        # Also include UN WPP projected benchmark for 2027 to 2050 to allow direct comparison in Tableau
-        for yr in range(2027, 2051):
+        # Also include UN WPP projected benchmark for 2024 to 2050 to allow direct comparison in Tableau
+        for yr in range(2024, 2051):
             if yr in country_pop[entity]:
                 forecast_rows.append({
                     "Entity": entity,
@@ -187,11 +186,11 @@ def main() -> None:
                     "Model": "un_wpp_medium",
                 })
 
-    # Build side-by-side comparison table for 2027 - 2050
+    # Build side-by-side comparison table for 2024 - 2050
     comparison_rows = []
     for entity in countries:
         code = code_map[entity]
-        for yr in range(2027, 2051):
+        for yr in range(2024, 2051):
             un_p = country_pop[entity].get(yr)
             un_s = country_share65[entity].get(yr)
             ml_p_rows = [r for r in forecast_rows if r["Entity"] == entity and r["Year"] == yr and r["Model"] in ("linear_regression", "constant_fallback")]
@@ -243,30 +242,30 @@ def main() -> None:
     valid_countries = []
 
     for entity in countries:
-        pop_2026 = country_pop[entity].get(2026)
+        pop_2023 = country_pop[entity].get(2023)
         pop_2050 = forecast_2050_pop.get(entity)
-        growth_2026 = country_growth[entity].get(2026)
-        growth_2020 = country_growth[entity].get(2020, growth_2026)
+        growth_2023 = country_growth[entity].get(2023)
+        growth_2018 = country_growth[entity].get(2018, growth_2023)
         tfr_2023 = country_tfr[entity].get(2023, 1.8)
-        med_age_2026 = country_med_age[entity].get(2026, 30.0)
-        share65_2026 = country_share65[entity].get(2026, 8.0)
+        med_age_2023 = country_med_age[entity].get(2023, 30.0)
+        share65_2023 = country_share65[entity].get(2023, 8.0)
         share65_2050 = country_share65[entity].get(2050, forecast_2050_share65.get(entity, 12.0))
         life_exp_2023 = country_life_exp[entity].get(2023, 72.0)
 
-        if pop_2026 and pop_2050 and growth_2026 is not None:
-            # Depopulation target: 1 if pop in 2050 < pop in 2026 OR growth 2026 < 0
-            is_depop = 1 if (pop_2050 < pop_2026 or growth_2026 < 0) else 0
-            log_pop = math.log10(max(pop_2026, 1000.0))
-            growth_delta = growth_2026 - growth_2020
+        if pop_2023 and pop_2050 and growth_2023 is not None:
+            # Depopulation target: 1 if pop in 2050 < pop in 2023 OR growth 2023 < 0
+            is_depop = 1 if (pop_2050 < pop_2023 or growth_2023 < 0) else 0
+            log_pop = math.log10(max(pop_2023, 1000.0))
+            growth_delta = growth_2023 - growth_2018
 
-            # Features: growth_2026, tfr_2023, log_pop, median_age_2026, share65_2026
-            X_depop.append([growth_2026, tfr_2023, log_pop, med_age_2026, share65_2026])
+            # Features: growth_2023, tfr_2023, log_pop, median_age_2023, share65_2023
+            X_depop.append([growth_2023, tfr_2023, log_pop, med_age_2023, share65_2023])
             y_depop.append(is_depop)
 
             # Super-aged society target: 1 if share65 in 2050 >= 20.0%
             is_super_aged = 1 if share65_2050 >= 20.0 else 0
-            # Features for Ageing: share65_2026, med_age_2026, tfr_2023, life_exp_2023
-            X_ageing.append([share65_2026, med_age_2026, tfr_2023, life_exp_2023])
+            # Features for Ageing: share65_2023, med_age_2023, tfr_2023, life_exp_2023
+            X_ageing.append([share65_2023, med_age_2023, tfr_2023, life_exp_2023])
             y_ageing.append(is_super_aged)
 
             valid_countries.append(entity)
@@ -348,7 +347,7 @@ def main() -> None:
         yrs = [r["Year"] for r in ent_rows]
         vals = [r["Population"] / 1e6 for r in ent_rows]
         plt.plot(yrs, vals, label=ent, linewidth=2)
-    plt.axvline(2026, color="#d9534f", linestyle="--", label="Mốc hiện tại (2026)")
+    plt.axvline(2023, color="#d9534f", linestyle="--", label="Mốc hiện tại (2023)")
     plt.title("Dự báo Dân số đến năm 2050 cho các Quốc gia Tiêu biểu (Linear Regression)", fontsize=13, fontweight="bold", pad=12)
     plt.xlabel("Năm")
     plt.ylabel("Dân số (triệu người)")
@@ -357,7 +356,7 @@ def main() -> None:
     plt.savefig(REPORTS_DIR / "forecast_trends_2050.png", dpi=180)
     plt.close()
 
-    # Comparative Ageing Plot: Our Model vs UN WPP (2027 - 2050)
+    # Comparative Ageing Plot: Our Model vs UN WPP (2024 - 2050)
     plt.figure(figsize=(11, 6))
     comp_countries = ["Vietnam", "Japan", "China", "United States"]
     styles = {"Vietnam": "#d62828", "Japan": "#003049", "China": "#f77f00", "United States": "#2a9d8f"}
@@ -372,7 +371,7 @@ def main() -> None:
         plt.plot(un_yrs, ml_shares, label=f"{ent} (Mô hình ML)", color=col, linewidth=1.8, linestyle="--")
 
     plt.axhline(20.0, color="purple", linestyle=":", linewidth=1.5, label="Ngưỡng Siêu già (>=20%)")
-    plt.title("So sánh Dự báo Tỷ lệ Người cao tuổi (65+): Mô hình Học máy vs UN WPP (2027 - 2050)", fontsize=12, fontweight="bold")
+    plt.title("So sánh Dự báo Tỷ lệ Người cao tuổi (65+): Mô hình Học máy vs UN WPP (2024 - 2050)", fontsize=12, fontweight="bold")
     plt.xlabel("Năm")
     plt.ylabel("Tỷ lệ dân số 65+ (%)")
     plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", frameon=True)
@@ -391,7 +390,7 @@ def main() -> None:
         "",
         "## 1. Kiến trúc Hai Trụ cột Mô hình Học máy",
         "- **Trụ cột 1: Dự báo Chuỗi Giá trị Liên tục (Linear Regression)**:",
-        "  - Dự báo quy mô dân số (`Population`) và quy mô người cao tuổi (`Older_People_65plus`) từ năm 2027 đến năm 2050 cho 237 quốc gia/vùng lãnh thổ.",
+        "  - Dự báo quy mô dân số (`Population`) và quy mô người cao tuổi (`Older_People_65plus`) từ năm 2024 đến năm 2050 cho 237 quốc gia/vùng lãnh thổ.",
         "- **Trụ cột 2: Phân loại Rủi ro Nhị phân Kép (Logistic Regression)**:",
         "  - **Mô hình 2A (Depopulation Risk)**: Đánh giá xác suất một quốc gia bước vào chu kỳ suy giảm dân số kéo dài trước năm 2050.",
         "  - **Mô hình 2B (Super-Aged Society Risk)**: Đánh giá xác suất một quốc gia trở thành **Xã hội Siêu già vào năm 2050** (Tỷ lệ người cao tuổi 65+ vượt ngưỡng 20%).",
@@ -409,8 +408,8 @@ def main() -> None:
         "",
         "| Mô hình Phân loại | Độ chính xác (Accuracy) | F1-Score | Mục tiêu & Bộ đặc trưng đầu vào (Features) |",
         "| :--- | :---: | :---: | :--- |",
-        f"| **2A. Nguy cơ Suy giảm Dân số** | **{acc_d:.2%}** | **{f1_d:.2%}** | Dự báo đà thu hẹp dân số dựa trên Tốc độ tăng trưởng 2026, Mức sinh TFR, Quy mô dân số log10, Tuổi trung vị và Tỷ lệ 65+ |",
-        f"| **2B. Nguy cơ Xã hội Siêu già 2050** | **{acc_a:.2%}** | **{f1_a:.2%}** | Phân loại quốc gia vượt ngưỡng 20% người cao tuổi dựa trên Tỷ lệ 65+ 2026, Tuổi trung vị, Mức sinh TFR và Tuổi thọ trung bình |",
+        f"| **2A. Nguy cơ Suy giảm Dân số** | **{acc_d:.2%}** | **{f1_d:.2%}** | Dự báo đà thu hẹp dân số dựa trên Tốc độ tăng trưởng 2023, Mức sinh TFR, Quy mô dân số log10, Tuổi trung vị và Tỷ lệ 65+ |",
+        f"| **2B. Nguy cơ Xã hội Siêu già 2050** | **{acc_a:.2%}** | **{f1_a:.2%}** | Phân loại quốc gia vượt ngưỡng 20% người cao tuổi dựa trên Tỷ lệ 65+ 2023, Tuổi trung vị, Mức sinh TFR và Tuổi thọ trung bình |",
         "",
         "## 4. Top 10 Quốc gia có Nguy cơ Suy giảm Dân số Cao nhất (Depopulation Risk)",
         "| Thứ hạng | Quốc gia | Mã ISO | Điểm Nguy cơ Suy giảm | Phân loại |",

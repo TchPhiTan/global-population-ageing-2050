@@ -960,8 +960,8 @@
             <encodings>
               <color column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[none:Calculation_3057377431089157:nk]' />
             </encodings>
-            <reference-line axis-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[none:Year:qk]' enable-instant-analytics='true' formula='constant' id='refline0' label-type='computation' scope='per-table' tooltip='Hiện tại (2026)' tooltip-type='custom' value='2026' value-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[none:Year:qk]' z-order='1' />
-            <reference-line axis-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[sum:Calculation_3057377430925314:qk]' enable-instant-analytics='true' formula='constant' id='refline1' label-type='automatic' scope='per-table' value='8.3000000000000007' value-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[sum:Calculation_3057377430925314:qk]' z-order='2' />
+            <reference-line axis-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[none:Year:qk]' enable-instant-analytics='true' formula='constant' id='refline0' label-type='computation' scope='per-table' tooltip='Hiện tại (2023)' tooltip-type='custom' value='2023' value-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[none:Year:qk]' z-order='1' />
+            <reference-line axis-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[sum:Calculation_3057377430925314:qk]' enable-instant-analytics='true' formula='constant' id='refline1' label-type='automatic' scope='per-table' value='8.0900000000000000' value-column='[federated.0corvoz0zqkdpc18sh1ua1lalyhp].[sum:Calculation_3057377430925314:qk]' z-order='2' />
             <style>
               <style-rule element='mark'>
                 <format attr='mark-labels-cull' value='true' />

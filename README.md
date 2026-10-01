@@ -33,8 +33,8 @@ Dự án nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu giai 
 │   └── processed/                              # Dữ liệu sạch, sẵn sàng nạp vào Tableau & ML
 │       ├── population_fact_long.csv                 (23 MB, 348,338 dòng, 7 cột)
 │       ├── population_fact_wide.csv                 (3.9 MB, 39,476 dòng – Data source chính Tableau)
-│       ├── population_forecast_2050.csv             (1.9 MB, 29,625 dòng – ML & UN WPP)
-│       ├── model_vs_un_wpp_comparison_2050.csv      (364 KB, 5,688 dòng – Bảng so sánh ML vs UN)
+│       ├── population_forecast_2050.csv             (30,336 dòng – ML & UN WPP)
+│       ├── model_vs_un_wpp_comparison_2050.csv      (6,399 dòng – Bảng so sánh ML vs UN)
 │       ├── country_risk_classification_2050.csv     (13 KB, 237 quốc gia – Điểm rủi ro)
 │       ├── world_population_review_validation.csv   (26 KB, 705 dòng – Đối chiếu WPR)
 │       ├── continent_mapping.csv                    (5.4 KB, 237 quốc gia – Ánh xạ châu lục)

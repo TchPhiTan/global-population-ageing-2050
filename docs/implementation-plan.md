@@ -8,7 +8,7 @@
 
 Nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu theo hai trụ cột song song:
 
-1. **Biến động dân số**: Quy mô dân số, tốc độ tăng trưởng, mức sinh (TFR) trong giai đoạn 1950 – 2026 và so sánh với kịch bản chuẩn UN WPP Medium Scenario.
+1. **Biến động dân số**: Quy mô dân số, tốc độ tăng trưởng, mức sinh (TFR) trong giai đoạn 1950 – 2023 và so sánh với kịch bản chuẩn UN WPP Medium Scenario.
 2. **Xu hướng già hoá dân số**: Sự biến đổi cơ cấu 3 nhóm tuổi (0-14, 15-64, 65+), tốc độ tăng trưởng tuổi trung vị (Median age), tỷ số phụ thuộc người cao tuổi (Old-age dependency ratio), và dự phóng làn sóng các Xã hội Siêu già (Super-aged societies) đến năm 2050.
 
 ---
@@ -20,7 +20,7 @@ Nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu theo hai trụ
 | **Nguồn chính** | UN World Population Prospects 2024 Revision (biên tập bởi [Our World in Data](https://ourworldindata.org/)) |
 | **Nguồn kiểm chứng** | [World Population Review](https://worldpopulationreview.com/) (2024–2026) |
 | **Khung thời gian** | **1950 – 2050** (chuỗi dữ liệu kéo dài đến 2100) |
-| **Phân định trạng thái** | `estimate` (1950–2023), `projected` (2024–2100), `forecast` (ML 2027–2050) |
+| **Phân định trạng thái** | `estimate` (1950–2023), `projected` (2024–2100), `forecast` (ML 2024–2050) |
 | **Khoá chính Fact table** | `Entity`, `Code`, `Year`, `Indicator`, `DataStatus` |
 | **Số quốc gia/vùng lãnh thổ** | 237 |
 | **Tổng số chỉ số** | 10 (xem danh sách bên dưới) |
@@ -71,8 +71,8 @@ Nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu theo hai trụ
 | # | File | Nội dung | Chỉ số Sử dụng |
 | :---: | :--- | :--- | :--- |
 | 1 | `01-global-population-trend.png` | Xu hướng quy mô dân số thế giới 1950–2050 | Population |
-| 2 | `02-top-populations.png` | Top 10 quốc gia đông dân nhất 2026 | Population |
-| 3 | `03-growth-rate-distribution.png` | Phân phối tốc độ tăng trưởng 2026 | Population growth rate |
+| 2 | `02-top-populations.png` | Top 10 quốc gia đông dân nhất 2023 | Population |
+| 3 | `03-growth-rate-distribution.png` | Phân phối tốc độ tăng trưởng 2023 | Population growth rate |
 | 4 | `04-fertility-growth-scatter.png` | Tương quan TFR & tăng trưởng | TFR + Growth rate |
 | 5 | `05-population-heatmap.png` | Ma trận quy mô top 15 qua thập kỷ | Population |
 | 6 | `06-global-ageing-trend-2050.png` | Chuyển dịch 3 nhóm tuổi 1950–2050 | Age groups |
@@ -86,8 +86,8 @@ Nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu theo hai trụ
 | # | Sản phẩm | Mô tả | Trạng thái |
 | :---: | :--- | :--- | :---: |
 | 1 | `scripts/forecast_population.py` | Pipeline huấn luyện mô hình & dự phóng 2050 | ✅ |
-| 2 | `data/processed/population_forecast_2050.csv` | Dự báo dân số & 65+ (29,625 dòng, ML + UN WPP) | ✅ |
-| 3 | `data/processed/model_vs_un_wpp_comparison_2050.csv` | So sánh định lượng ML vs UN (5,688 dòng) | ✅ |
+| 2 | `data/processed/population_forecast_2050.csv` | Dự báo dân số & 65+ (30,336 dòng, ML + UN WPP) | ✅ |
+| 3 | `data/processed/model_vs_un_wpp_comparison_2050.csv` | So sánh định lượng ML vs UN (6,399 dòng) | ✅ |
 | 4 | `data/processed/country_risk_classification_2050.csv` | Điểm rủi ro suy giảm & siêu già (237 nước) | ✅ |
 | 5 | `reports/modeling/model_report.md` | Báo cáo đánh giá mô hình học máy | ✅ |
 | 6 | `reports/modeling/confusion_matrix.png` | Ma trận nhầm lẫn 2 mô hình Logistic | ✅ |
@@ -99,9 +99,9 @@ Nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu theo hai trụ
 | Mô hình | Chỉ số Chính | Giá trị |
 | :--- | :--- | :--- |
 | Linear Regression (Dự báo dân số) | $R^2$ | **0.9956** |
-| Linear Regression | MAE | **2.49 triệu người** |
-| Logistic (Suy giảm dân số) | Accuracy / F1 | **93.33%** / **88.89%** |
-| Logistic (Xã hội Siêu già 2050) | Accuracy / F1 | **98.33%** / **98.18%** |
+| Linear Regression | MAE | **2.50 triệu người** |
+| Logistic (Suy giảm dân số) | Accuracy / F1 | **95.00%** / **90.32%** |
+| Logistic (Xã hội Siêu già 2050) | Accuracy / F1 | **95.00%** / **94.55%** |
 
 ---
 

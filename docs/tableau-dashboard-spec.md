@@ -11,17 +11,17 @@ Dashboard kết hợp hài hòa hai chủ đề cốt lõi:
 
 | Chương | Thời kỳ | Câu chuyện chính |
 | :---: | :--- | :--- |
-| **Chương 1** | 1950 – 2023 | *"Thế kỷ bùng nổ dân số & Mở màn già hóa"* – Dân số tăng 3.3 lần, tuổi thọ tăng, mức sinh bắt đầu giảm |
-| **Chương 2** | 2024 – 2026 | *"Bước ngoặt hiện tại"* – Ấn Độ vượt Trung Quốc, 65 quốc gia suy giảm, tỷ lệ 65+ vượt 10% |
-| **Chương 3** | 2027 – 2050 | *"Tương lai phân hóa & Làn sóng Siêu già"* – Thế giới bước vào ngưỡng Xã hội Già (16.4%), >60 nước siêu già |
+| **Chương 1** | 1950 – 2023 | *"Thế kỷ bùng nổ dân số & Mở màn già hóa"* – Dân số tăng 3.2 lần (từ 2.5 tỷ lên 8.09 tỷ), tuổi thọ tăng, mức sinh bắt đầu giảm |
+| **Chương 2** | 2023 | *"Bước ngoặt hiện tại"* – Dân số vượt 8.09 tỷ, Ấn Độ chính thức vượt Trung Quốc, 54 quốc gia suy giảm, tỷ lệ 65+ chạm 10% |
+| **Chương 3** | 2024 – 2050 | *"Tương lai phân hóa & Làn sóng Siêu già"* – Thế giới bước vào ngưỡng Xã hội Già (16.3%), >60 nước siêu già |
 
 ### 1.2 Thông điệp chính (Key Insights)
-1. **8.3 tỷ người** (2026) → Dự kiến đạt đỉnh **~10.3 tỷ** vào năm 2084 rồi giảm dần.
-2. **Ấn Độ** chính thức vượt **Trung Quốc** thành quốc gia đông dân nhất thế giới.
-3. **65 quốc gia** đang trong chu kỳ suy giảm dân số tính đến năm 2026.
+1. **8.09 tỷ người** (2023) → Dự kiến đạt đỉnh **~10.3 tỷ** vào năm 2084 rồi giảm dần.
+2. **Ấn Độ** chính thức vượt **Trung Quốc** thành quốc gia đông dân nhất thế giới (2023).
+3. **54 quốc gia** đang trong chu kỳ suy giảm dân số tính đến năm 2023.
 4. **130/237** quốc gia có tỷ suất sinh dưới mức thay thế (TFR < 2.1).
-5. **Già hoá tăng tốc**: Tỷ lệ người cao tuổi (65+) tăng từ 5.0% (1950) lên 10.3% (2026) và đạt **16.4% vào năm 2050**.
-6. **Tuổi trung vị toàn cầu**: Tăng từ 23.5 tuổi (1950) lên **36.2 tuổi (2050)** (Châu Âu và Đông Á vượt 45-48 tuổi).
+5. **Già hoá tăng tốc**: Tỷ lệ người cao tuổi (65+) tăng từ 5.1% (1950) lên 10.0% (2023) và đạt **16.3% vào năm 2050**.
+6. **Tuổi trung vị toàn cầu**: Tăng từ 22.2 tuổi (1950) lên **30.4 tuổi (2023)** và **36.1 tuổi (2050)** (Châu Âu và Đông Á vượt 45-48 tuổi).
 
 ### 1.3 Ánh xạ Chi tiết: Chart Tableau ↔ Nguồn Our World in Data
 
@@ -54,16 +54,16 @@ Bảng dưới đây liệt kê cụ thể **mỗi chart trên Tableau Dashboard
 
 | # | Tên file | Vai trò | Hàng | Cột chính | Dùng cho |
 | :---: | :--- | :--- | :---: | :--- | :--- |
-| 1 | **`population_fact_wide.csv`** | **⭐ Data source chính cho Dashboard** (1950–2100) | **~39,500** | Entity, Code, Year, Population, GrowthRate, TFR, MedianAge, LifeExpectancy, Share65, DepRatio | **Chart 1–9, KPI 1–4** |
-| 2 | `population_fact_long.csv` | Backup / Phân tích Python-R (định dạng long) | **~348,000** | Entity, Code, Year, Indicator, Value, Unit, DataStatus | Không load vào Tableau |
-| 3 | `population_forecast_2050.csv` | Dự báo Linear Regression | **~24,000** | Entity, Code, Year, Population, Older_People_65plus, Share_65plus, DataStatus, Model | **Chart 10** |
-| 4 | `country_risk_classification_2050.csv` | Phân loại rủi ro Logistic Regression | **237** | Entity, Code, Depopulation_Risk_Score, Super_Aged_Risk_Score, Super_Aged_Category | Bổ trợ |
+| 1 | **`population_fact_wide.csv`** | **⭐ Data source chính cho cả 5 Dashboard** (1950–2050) | **27,880** | Entity, Code, Continent, Region_Type, Year, Population, GrowthRate, NaturalGrowthRate, TFR, MedianAge, LifeExpectancy, Births, Deaths, Share65, DepRatio, PotentialSupportRatio, GDP_per_capita | **Dashboard 1–5 (Bản đồ, Top 10, Dual-Axis, Scatter, Ma trận)** |
+| 2 | **`population_by_5yr_age_group.csv`** | Tháp tuổi chi tiết theo nhóm 5 tuổi (1950–2050) | **407,190** | Entity, Code, Continent, Region_Type, Year, Age_Group, Age_Order, Population | **Dashboard 2 (Population Pyramid)** |
+| 3 | **`ageing_transition_speed.csv`** | Đo lường số năm chuyển dịch già hóa 7% → 14% → 20% | **256** | Entity, Code, Continent, Year_Reached_7_Pct, Year_Reached_14_Pct, Year_Reached_20_Pct, Years_From_7_To_14, Years_From_14_To_20 | **Dashboard 4 (Dumbbell Chart)** |
+| 4 | **`country_risk_classification_2050.csv`** | Phân loại rủi ro Logistic Regression (Suy giảm & Siêu già) | **237** | Entity, Code, Depopulation_Risk_Score, Depopulation_Category, Super_Aged_Risk_Score, Super_Aged_Category | **Dashboard 5 (Bản đồ phân loại rủi ro ML)** |
+| 5 | **`population_forecast_2050.csv`** | Dự báo ML Linear Regression vs UN WPP (2024–2050) | **30,336** | Entity, Code, Year, Population, Older_People_65plus, Share_65plus, DataStatus, Model | **Dashboard 5 (Đối chiếu ML vs UN)** |
+| 6 | `population_fact_long.csv` | File gốc định dạng long dùng cho pipeline Python | **359,833** | Entity, Code, Year, Indicator, Value, Unit, DataStatus | Dùng cho ETL / Machine Learning |
 
-> **⚠️ Quan trọng — Tại sao dùng `wide.csv` làm data source chính?**
-> - **1 data source duy nhất** → Tất cả filter (Year, Entity) tự động đồng bộ giữa các worksheet mà không cần Data Blending.
-> - Mỗi dòng chứa đầy đủ **10 indicators** → Chart 2 (LE vs TFR) chỉ cần kéo đúng cột, không cần Self-Join.
-> - File nhẹ (~39,500 dòng) → Tableau xử lý mượt.
-> - Đã merge data từ các bản `(UN)` → Các khu vực (Asia, Europe...) có đầy đủ tất cả fields.
+> **⚠️ Điểm nâng cấp vượt trội của bộ dữ liệu mới**:
+> - Trường `[Region_Type]` và `[Continent]` đã được **tích hợp sẵn trực tiếp vào từng dòng**, người dùng Tableau không cần làm Data Blending hay viết hàm IF phức tạp để phân loại cấp bậc World / Continent / Country / Others.
+> - Bổ sung các thước đo sinh tử mới từ UN WPP/OWID: `[Natural population growth rate]`, `[Births]`, `[Deaths]`, `[GDP per capita]`, `[Potential support ratio]`.
 
 ---
 
@@ -143,12 +143,12 @@ END
                  ▼                                                                                     ▼
 ┌─────────────────────────────────────────────────────────────────┐   ┌─────────────────────────────────────────────────────────────────┐
 │ DASHBOARD 1: QUY MÔ & CHUYỂN DỊCH NHÂN KHẨU HỌC LỊCH SỬ         │   │ DASHBOARD 2: NGUYÊN NHÂN, KHỦNG HOẢNG GIÀ HÓA & DỰ BÁO ML 2050  │
-│ [Bộ lọc Toàn cục: Entity (World) | Year (2026)]                 │   │ [Bộ lọc Toàn cục: Entity (World) | Year (2026)]                 │
+│ [Bộ lọc Toàn cục: Entity (World) | Year (2023)]                 │   │ [Bộ lọc Toàn cục: Entity (World) | Year (2023)]                 │
 ├─────────────────────────────────────────────────────────────────┤   ├─────────────────────────────────────────────────────────────────┤
 │ 4 Thẻ KPI: [Dân số]  [Tăng trưởng %]  [Tỷ lệ 65+]  [Mức sinh TFR]│   │ 4 Thẻ KPI: [Tỷ lệ 65+]  [Tuổi trung vị]  [Phụ thuộc già]  [TFR] │
 ├────────────────────────────────┬────────────────────────────────┤   ├────────────────────────────────┬────────────────────────────────┤
 │ Chart 1: Filled Map (Bản đồ)   │ Chart 4: Area + Line (Xu hướng)│   │ Chart 6: Histogram (Phân phối) │ Chart 8: 100% Stacked Area     │
-│ (Tích hợp Viz in Tooltip)      │ (Phân tách Lịch sử vs Dự phóng)│   │ (65 nước âm vs 172 nước dương) │ (3 Khối tuổi: Trẻ, Lao động, 65│
+│ (Tích hợp Viz in Tooltip)      │ (Phân tách Lịch sử vs Dự phóng)│   │ (54 nước âm vs 183 nước dương) │ (3 Khối tuổi: Trẻ, Lao động, 65│
 ├────────────────────────────────┼────────────────────────────────┤   ├────────────────────────────────┼────────────────────────────────┤
 │ Chart 2: Animated Scatter Plot │ Chart 5: Bump Chart            │   │ Chart 7: 4-Quadrant Scatter    │ Chart 9: Heatmap Ma trận Già   │
 │ (Hans Rosling: Tuổi thọ vs TFR)│ (Đổi ngôi thứ hạng Top 7 nước) │   │ (TFR vs Tốc độ Tăng trưởng)    │ (Top 15 nước qua các thập kỷ)  │
@@ -198,28 +198,28 @@ END
 ---
 
 ### ⏳ CỤM 2: TIẾN TRÌNH & ĐỔI NGÔI LỊCH SỬ (Temporal Dynamics & Milestone Shifting)
-* **Giá trị đặc trưng**: Thế kỷ bùng nổ dân số (tăng 3.3 lần từ 1950) nhưng đà tăng đang giảm dần về bão hòa; các cuộc đổi ngôi vị thế quyền lực nhân khẩu học.
+* **Giá trị đặc trưng**: Thế kỷ bùng nổ dân số (tăng 3.2 lần từ 1950) nhưng đà tăng đang giảm dần về bão hòa; các cuộc đổi ngôi vị thế quyền lực nhân khẩu học.
 
 #### Chart 4: Xu hướng Quy mô Dân số Toàn cầu 1950 – 2050 (Area + Line Chart)
 * **Loại biểu đồ**: Area Chart kết hợp Line.
 * **Fields**: Trục X `[Year]` (1950 – 2050), Trục Y `SUM([Population (Billions)])`.
 * **Màu sắc**: Phân tách 2 vùng: Lịch sử (`estimate`, màu xanh teal `#4ECDC4`) và Dự phóng (`projected`, màu cam `#FF6B6B`).
-* **Vạch chuẩn**: Vạch đứng mốc hiện tại năm 2026 (8.3 tỷ người) và chú thích đỉnh dân số ~10.3 tỷ vào năm 2084.
+* **Vạch chuẩn**: Vạch đứng mốc hiện tại năm 2023 (8.09 tỷ người) và chú thích đỉnh dân số ~10.3 tỷ vào năm 2084.
 
 #### Chart 5: Hoán đổi Thứ hạng Dân số theo Thời gian (Bump Chart)
 * **Loại biểu đồ**: Bump Chart (Line chart xếp hạng thứ bậc).
-* **Fields**: Trục X `[Year]` (1950, 1970, 1990, 2010, 2026, 2040, 2050), Trục Y `RANK(SUM([Population]))` (đảo ngược trục: hạng 1 ở trên cùng).
-* **Ý nghĩa**: Đường thứ hạng của Ấn Độ chính thức cắt lên trên Trung Quốc tại mốc 2023–2026; Nigeria vượt Mỹ tiến lên top 3 trước năm 2050.
+* **Fields**: Trục X `[Year]` (1950, 1970, 1990, 2010, 2023, 2040, 2050), Trục Y `RANK(SUM([Population]))` (đảo ngược trục: hạng 1 ở trên cùng).
+* **Ý nghĩa**: Đường thứ hạng của Ấn Độ chính thức cắt lên trên Trung Quốc tại mốc 2023; Nigeria vượt Mỹ tiến lên top 3 trước năm 2050.
 
 ---
 
 ### ⚖️ CỤM 3: NGUYÊN NHÂN & PHÂN HÓA TĂNG TRƯỞNG (Demographic Drivers & Divergence)
-* **Giá trị đặc trưng**: Tính phân cực (65 nước suy giảm vs 172 nước tăng) và mối quan hệ nhân quả gốc rễ từ mức sinh giảm sâu dưới ngưỡng thay thế ($TFR < 2.1$).
+* **Giá trị đặc trưng**: Tính phân cực (54 nước suy giảm vs 183 nước tăng) và mối quan hệ nhân quả gốc rễ từ mức sinh giảm sâu dưới ngưỡng thay thế ($TFR < 2.1$).
 
 #### Chart 6: Phân phối Tốc độ Tăng trưởng Dân số (Histogram)
 * **Loại biểu đồ**: Histogram (Tần số theo các bin 0.25%).
 * **Fields**: Trục X `[Growth Rate (%)]`, Trục Y `COUNT([Entity])`.
-* **Reference Line**: Vạch đỏ tại `0%` (Zero-growth threshold) tách biệt 65 nước thu hẹp dân số bên trái và 172 nước tăng trưởng bên phải.
+* **Reference Line**: Vạch đỏ tại `0%` (Zero-growth threshold) tách biệt 54 nước thu hẹp dân số bên trái và 183 nước tăng trưởng bên phải.
 
 #### Chart 7: Tương quan Mức sinh và Tốc độ Tăng trưởng (Scatter Plot - 4 Góc phần tư)
 * **Loại biểu đồ**: Scatter Plot (Phân tán bong bóng có kích thước theo quy mô dân số).
@@ -240,17 +240,17 @@ END
 * **Loại biểu đồ**: 100% Stacked Area Chart (Miền xếp chồng 100%).
 * **Fields**: Trục X `[Year]`, Trục Y `% of Total Population`.
 * **3 Lớp màu sắc**:
-  - Trẻ em (0–14 tuổi): Xanh lá `#76c893` (thu hẹp từ 38% xuống 21%).
+  - Trẻ em (0–14 tuổi): Xanh lá `#76c893` (thu hẹp từ 35% xuống 20%).
   - Độ tuổi lao động (15–64 tuổi): Xanh navy `#1e6091` (đạt đỉnh bão hòa rồi giảm dần).
-  - Người cao tuổi (65+ tuổi): Đỏ đậm `#d00000` (phình to gấp hơn 3 lần từ 5.0% lên 16.4%).
+  - Người cao tuổi (65+ tuổi): Đỏ đậm `#d00000` (phình to gấp hơn 3 lần từ 5.1% lên 16.3%).
 
 #### Chart 9: Ma trận Tỷ lệ Già hóa & Tuổi Trung vị theo Thập kỷ (Heatmap / Highlight Table)
 * **Loại biểu đồ**: Heatmap (Bảng nhiệt ma trận).
-* **Fields**: Hàng `[Entity]` (Top 15 quốc gia), Cột `[Year]` (1970, 1990, 2010, 2026, 2040, 2050), Color & Label: `[Share 65+ (%)]` hoặc `[Median Age]`.
+* **Fields**: Hàng `[Entity]` (Top 15 quốc gia), Cột `[Year]` (1970, 1990, 2010, 2023, 2040, 2050), Color & Label: `[Share 65+ (%)]` hoặc `[Median Age]`.
 * **Ý nghĩa**: Màu sắc chuyển từ vàng nhạt sang đỏ sẫm thể hiện tốc độ già hóa dựng đứng của các nước Đông Á và Châu Âu.
 
 #### Chart 10: SO SÁNH DỰ BÁO GIÀ HÓA: MÔ HÌNH HỌC MÁY (ML) VS KỊCH BẢN CHUẨN LIÊN HỢP QUỐC (UN WPP)
-* **Mục đích**: **Đối chiếu trực tiếp kết quả mô hình Machine Learning tự xây dựng (Linear Regression) với số liệu dự báo mẫu của UN WPP Medium Scenario** trong giai đoạn 2027 – 2050.
+* **Mục đích**: **Đối chiếu trực tiếp kết quả mô hình Machine Learning tự xây dựng (Linear Regression) với số liệu dự báo mẫu của UN WPP Medium Scenario** trong giai đoạn 2024 – 2050.
 * **Loại biểu đồ**: Dual-Axis Line Chart kết hợp Difference Indicator (Đường trục kép có so sánh sai số).
 * **Nguồn dữ liệu**:
   - Bảng 1: [`data/processed/population_forecast_2050.csv`](file:///Users/phitaan/Documents/WORKSPACE/TTDLTQ/PROJECT%20CU%E1%BB%90I%20K%E1%BB%B2%20-%20BASIC/data/processed/population_forecast_2050.csv) (Chứa cả 2 đường `Model = "un_wpp_medium"` và `Model = "linear_regression"`).
@@ -266,12 +266,12 @@ END
 * **Nội dung Phân tích So sánh & Đánh giá (Evaluation & Insights)**:
   - **Mức độ tương đồng**: Trên phạm vi toàn cầu và các quốc gia có đà tăng trưởng ổn định (như Mỹ, Ấn Độ, Việt Nam), mô hình ML bám sát UN WPP với độ lệch $MAE < 0.8\%$ về tỷ lệ người cao tuổi.
   - **Khác biệt phương pháp luận**:
-    * Mô hình Linear Regression ngoại suy tuyến tính dựa trên quán tính gia tốc của chuỗi dữ liệu 30 năm gần nhất (1996–2026).
+    * Mô hình Linear Regression ngoại suy tuyến tính dựa trên quán tính gia tốc của chuỗi dữ liệu 30 năm gần nhất (1994–2023).
     * Kịch bản chuẩn UN WPP sử dụng mô hình thành phần Cohort-Component vi mô kết hợp bảng sống (Life Tables) và giả định mức sinh hồi phục nhẹ sau năm 2040.
     * Do đó, ở các quốc gia có mức sinh giảm cực sốc (như Hàn Quốc, Trung Quốc), UN WPP dự báo tỷ lệ già hóa tăng nhanh hơn trong khi Linear Regression có xu hướng thận trọng hơn một chút.
 * **Trình diễn Tương tác khi Filter**:
-  - Khi xem Toàn cầu (`World`): Cả UN WPP và Mô hình ML cùng chỉ ra năm 2050 tỷ lệ người già đạt **~16.4%** (chính thức bước vào ngưỡng Xã hội Già).
-  - Khi chọn `Vietnam`: Cả hai nguồn đều dự phóng Việt Nam sẽ cán mốc **20.5% – 21.1%** người cao tuổi vào năm 2050, xác nhận Việt Nam sẽ chính thức trở thành **Xã hội Siêu già** trước năm 2050.
+  - Khi xem Toàn cầu (`World`): Cả UN WPP và Mô hình ML cùng chỉ ra năm 2050 tỷ lệ người già đạt **~16.3%** (chính thức bước vào ngưỡng Xã hội Già).
+  - Khi chọn `Vietnam`: Cả hai nguồn đều dự phóng Việt Nam sẽ cán mốc **~20.0% – 20.8%** người cao tuổi vào năm 2050, xác nhận Việt Nam sẽ chạm ngưỡng **Xã hội Siêu già** vào năm 2050.
 
 ---
 
@@ -284,7 +284,7 @@ END
 | **3** | Top 10 Nước Đông dân | **Horizontal Bar Chart** | Cụm 1: Quy mô & Phân bố | Xếp hạng quy mô tuyệt đối |
 | **4** | Xu hướng Dân số 1950–50 | **Area + Line Chart** | Cụm 2: Tiến trình Lịch sử | Đỉnh tăng trưởng và bão hòa |
 | **5** | Đổi ngôi Thứ hạng Dân số | **Bump Chart** (Rank Line) | Cụm 2: Tiến trình Lịch sử | Ấn Độ vượt TQ, Nigeria vượt Mỹ |
-| **6** | Phân phối Tốc độ Tăng | **Histogram** (Bins) | Cụm 3: Nguyên nhân Suy giảm| 65 nước âm vs 172 nước dương |
+| **6** | Phân phối Tốc độ Tăng | **Histogram** (Bins) | Cụm 3: Nguyên nhân Suy giảm| 54 nước âm vs 183 nước dương |
 | **7** | Mức sinh TFR vs Tăng trưởng | **Scatter Plot** (Bubbles) | Cụm 3: Nguyên nhân Suy giảm| 4 góc phần tư & ngưỡng TFR 2.1 |
 | **8** | Chuyển dịch 3 Khối Tuổi | **100% Stacked Area Chart** | Cụm 4: Già hóa & Dự báo ML | Thu hẹp trẻ em, phình to người già |
 | **9** | Ma trận Già hóa Thập kỷ | **Heatmap / Highlight Table** | Cụm 4: Già hóa & Dự báo ML | Làn sóng chuyển màu cảnh báo |
@@ -306,7 +306,7 @@ Do đặc thù dữ liệu (một số indicators chỉ có đến 2023, một s
 
 | # | Tên bộ lọc | Loại | Mặc định | Apply to Worksheets |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Năm (Year)** | Slider (single year) | 2026 | **Nhóm A only**: `01-GeoMap`, `04-GlobalTrend`, `06-GrowthHistogram`, `08-AgeBrackets`, `10-ForecastML`, `KPI-01`, `KPI-02`, `KPI-03` |
+| 1 | **Năm (Year)** | Slider (single year) | 2023 | **Nhóm A only**: `01-GeoMap`, `04-GlobalTrend`, `06-GrowthHistogram`, `08-AgeBrackets`, `10-ForecastML`, `KPI-01`, `KPI-02`, `KPI-03` |
 | 2 | **Quốc gia (Entity)** | Search & multi-select | World | **Nhóm A only**: `01-GeoMap`, `04-GlobalTrend`, `08-AgeBrackets`, `10-ForecastML`, `KPI-01` ~ `KPI-04` |
 | 3 | **Châu lục (Continent)** | Multi-select dropdown | Tất cả | Nhóm A + B (trừ Chart 4 Global Trend) |
 | 4 | **Loại thực thể (Is Country)** | Single select | "Country" | Tất cả worksheet |
@@ -430,14 +430,14 @@ Có 2 phương thức Drill-down chuyên nghiệp được triển khai:
 
 ## 7. KPI Cards (Thẻ Chỉ số Chính Động theo Quốc gia & Năm)
 
-4 Thẻ KPI được thiết kế **hoàn toàn tương tác (Dynamic Interaction)**. Khi người dùng thay đổi bộ lọc `[Entity]` (mặc định là `World`, hoặc chọn `Vietnam`) và thanh trượt `[Year]` (ví dụ `2026` hoặc `2020`), toàn bộ 4 thẻ KPI sẽ tức thời tính toán lại theo đúng quốc gia và năm đã chọn:
+4 Thẻ KPI được thiết kế **hoàn toàn tương tác (Dynamic Interaction)**. Khi người dùng thay đổi bộ lọc `[Entity]` (mặc định là `World`, hoặc chọn `Vietnam`) và thanh trượt `[Year]` (ví dụ `2023` hoặc `2020`), toàn bộ 4 thẻ KPI sẽ tức thời tính toán lại theo đúng quốc gia và năm đã chọn:
 
-| # | Thẻ KPI | Công thức Calculated Field trên Tableau (file wide) | Ví dụ: World (2026) | Ví dụ: Vietnam (2020) | Định dạng hiển thị (Format) |
+| # | Thẻ KPI | Công thức Calculated Field trên Tableau (file wide) | Ví dụ: World (2023) | Ví dụ: Vietnam (2020) | Định dạng hiển thị (Format) |
 | :---: | :--- | :--- | :---: | :---: | :--- |
-| **KPI 1** | 🌍 **Quy mô Dân số** | `SUM([Population])` | **8.30 Tỷ** | **97.47 Triệu** | Number (Custom): Đơn vị Triệu / Tỷ |
-| **KPI 2** | 📈 **Tốc độ Tăng trưởng** | `AVG([Population growth rate]) / 100` | **+0.88%** | **+0.92%** | Percentage (2 chữ số thập phân) |
-| **KPI 3** | 👵 **Tỷ lệ Người già 65+** | `AVG([Share of population aged 65+]) / 100` | **10.32%**<br>*(Đang già hoá)* | **8.84%**<br>*(Đang già hoá)* | Percentage kèm subtitle phân loại `[Ageing Stage]` |
-| **KPI 4** | 👶 **Mức sinh (TFR)** | `AVG([TFR Display])` | **2.14** | **1.94**<br>*(Dưới thay thế)* | Number (Decimal, 2 số) kèm nhãn `[TFR Label]` |
+| **KPI 1** | 🌍 **Quy mô Dân số** | `SUM([Population])` | **8.09 Tỷ** | **97.47 Triệu** | Number (Custom): Đơn vị Triệu / Tỷ |
+| **KPI 2** | 📈 **Tốc độ Tăng trưởng** | `AVG([Population growth rate]) / 100` | **+0.87%** | **+0.92%** | Percentage (2 chữ số thập phân) |
+| **KPI 3** | 👵 **Tỷ lệ Người già 65+** | `AVG([Share of population aged 65+]) / 100` | **9.99%**<br>*(Đang già hoá)* | **8.84%**<br>*(Đang già hoá)* | Percentage kèm subtitle phân loại `[Ageing Stage]` |
+| **KPI 4** | 👶 **Mức sinh (TFR)** | `AVG([TFR Display])` | **2.25** | **1.94**<br>*(Dưới thay thế)* | Number (Decimal, 2 số) kèm nhãn `[TFR Label]` |
 
 **Thiết kế Thẻ KPI trên Tableau**:
 - Tạo 4 worksheet con độc lập: `KPI-01-Population`, `KPI-02-Growth`, `KPI-03-Share65`, `KPI-04-TFR`.
@@ -453,23 +453,23 @@ Tạo Tableau Story với 5 Story Points nối tiếp nhau theo tiến trình lo
 
 ### Story Point 1: "Bức tranh Tổng quan & Quy mô Địa lý" (Cụm 1)
 - **Worksheets ghép**: KPI Cards + `01-GeoMap` + `02-DemographicTransition` + `03-TopPopulations`.
-- **Thông điệp (Caption)**: *"Dân số thế giới đã vượt 8.3 tỷ người vào năm 2026, với hơn 55% tập trung tại Top 10 quốc gia. Quá trình Chuyển đổi Nhân khẩu học cho thấy toàn cầu đang dịch chuyển từ 'sinh nhiều, chết sớm' sang 'sinh ít, sống lâu' — gốc rễ của làn sóng già hóa."*
+- **Thông điệp (Caption)**: *"Dân số thế giới đạt 8.09 tỷ người vào năm 2023, với hơn 55% tập trung tại Top 10 quốc gia. Quá trình Chuyển đổi Nhân khẩu học cho thấy toàn cầu đang dịch chuyển từ 'sinh nhiều, chết sớm' sang 'sinh ít, sống lâu' — gốc rễ của làn sóng già hóa."*
 
 ### Story Point 2: "Tiến trình Lịch sử & Đổi ngôi Quyền lực" (Cụm 2)
 - **Worksheets ghép**: `04-GlobalTrend` (Area + Line) + `05-RankBumpChart`.
-- **Thông điệp (Caption)**: *"Thế kỷ bùng nổ dân số đang dần khép lại. Dấu mốc lịch sử 2023–2026 chứng kiến Ấn Độ chính thức soán ngôi Trung Quốc; đến 2050, Nigeria sẽ vượt Mỹ để lọt vào Top 3 thế giới."*
+- **Thông điệp (Caption)**: *"Thế kỷ bùng nổ dân số đang dần khép lại. Dấu mốc lịch sử năm 2023 chứng kiến Ấn Độ chính thức soán ngôi Trung Quốc; đến 2050, Nigeria sẽ vượt Mỹ để lọt vào Top 3 thế giới."*
 
 ### Story Point 3: "Nguyên nhân Gốc rễ: Mức sinh Suy giảm & Phân hóa Toàn cầu" (Cụm 3)
 - **Worksheets ghép**: `06-GrowthHistogram` + `07-FertilityGrowthQuadrant`.
-- **Thông điệp (Caption)**: *"Phân cực nhân khẩu học: 65 quốc gia đã bước vào chu kỳ suy giảm dân số. Hơn 55% các nước có mức sinh rơi xuống dưới ngưỡng thay thế (TFR < 2.1), đẩy thế giới vào bẫy già hóa."*
+- **Thông điệp (Caption)**: *"Phân cực nhân khẩu học: 54 quốc gia đã bước vào chu kỳ suy giảm dân số tính đến năm 2023. Hơn 55% các nước có mức sinh rơi xuống dưới ngưỡng thay thế (TFR < 2.1), đẩy thế giới vào bẫy già hóa."*
 
 ### Story Point 4: "Làn sóng Già hóa & Xã hội Siêu già 2050" (Cụm 4)
 - **Worksheets ghép**: `08-AgeBracketsTransition` + `09-AgeingDecadeMatrix`.
-- **Thông điệp (Caption)**: *"Đến năm 2050, tỷ lệ người cao tuổi (65+) sẽ tăng gấp 3 lần so với năm 1950, chiếm 16.4% dân số toàn cầu. Hơn 60 quốc gia (bao gồm Việt Nam, Nhật Bản, Hàn Quốc, Đức) sẽ chính thức trở thành Xã hội Siêu già."*
+- **Thông điệp (Caption)**: *"Đến năm 2050, tỷ lệ người cao tuổi (65+) sẽ tăng gấp 3 lần so với năm 1950, chiếm 16.3% dân số toàn cầu. Hơn 60 quốc gia (bao gồm Việt Nam, Nhật Bản, Hàn Quốc, Đức) sẽ chính thức trở thành Xã hội Siêu già."*
 
 ### Story Point 5: "Dự phóng Tương lai: So sánh Mô hình Học máy (ML) & Chuẩn Liên Hợp Quốc (UN)" (Cụm 4)
 - **Worksheets ghép**: `10-ForecastComparisonMLvsUN`.
-- **Thông điệp (Caption)**: *"Mô hình Linear Regression của nhóm bám sát kịch bản chuẩn của UN WPP với độ lệch MAE < 0.8% về tỷ lệ người già, đồng thuận khẳng định tốc độ già hóa của Việt Nam thuộc nhóm nhanh nhất thế giới."*
+- **Thông điệp (Caption)**: *"Mô hình Linear Regression của nhóm bám sát kịch bản chuẩn của UN WPP giai đoạn 2024–2050 với độ lệch MAE < 0.8% về tỷ lệ người già, đồng thuận khẳng định tốc độ già hóa của Việt Nam thuộc nhóm nhanh nhất thế giới."*
 
 ---
 
@@ -593,11 +593,11 @@ END
    - Rows: Kéo `SUM([Population (Billions)])`.
    - Thẻ Marks: Chọn **Area**.
    - Kéo `[Data Period]` vào **Color** để phân tách vùng *Lịch sử (1950–2023)* màu Teal `#4ECDC4` và vùng *Dự phóng (2024–2050)* màu Cam `#FF6B6B`.
-   - Reference Line: Nhấp chuột phải trục X $\rightarrow$ Add Reference Line $\rightarrow$ Chọn giá trị cố định `Year = 2026` với nhãn *"Hiện tại (2026: 8.3 Tỷ)"*.
+   - Reference Line: Nhấp chuột phải trục X $\rightarrow$ Add Reference Line $\rightarrow$ Chọn giá trị cố định `Year = 2023` với nhãn *"Hiện tại (2023: 8.09 Tỷ)"*.
 
 5. **Sheet 5: `05-RankBumpChart` (Bump Chart - Hoán đổi Thứ hạng Top Quốc gia)**:
    - Thẻ Filters: Chọn Top 7 quốc gia lớn nhất (Ấn Độ, Trung Quốc, Mỹ, Nigeria, Indonesia, Pakistan, Brazil).
-   - Columns: Kéo `[Year]` (chọn các mốc 1950, 1970, 1990, 2010, 2026, 2040, 2050).
+   - Columns: Kéo `[Year]` (chọn các mốc 1950, 1970, 1990, 2010, 2023, 2040, 2050).
    - Rows: Kéo `SUM([Population])` $\rightarrow$ Nhấp chuột phải $\rightarrow$ **Quick Table Calculation** $\rightarrow$ **Rank**.
    - Nhấp chuột phải lại vào viên thuốc Rank $\rightarrow$ **Compute Using** $\rightarrow$ Chọn `[Entity]`.
    - Đảo trục Rank: Nhấp chuột phải trục Y $\rightarrow$ Edit Axis $\rightarrow$ Tích chọn **Reversed** (để Hạng 1 nằm ở trên đỉnh).
@@ -611,7 +611,7 @@ END
    - Columns: Kéo viên thuốc `[Growth Rate (%) (bin)]` vừa tạo.
    - Rows: Kéo `COUNTD([Entity])`.
    - Thẻ Marks: Chọn **Bar**.
-   - Reference Line: Nhấp chuột phải vào trục X $\rightarrow$ Add Reference Line $\rightarrow$ Hằng số `0.0` (Vạch đỏ nét đứt) đánh dấu ngưỡng tăng trưởng bằng 0: Bên trái là 65 nước suy giảm dân số, bên phải là các nước tăng trưởng.
+   - Reference Line: Nhấp chuột phải vào trục X $\rightarrow$ Add Reference Line $\rightarrow$ Hằng số `0.0` (Vạch đỏ nét đứt) đánh dấu ngưỡng tăng trưởng bằng 0: Bên trái là 54 nước suy giảm dân số, bên phải là các nước tăng trưởng.
 
 7. **Sheet 7: `07-FertilityGrowthQuadrant` (Scatter Plot - Ma trận 4 Góc Phần tư)**:
    - Columns: Kéo `AVG([TFR])` (Trục X: Mức sinh).
@@ -643,7 +643,7 @@ END
 9. **Sheet 9: `09-AgeingDecadeMatrix` (Heatmap / Highlight Table - Ma trận Già hóa)**:
    - Thẻ Filters: Lọc Top 15 quốc gia già hoá tiêu biểu (Nhật, Hàn, Ý, Đức, Việt Nam, Trung Quốc, Mỹ,...).
    - Rows: Kéo `[Entity]`.
-   - Columns: Kéo `[Year]` (chọn Discrete các mốc: 1970, 1990, 2010, 2026, 2040, 2050).
+   - Columns: Kéo `[Year]` (chọn Discrete các mốc: 1970, 1990, 2010, 2023, 2040, 2050).
    - Thẻ Marks: Chọn **Square**.
    - Kéo `AVG([Share 65+ (%)])` vào **Color** và vào **Label**.
    - Edit Colors: Chọn Palette *Red-Yellow-Green Diverging* (Đảo ngược để giá trị cao tỷ lệ già hóa tô màu đỏ sẫm cảnh báo).
@@ -679,7 +679,7 @@ END
      * ✅ `01-GeoMap`, `04-GlobalTrend`, `08-AgeBracketsTransition`, `10-ForecastComparisonMLvsUN`, `KPI-01` ~ `KPI-04`.
      * ❌ **KHÔNG tích**: `02-DemographicTransition`, `06-GrowthHistogram`, `07-FertilityGrowthQuadrant` (Nhóm B dùng Highlight), `03-TopPopulations`, `05-RankBumpChart`, `09-AgeingDecadeMatrix` (Nhóm C độc lập).
    - **Kết quả tương tác**:
-     * Mặc định chọn `World` năm `2026` $\rightarrow$ Nhóm A hiện số liệu toàn cầu 8.3 tỷ người. Nhóm B hiện tất cả nước với World được highlight.
+     * Mặc định chọn `World` năm `2023` $\rightarrow$ Nhóm A hiện số liệu toàn cầu 8.09 tỷ người. Nhóm B hiện tất cả nước với World được highlight.
      * Khi chọn `Vietnam` năm `2020` $\rightarrow$ Nhóm A chuyển sang Vietnam (97.47M, GR 0.92%, Share65 8.84%). Nhóm B highlight Vietnam trên nền các nước khác mờ. Nhóm C giữ nguyên.
 5. **Cài đặt Dashboard Actions — Filter & Highlight (Xem Mục 5.3)**:
    - **Action 1 — Filter Action (Click-to-Filter cho Nhóm A)**:
@@ -699,7 +699,7 @@ END
      * URL: `https://ourworldindata.org/grapher/population?country=<Code>`.
 6. **Thêm Chú thích Nguồn Dữ liệu ở Chân trang (Footer Note)**:
    - Kéo một Text Box nhỏ ở góc dưới Dashboard (font 9pt, màu `#8B8B9E`):
-     * *"Nguồn dữ liệu: Liên Hợp Quốc UN World Population Prospects (2024 Revision) via Our World in Data & World Population Review. Mô hình dự báo: Linear Regression & Logistic Regression (2027–2050)."*
+     * *"Nguồn dữ liệu: Liên Hợp Quốc UN World Population Prospects (2024 Revision) via Our World in Data & World Population Review. Mô hình dự báo: Linear Regression & Logistic Regression (2024–2050)."*
    - Cách làm này đáp ứng 100% tiêu chuẩn báo cáo khoa học mà không làm nặng Fact Table trong cơ sở dữ liệu.
 
 ---
