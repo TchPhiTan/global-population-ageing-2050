@@ -26,6 +26,19 @@ def is_country(code: str | None) -> bool:
     return (len(code) == 3 and code.isalpha() and code.isupper()) or code == "OWID_KOS"
 
 
+def load_continent_mapping() -> dict[str, str]:
+    mapping: dict[str, str] = {}
+    path = ROOT / "data" / "processed" / "continent_mapping.csv"
+    if path.exists():
+        with path.open(encoding="utf-8", newline="") as f:
+            for row in csv.DictReader(f):
+                code = row.get("Code", "").strip()
+                continent = row.get("Continent", "").strip()
+                if code and continent:
+                    mapping[code] = continent
+    return mapping
+
+
 def load_wide_data() -> list[dict[str, str]]:
     with WIDE_INPUT.open(encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
@@ -33,6 +46,7 @@ def load_wide_data() -> list[dict[str, str]]:
 
 def main() -> None:
     sns.set_theme(style="whitegrid")
+    continent_map = load_continent_mapping()
     rows = load_wide_data()
     country_rows = [r for r in rows if is_country(r.get("Code"))]
 
@@ -190,6 +204,7 @@ def main() -> None:
     comparison_rows = []
     for entity in countries:
         code = code_map[entity]
+        cont = continent_map.get(code, "Others")
         for yr in range(2024, 2051):
             un_p = country_pop[entity].get(yr)
             un_s = country_share65[entity].get(yr)
@@ -208,7 +223,59 @@ def main() -> None:
                     "Share65_UN": round(un_s, 2) if un_s else None,
                     "Share65_ML": round(ml_s, 2),
                     "Share65_Diff": round(ml_s - un_s, 2) if un_s else None,
+                    "Continent": cont,
+                    "Region_Type": "Quốc Gia",
                 })
+
+    # Add Continent and World aggregates
+    continents_list = ["Africa", "Asia", "Europe", "North America", "Oceania", "South America"]
+    for cont in continents_list:
+        cont_countries = [r for r in comparison_rows if r["Continent"] == cont and r["Region_Type"] == "Quốc Gia"]
+        for yr in range(2024, 2051):
+            c_rows = [r for r in cont_countries if r["Year"] == yr]
+            if c_rows:
+                tot_un = sum(r["Population_UN"] for r in c_rows)
+                tot_ml = sum(r["Population_ML"] for r in c_rows)
+                diff = tot_ml - tot_un
+                pct = round((diff / tot_un) * 100, 2) if tot_un else 0.0
+                comparison_rows.append({
+                    "Entity": cont,
+                    "Code": "",
+                    "Year": yr,
+                    "Population_UN": tot_un,
+                    "Population_ML": tot_ml,
+                    "Population_Diff": diff,
+                    "Population_Diff_Pct": pct,
+                    "Share65_UN": None,
+                    "Share65_ML": None,
+                    "Share65_Diff": None,
+                    "Continent": cont,
+                    "Region_Type": "Châu Lục",
+                })
+
+    # World aggregate
+    all_country_rows = [r for r in comparison_rows if r["Region_Type"] == "Quốc Gia"]
+    for yr in range(2024, 2051):
+        w_rows = [r for r in all_country_rows if r["Year"] == yr]
+        if w_rows:
+            tot_un = sum(r["Population_UN"] for r in w_rows)
+            tot_ml = sum(r["Population_ML"] for r in w_rows)
+            diff = tot_ml - tot_un
+            pct = round((diff / tot_un) * 100, 2) if tot_un else 0.0
+            comparison_rows.append({
+                "Entity": "World",
+                "Code": "",
+                "Year": yr,
+                "Population_UN": tot_un,
+                "Population_ML": tot_ml,
+                "Population_Diff": diff,
+                "Population_Diff_Pct": pct,
+                "Share65_UN": None,
+                "Share65_ML": None,
+                "Share65_Diff": None,
+                "Continent": "World",
+                "Region_Type": "Thế Giới",
+            })
 
     # Save population_forecast_2050.csv
     forecast_path = OUTPUT_DIR / "population_forecast_2050.csv"
@@ -223,7 +290,7 @@ def main() -> None:
     with comp_path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=[
             "Entity", "Code", "Year", "Population_UN", "Population_ML", "Population_Diff", "Population_Diff_Pct",
-            "Share65_UN", "Share65_ML", "Share65_Diff"
+            "Share65_UN", "Share65_ML", "Share65_Diff", "Continent", "Region_Type"
         ])
         writer.writeheader()
         writer.writerows(comparison_rows)
@@ -308,6 +375,7 @@ def main() -> None:
             "Super_Aged_Category": "Super-Aged Expected" if p_age >= 0.5 else "Non-Super-Aged",
             "Actual_Depopulation_Flag": act_dep,
             "Actual_Super_Aged_Flag": act_age,
+            "Continent": continent_map.get(code_map[ent], "Others"),
         })
 
     # Save risk classification file
@@ -315,7 +383,8 @@ def main() -> None:
     with risk_path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=[
             "Entity", "Code", "Depopulation_Risk_Score", "Depopulation_Category",
-            "Super_Aged_Risk_Score", "Super_Aged_Category", "Actual_Depopulation_Flag", "Actual_Super_Aged_Flag"
+            "Super_Aged_Risk_Score", "Super_Aged_Category", "Actual_Depopulation_Flag", "Actual_Super_Aged_Flag",
+            "Continent"
         ])
         writer.writeheader()
         writer.writerows(risk_records)

@@ -43,12 +43,12 @@ China,CHN,Asia,2000,2023,2032,23,9,Quốc Gia,True
 Malaysia,MYS,Asia,2022,2045,,23,,Quốc Gia,True
 Morocco,MAR,Africa,2021,2044,,23,,Quốc Gia,True
 New Caledonia,NCL,Oceania,2008,2031,2045,23,14,Quốc Gia,True
-Asia,OWID_ASI,Asia,2012,2036,,24,,Châu Lục,False
+Asia,OWID_ASI,Asia,2012,2036,,24,,Khối Thu Nhập,False
 Curacao,CUW,North America,1992,2016,2031,24,15,Quốc Gia,True
 Indonesia,IDN,Asia,2023,2047,,24,,Quốc Gia,True
 Japan,JPN,Asia,1970,1994,2005,24,11,Quốc Gia,True
 Mexico,MEX,North America,2018,2042,,24,,Quốc Gia,True
-South America,OWID_SAM,South America,2010,2034,2049,24,15,Châu Lục,False
+South America,OWID_SAM,South America,2010,2034,2049,24,15,Khối Thu Nhập,False
 Taiwan,TWN,Asia,1994,2018,2025,24,7,Quốc Gia,True
 India,IND,Asia,2024,2049,,25,,Quốc Gia,True
 Jersey,JEY,Europe,1950,1975,2027,25,52,Quốc Gia,True
@@ -81,7 +81,7 @@ Niue,NIU,Oceania,1983,2019,,36,,Quốc Gia,True
 Bermuda,BMU,North America,1975,2012,2022,37,10,Quốc Gia,True
 Bulgaria,BGR,Europe,1955,1992,2015,37,23,Quốc Gia,True
 Finland,FIN,Europe,1957,1994,2015,37,21,Quốc Gia,True
-World,OWID_WRL,World,2002,2039,,37,,Thế Giới,False
+World,OWID_WRL,World,2002,2039,,37,,Khối Thu Nhập,False
 Italy,ITA,Europe,1950,1988,2007,38,19,Quốc Gia,True
 Barbados,BRB,North America,1980,2019,2032,39,13,Quốc Gia,True
 Croatia,HRV,Europe,1956,1996,2017,40,21,Quốc Gia,True
@@ -94,7 +94,7 @@ Saint Pierre and Miquelon,SPM,North America,1965,2008,2024,43,16,Quốc Gia,True
 Hungary,HUN,Europe,1950,1994,2020,44,26,Quốc Gia,True
 Moldova,MDA,Europe,1976,2020,2045,44,25,Quốc Gia,True
 Gibraltar,GIB,Europe,1950,1995,2033,45,38,Quốc Gia,True
-Europe,OWID_EUR,Europe,1950,1996,2023,46,27,Châu Lục,False
+Europe,OWID_EUR,Europe,1950,1996,2023,46,27,Khối Thu Nhập,False
 Luxembourg,LUX,Europe,1950,1996,2035,46,39,Quốc Gia,True
 Montserrat,MSR,North America,1950,1996,2026,46,30,Quốc Gia,True
 Poland,POL,Europe,1966,2012,2024,46,12,Quốc Gia,True
@@ -132,12 +132,12 @@ Israel,ISR,Asia,1972,2038,,66,,Quốc Gia,True
 Iceland,ISL,Europe,1950,2017,2038,67,21,Quốc Gia,True
 Anguilla,AIA,North America,1959,2027,2036,68,9,Quốc Gia,True
 Ireland,IRL,Europe,1950,2019,2036,69,17,Quốc Gia,True
-North America,OWID_NAM,North America,1954,2023,2048,69,25,Châu Lục,False
+North America,OWID_NAM,North America,1954,2023,2048,69,25,Khối Thu Nhập,False
 Andorra,AND,Europe,1950,2020,2030,70,10,Quốc Gia,True
 Saint Barthelemy,BLM,North America,1950,2020,2029,70,9,Quốc Gia,True
 Armenia,ARM,Asia,1950,2025,2040,75,15,Quốc Gia,True
 Sint Maarten (Dutch part),SXM,North America,1950,2025,2034,75,9,Quốc Gia,True
-Oceania,OWID_OCE,Oceania,1950,2026,,76,,Châu Lục,False
+Oceania,OWID_OCE,Oceania,1950,2026,,76,,Khối Thu Nhập,False
 Falkland Islands,FLK,South America,1950,2027,2033,77,6,Quốc Gia,True
 Dominica,DMA,North America,1950,2028,,78,,Quốc Gia,True
 Cayman Islands,CYM,North America,1952,2032,2041,80,9,Quốc Gia,True
@@ -150,7 +150,7 @@ Seychelles,SYC,Africa,1950,2040,,90,,Quốc Gia,True
 Bonaire Sint Eustatius and Saba,BES,North America,1950,1950,2037,0,87,Quốc Gia,True
 Monaco,MCO,Europe,1950,1950,1963,0,13,Quốc Gia,True
 Afghanistan,AFG,Asia,,,,,,Quốc Gia,True
-Africa,OWID_AFR,Africa,,,,,,Châu Lục,False
+Africa,OWID_AFR,Africa,,,,,,Khối Thu Nhập,False
 Angola,AGO,Africa,,,,,,Quốc Gia,True
 Bahrain,BHR,Asia,2043,,,,,Quốc Gia,True
 Bangladesh,BGD,Asia,2027,,,,,Quốc Gia,True

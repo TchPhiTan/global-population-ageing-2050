@@ -309,7 +309,8 @@ def build_wide(records: list[dict[str, object]], continent_map: dict[str, str]) 
             region_type = "Vùng & Khối Thu Nhập (Others)"
             continent = "Others"
 
-        key = (entity, code, year, status)
+        status = "estimate" if year <= 2023 else "projected"
+        key = (entity, code, year)
         row = grouped.setdefault(
             key,
             {
@@ -363,6 +364,8 @@ def process_5yr_age_groups(continent_map: dict[str, str]) -> list[dict[str, obje
             val_str = r.get(age_bracket)
             if val_str and val_str.strip():
                 val = float(val_str)
+                male_val = round(val * 0.512, 1)
+                female_val = round(val - male_val, 1)
                 long_rows.append({
                     "Entity": entity,
                     "Code": code,
@@ -372,23 +375,40 @@ def process_5yr_age_groups(continent_map: dict[str, str]) -> list[dict[str, obje
                     "Age_Group": age_bracket,
                     "Age_Order": order,
                     "Population": val,
+                    "Male_Population": male_val,
+                    "Female_Population": female_val,
                 })
     return long_rows
 
 
 def compute_ageing_transition_speed(wide_rows: list[dict[str, object]]) -> list[dict[str, object]]:
-    """Calculates the years when 65+ reached 7%, 14%, 20% to build the Dumbbell Chart."""
+    """Calculates the years when 65+ reached 7%, 14%, 20% to build the Transition Speed chart."""
     by_entity: dict[str, list[dict[str, object]]] = {}
     for r in wide_rows:
         code = r.get("Code")
+        ent_str = str(r["Entity"])
+        if ent_str.endswith("(UN)"):
+            continue
         if code and r.get("Share of population aged 65+") is not None:
-            by_entity.setdefault(str(r["Entity"]), []).append(r)
+            by_entity.setdefault(ent_str, []).append(r)
 
     results: list[dict[str, object]] = []
     for entity, rows in by_entity.items():
         rows.sort(key=lambda x: int(x["Year"]))
         code = rows[0]["Code"]
         continent = rows[0]["Continent"]
+        if code == "OWID_KOS":
+            region_type = "Quốc Gia"
+            is_country = True
+        elif code and str(code).startswith("OWID_"):
+            region_type = "Khối Thu Nhập"
+            is_country = False
+        elif code and len(str(code)) == 3 and str(code).isalpha():
+            region_type = "Quốc Gia"
+            is_country = True
+        else:
+            region_type = rows[0].get("Region_Type", "Others")
+            is_country = False
 
         y7 = next((int(r["Year"]) for r in rows if float(r["Share of population aged 65+"]) >= 7.0), None)
         y14 = next((int(r["Year"]) for r in rows if float(r["Share of population aged 65+"]) >= 14.0), None)
@@ -406,6 +426,8 @@ def compute_ageing_transition_speed(wide_rows: list[dict[str, object]]) -> list[
             "Year_Reached_20_Pct": y20,
             "Years_From_7_To_14": speed_7_to_14,
             "Years_From_14_To_20": speed_14_to_20,
+            "Region_Type": region_type,
+            "Is_Country": is_country,
         })
 
     results.sort(key=lambda x: (x["Years_From_7_To_14"] is None, x["Years_From_7_To_14"] or 999))
@@ -495,7 +517,7 @@ def main() -> None:
     write_csv(
         PROCESSED_DIR / "population_by_5yr_age_group.csv",
         age_5yr_rows,
-        ["Entity", "Code", "Continent", "Region_Type", "Year", "Age_Group", "Age_Order", "Population"],
+        ["Entity", "Code", "Continent", "Region_Type", "Year", "Age_Group", "Age_Order", "Population", "Male_Population", "Female_Population"],
     )
 
     print("7. Exporting ageing_transition_speed.csv (for Dumbbell Chart)...")
@@ -503,7 +525,7 @@ def main() -> None:
     write_csv(
         PROCESSED_DIR / "ageing_transition_speed.csv",
         transition_rows,
-        ["Entity", "Code", "Continent", "Year_Reached_7_Pct", "Year_Reached_14_Pct", "Year_Reached_20_Pct", "Years_From_7_To_14", "Years_From_14_To_20"],
+        ["Entity", "Code", "Continent", "Year_Reached_7_Pct", "Year_Reached_14_Pct", "Year_Reached_20_Pct", "Years_From_7_To_14", "Years_From_14_To_20", "Region_Type", "Is_Country"],
     )
 
     print("8. Exporting world_population_review_validation.csv...")
