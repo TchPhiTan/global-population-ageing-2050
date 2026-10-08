@@ -14,7 +14,7 @@
   * `Continent`: Châu lục chuẩn tiếng Anh (`Africa`, `Asia`, `Europe`, `North America`, `Oceania`, `South America`).
   * `Region_Type`: Phân loại cấp bậc (`Quốc Gia`, `Châu Lục`, `Thế Giới`, `Vùng & Khối Thu Nhập (Others)`).
   * `Year`: Năm thống kê (1950 đến 2050).
-  * `DataStatus`: Trạng thái số liệu (`estimate`: số liệu lịch sử 1950–2021; `projected`: dự phóng UN WPP 2022–2050).
+  * `DataStatus`: Trạng thái số liệu chuẩn hoá (`historical`: số liệu lịch sử 1950–2026; `projected`: dự phóng UN WPP & mô hình 2027–2050).
   * `Population`: Dân số tuyệt đối (người).
   * Các chỉ số nhân khẩu học: `Growth rate`, `Total fertility rate (TFR)`, `Life expectancy`, `Median age`, `Share of population aged 65+`, `Old-age dependency ratio`...
 
@@ -187,8 +187,8 @@ Bộ 4 tham số này điều khiển đồng bộ toàn bộ logic lọc, đổ
 * **Rows (Trục 2):** `SUM(Population)` $\rightarrow$ Mark: **Line**, Color: `DataStatus` (Opacity 100%, nét mảnh).
   * Đồng bộ trục (Synchronize Axis) và ẩn trục phụ bên phải.
 * **Bảng màu:**
-  * `estimate` (Lịch sử): Xanh Teal thanh lịch `#0D9488`.
-  * `projected` (Dự phóng): Cam san hô `#F97316`.
+  * `historical` (Lịch sử 1950–2026): Xanh Teal thanh lịch `#0D9488`.
+  * `projected` (Dự phóng 2027–2050): Cam san hô `#F97316`.
 * **Vạch chuẩn tương tác (Reference Line):**
   * Thêm Reference Line trên trục X: Giá trị gắn với Parameter `p_Year`, nét đứt màu xám `#64748B`.
 * **Bộ lọc (Filters):**
@@ -231,7 +231,51 @@ Bộ 4 tham số này điều khiển đồng bộ toàn bộ logic lọc, đổ
 
 ---
 
-## 6. SẴN SÀNG CHO DASHBOARD 2
-Toàn bộ thông số, logic tính toán và thiết kế của **Dashboard 1** đã được khóa chuẩn xác trong tài liệu này. 
+## 6. SẴN SÀNG CHO DASHBOARD 2 & 3
+Toàn bộ thông số, logic tính toán và thiết kế của **Dashboard 1** đã được khóa chuẩn xác trong tài liệu này.
 
-Hệ thống đã sẵn sàng để lắp ghép Dashboard 1 và đón nhận toàn bộ ý tưởng cấu trúc, chủ đề từ người dùng cho **Dashboard 2**!
+---
+
+## 7. ĐẶC TẢ KỸ THUẬT DASHBOARD 4: ĐÁNH GIÁ MÔ HÌNH HỌC MÁY (LINEAR VS LOGISTIC REGRESSION)
+> **Kiến trúc One-Click Model Toggle**: Cho phép chuyển đổi linh hoạt giữa 2 bài toán Máy học (Hồi quy Tuyến tính dự phóng & Hồi quy Logistic phân loại rủi ro) trên cùng một Dashboard thông qua nút bấm chuyển đổi tham số và cơ chế hiển thị vùng động (**Dynamic Zone Visibility**).
+
+### 7.1. Tham số & Công tắc Chuyển đổi Mô hình (Model Selector Parameter)
+1. **Parameter `p_Model_Selector`**:
+   - Data type: `String`
+   - List values:
+     - `1. Linear Regression (Dự phóng Dân số & Sai số Residuals)`
+     - `2. Logistic Regression (Phân loại Siêu Già & Tinh chỉnh Ngưỡng)`
+2. **Parameter `p_Threshold`** (Chỉ hiển thị khi chọn Logistic Regression):
+   - Data type: `Float`
+   - Range: `0.10` đến `0.90`, Step: `0.05` (Mặc định: `0.50` hoặc `0.60`)
+   - Hiển thị dưới dạng **Slider** trên thanh điều khiển.
+3. **Calculated Fields điều khiển hiển thị Container (Dynamic Zone Visibility)**:
+   - `[Show Linear Container]` = `STARTSWITH([p_Model_Selector], "1. Linear")`
+   - `[Show Logistic Container]` = `STARTSWITH([p_Model_Selector], "2. Logistic")`
+
+### 7.2. Giao diện 1: Khi chọn "Linear Regression"
+* **Nguồn dữ liệu:** `data/processed/model_vs_un_wpp_comparison_2050.csv`
+* **4 Thẻ KPI Tĩnh (Scorecards):**
+  - **$R^2$ Score (Test 2021-2026):** `0.9942`
+  - **MAE (Sai số tuyệt đối trung bình):** `2,638,108` người
+  - **RMSE (Căn sai số toàn phương):** `10,405,944` người
+  - **Tổng Dân số 2050 Dự báo (ML vs UN):** `9.7 Tỷ` vs `9.7 Tỷ` người
+* **Biểu đồ Cột Trái (60%):** Quỹ đạo Dân số Lịch sử (1950-2026) & Dự phóng (2027-2050) so sánh giữa đường Linear Regression vs UN WPP Benchmark.
+* **Biểu đồ Cột Phải (40%):** Phân tích Phần dư (Residuals = Pop_ML - Pop_UN): Biểu đồ cột phân tán thể hiện sai số tuyệt đối và tỷ lệ sai số `Residual_Pct` theo từng quốc gia/khu vực.
+
+### 7.3. Giao diện 2: Khi chọn "Logistic Regression" (Kèm Tinh chỉnh Ngưỡng)
+* **Nguồn dữ liệu:** `data/processed/technical/country_risk_classification_2050.csv` và `logistic_threshold_simulation_2050.csv`
+* **4 Thẻ KPI Động (Nhảy số tức thì theo thanh trượt `p_Threshold`):**
+  - **Accuracy:** `98.36%` (tại ngưỡng 0.60)
+  - **Precision:** `100.00%` (tại ngưỡng 0.60)
+  - **Recall:** `96.55%` (tại ngưỡng 0.60)
+  - **F1-Score:** `98.25%` (tại ngưỡng 0.60)
+  - **Số Quốc gia Cảnh báo Đỏ:** Tự động đếm số quốc gia có xác suất $\ge$ `p_Threshold`.
+* **Biểu đồ Cột Trái (55%):** Bản đồ Thế giới Phân loại Nguy cơ Động (Dynamic Risk Map):
+  - Formula: `IF [Super_Aged_Risk_Prob] >= [p_Threshold] THEN "Cảnh báo Nguy cơ Cao" ELSE "An toàn / Bình thường" END`
+  - Kéo thanh trượt `p_Threshold` từ 0.2 đến 0.8: Màu sắc bản đồ chuyển từ cảnh báo diện rộng sang cảnh báo chọn lọc thời gian thực.
+* **Biểu đồ Cột Phải (45%):** Biểu đồ Đánh đổi Precision vs Recall theo Ngưỡng (PR Trade-off Curve):
+  - Trục X: `Threshold` (0.10 đến 0.90).
+  - Trục Y: 2 đường `Precision` và `Recall`.
+  - Reference Line: Vạch đứng trượt theo giá trị của `p_Threshold`.
+

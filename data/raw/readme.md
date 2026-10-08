@@ -17,16 +17,17 @@ Mỗi file CSV đi kèm một file `.metadata.json` chứa thông tin trích d�
 | # | File CSV | Chỉ số (Indicator) | Kích thước | URL Nguồn OWID | Chart Tableau sử dụng |
 | :---: | :--- | :--- | :---: | :--- | :--- |
 | **1** | `population-with-un-projections.csv` | Population (1950–2100) | 1.1 MB | [Population with UN Projections](https://ourworldindata.org/grapher/population-with-un-projections) | Dashboard 1 (Map, Bar, Line), Dashboard 2 (Area), KPI 1 |
-| **2** | `population-growth-rates.csv` | Population growth rate (1950–2100) | 1.0 MB | [Population Growth Rates](https://ourworldindata.org/grapher/population-growth-rates) | Dashboard 2 (Dual-Axis OWID line), KPI 2 |
-| **3** | `children-born-per-woman.csv` | Total fertility rate (1950–2023) | 510 KB | [Children Born per Woman](https://ourworldindata.org/grapher/children-born-per-woman) | Dashboard 3 (TFR vs LE, TFR vs Median Age), KPI 4 |
-| **4** | `median-age.csv` | Median age (1950–2100) | 1.0 MB | [Median Age](https://ourworldindata.org/grapher/median-age) | Dashboard 3 (Median Age vs TFR / Growth Rate) |
-| **5** | `life-expectancy.csv` | Life expectancy at birth (1950–2023) | 605 KB | [Life Expectancy](https://ourworldindata.org/grapher/life-expectancy) | Dashboard 3 (Gapminder Bubble Chart), ML Features |
-| **6** | `population-young-working-elderly-with-projections.csv` | 3 Age groups: <15, 15-64, 65+ (1950–2100) | 1.8 MB | [Age Groups with Projections](https://ourworldindata.org/grapher/population-young-working-elderly-with-projections) | Dashboard 2 (Stacked Area), Dashboard 4 (Support Ratio) |
-| **7** | `world-population-review-2024-2026.csv` | Population (2024–2026) – Kiểm chứng chéo | 69 KB | [World Population Review](https://worldpopulationreview.com/) | Đối chiếu chéo với UN WPP |
-| **8** | `natural-population-growth.csv` | Natural population growth rate (1950–2100) | 1.1 MB | [Natural Population Growth](https://ourworldindata.org/grapher/natural-population-growth) | Dashboard 3 (Natural growth vs Median Age) |
-| **9** | `births-and-deaths-projected-to-2100.csv` | Births & Deaths (1950–2100) | 1.4 MB | [Births and Deaths](https://ourworldindata.org/grapher/births-and-deaths-projected-to-2100) | Dashboard 3 (Cặp kéo Sinh - Tử / Demographic Scissors) |
-| **10** | `population-by-five-year-age-group.csv` | Population by 5-year age groups (1950–2023) | 2.9 MB | [Population by Age Group](https://ourworldindata.org/grapher/population-by-five-year-age-group) | Dashboard 2 (Tháp tuổi 5 năm / Population Pyramid) |
-| **11** | `gdp-per-capita-worldbank.csv` | GDP per capita PPP (1990–2025) | 277 KB | [GDP per Capita](https://ourworldindata.org/grapher/gdp-per-capita-worldbank) | Dashboard 4 (Ma trận Già trước khi giàu / 4-Quadrant) |
+| **2** | `population-growth-rates.csv` | Population growth rate (1950–2100) | 1.0 MB | [Population Growth Rates](https://ourworldindata.org/grapher/population-growth-rates) | Dashboard 2 (Dual-Axis line), KPI 2 |
+| **3** | `fertility-rate-with-projections.csv` *(Mới cập nhật)* | Total fertility rate (1950–2100) | 1.1 MB | [Fertility Rate with Projections](https://ourworldindata.org/grapher/fertility-rate-with-projections) | Dashboard 3 (TFR 6 Châu lục vs 2.1), Dashboard 4/5 (Feature ML) |
+| **4** | `children-born-per-woman.csv` | Total fertility rate (1950–2023) - File gốc | 510 KB | [Children Born per Woman](https://ourworldindata.org/grapher/children-born-per-woman) | Tham chiếu lịch sử bổ trợ |
+| **5** | `median-age.csv` | Median age (1950–2100) | 1.0 MB | [Median Age](https://ourworldindata.org/grapher/median-age) | Dashboard 3 (Tuổi trung vị vs Mức sinh / Tăng trưởng) |
+| **6** | `life-expectancy.csv` | Life expectancy at birth (1950–2023 + ngoại suy 2050) | 605 KB | [Life Expectancy](https://ourworldindata.org/grapher/life-expectancy) | Dashboard 3 (Tuổi thọ vs Mức sinh), Đặc trưng Logistic Regression |
+| **7** | `population-young-working-elderly-with-projections.csv` | 3 Age groups: <15, 15-64, 65+ (1950–2100) | 1.8 MB | [Age Groups with Projections](https://ourworldindata.org/grapher/population-young-working-elderly-with-projections) | Dashboard 2 (Stacked Area), Dashboard 4/5 (Tỷ số hỗ trợ) |
+| **8** | `world-population-review-2024-2026.csv` | Population (2024–2026) – Kiểm chứng chéo | 69 KB | [World Population Review](https://worldpopulationreview.com/) | Đối chiếu chéo độc lập với UN WPP |
+| **9** | `natural-population-growth.csv` | Natural population growth rate (1950–2100) | 1.1 MB | [Natural Population Growth](https://ourworldindata.org/grapher/natural-population-growth) | Dashboard 3 (Tăng trưởng tự nhiên vs Tuổi trung vị) |
+| **10** | `births-and-deaths-projected-to-2100.csv` | Births & Deaths (1950–2100) | 1.4 MB | [Births and Deaths](https://ourworldindata.org/grapher/births-and-deaths-projected-to-2100) | Dashboard 2 (Cặp kéo Sinh - Tử / Demographic Scissors) |
+| **11** | `population-by-five-year-age-group.csv` | Population by 5-year age groups (1950–2023) | 2.9 MB | [Population by Age Group](https://ourworldindata.org/grapher/population-by-five-year-age-group) | Dashboard 2 (Tháp tuổi 21 nhóm / Population Pyramid) |
+| **12** | `gdp-per-capita-worldbank.csv` | GDP per capita PPP (1990–2025) | 277 KB | [GDP per Capita](https://ourworldindata.org/grapher/gdp-per-capita-worldbank) | Dashboard Kinh tế (Gapminder Bubble Chart) |
 
 ---
 
@@ -90,6 +91,19 @@ World Population Review – Live Population Clock
 - **Lần cập nhật tiếp theo dự kiến**: **July 2027** (UN WPP 2026 Revision).
 - Dữ liệu OWID được cập nhật tự động khi UN phát hành bản sửa đổi mới.
 - Khi tải lại dữ liệu, cần chạy lại toàn bộ pipeline: `preprocess → run_eda → forecast_population`.
+
+---
+
+## 7. Quy chuẩn Lát cắt Thời gian & Phương pháp Xử lý Dữ liệu
+
+1. **Chuẩn hoá Nhãn Trạng thái Dữ liệu (`DataStatus`)**:
+   - **Giai đoạn Lịch sử (`historical`)**: Toàn bộ dữ liệu từ năm 1950 đến hết năm **2026** (quan sát thực tế & kiểm chứng độc lập).
+   - **Giai đoạn Dự phóng (`projected`)**: Toàn bộ dữ liệu từ năm **2027 đến năm 2050** (dự phóng mô hình học máy và kịch bản chuẩn UN WPP).
+
+2. **Xử lý Thiếu hụt & Bổ sung Dữ liệu 2024 – 2026**:
+   - **Mức sinh (TFR)**: Thay thế tệp gốc chỉ có đến 2023 bằng `fertility-rate-with-projections.csv` (UN WPP 2024 Revision) để có trọn vẹn chuỗi 1950–2050.
+   - **Kỳ vọng sống (Life expectancy)**: Ngoại suy xu thế tuyến tính chu kỳ 20 năm gần nhất (chặn trần sinh học 92 tuổi) cho giai đoạn 2024–2050.
+   - **Tuổi trung vị & Tăng trưởng tự nhiên**: Tận dụng trọn vẹn chuỗi dự phóng chính thức của UN WPP đến 2050.
 
 ---
 

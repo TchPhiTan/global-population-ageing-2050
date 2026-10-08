@@ -15,6 +15,7 @@ Dự án nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu giai 
 ```text
 ├── data/
 │   ├── raw/                                    # Dữ liệu thô tải từ Our World in Data & WPR
+│   │   ├── fertility-rate-with-projections.csv      (1.1 MB – TFR 1950–2100 UN WPP)
 │   │   ├── children-born-per-woman.csv              (510 KB – TFR 1950–2023)
 │   │   ├── children-born-per-woman.metadata.json
 │   │   ├── life-expectancy.csv                      (605 KB – Tuổi thọ 1950–2023)
@@ -30,16 +31,17 @@ Dự án nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu giai 
 │   │   ├── world-population-review-2024-2026.csv    (69 KB – Kiểm chứng chéo WPR)
 │   │   ├── world-population-review-2024-2026.metadata.json
 │   │   └── readme.md                                # Ghi chú nguồn gốc dữ liệu từ OWID
-│   └── processed/                              # Dữ liệu sạch, sẵn sàng nạp vào Tableau & ML
-│       ├── population_fact_long.csv                 (23 MB, 348,338 dòng, 7 cột)
-│       ├── population_fact_wide.csv                 (3.9 MB, 39,476 dòng – Data source chính Tableau)
-│       ├── population_forecast_2050.csv             (30,336 dòng – ML & UN WPP)
-│       ├── model_vs_un_wpp_comparison_2050.csv      (6,399 dòng – Bảng so sánh ML vs UN)
-│       ├── country_risk_classification_2050.csv     (13 KB, 237 quốc gia – Điểm rủi ro)
+│   └── processed/                              # Dữ liệu sạch, chuẩn hoá historical (<=2026) & projected (2027-2050)
+│       ├── population_fact_long.csv                 (23 MB, 373,873 dòng, 7 cột)
+│       ├── population_fact_wide.csv                 (4.2 MB, 27,760 dòng – Data source chính Tableau)
+│       ├── population_forecast_2050.csv             (29,625 dòng – Dự báo ML & UN WPP 2027-2050)
+│       ├── model_vs_un_wpp_comparison_2050.csv      (5,856 dòng – So sánh ML vs UN kèm Residual)
+│       ├── population_policy_scenarios_2050.csv     (41,001 dòng – 4 Kịch bản chính sách What-If)
+│       ├── country_risk_classification_2050.csv     (16 KB, 237 quốc gia – Điểm rủi ro 2050)
 │       ├── world_population_review_validation.csv   (26 KB, 705 dòng – Đối chiếu WPR)
-│       ├── continent_mapping.csv                    (5.4 KB, 237 quốc gia – Ánh xạ châu lục)
-│       ├── data_dictionary.csv                      (375B – Từ điển dữ liệu)
-│       └── data_quality_report.json                 (873B – Báo cáo kiểm định)
+│       ├── continent_mapping.csv                    (5.6 KB, 237 quốc gia – Ánh xạ châu lục)
+│       ├── data_dictionary.csv                      (1.5 KB – Từ điển dữ liệu chuẩn)
+│       └── data_quality_report.json                 (1.0 KB – Báo cáo kiểm định)
 ├── docs/                                       # Tài liệu thiết kế & đặc tả
 │   ├── data-sources-and-phases.md                   # Nguồn dữ liệu & phương pháp luận
 │   ├── implementation-plan.md                       # Kế hoạch thực thi chi tiết
@@ -88,9 +90,9 @@ Dự án nghiên cứu sự chuyển dịch nhân khẩu học toàn cầu giai 
 | :--- | :--- | :--- | :--- |
 | **Population** | `population-with-un-projections.csv` | [OWID: Population with UN Projections](https://ourworldindata.org/grapher/population-with-un-projections) | Chart 1 (Filled Map), Chart 2 (Scatter - Size), Chart 3 (Bar), Chart 4 (Area+Line), Chart 5 (Bump), KPI 1 |
 | **Population growth rate** | `population-growth-rates.csv` | [OWID: Population Growth Rates](https://ourworldindata.org/grapher/population-growth-rates) | Chart 6 (Histogram), Chart 7 (Scatter - trục Y), KPI 2 |
-| **Total fertility rate (TFR)** | `children-born-per-woman.csv` | [OWID: Children Born per Woman](https://ourworldindata.org/grapher/children-born-per-woman) | Chart 2 (Scatter - trục Y), Chart 7 (Scatter - trục X), KPI 4 |
-| **Median age** | `median-age.csv` | [OWID: Median Age](https://ourworldindata.org/grapher/median-age) | Chart 9 (Heatmap - tuỳ chọn), KPI bổ sung |
-| **Life expectancy** | `life-expectancy.csv` | [OWID: Life Expectancy](https://ourworldindata.org/grapher/life-expectancy) | Chart 2 (Scatter - trục X), Đặc trưng Logistic Regression, phân tích EDA |
+| **Total fertility rate (TFR)** | `fertility-rate-with-projections.csv` | [OWID: Fertility Rate with Projections](https://ourworldindata.org/grapher/fertility-rate-with-projections) | Dashboard 3 (TFR vs 2.1), Đặc trưng ML, KPI 4 |
+| **Median age** | `median-age.csv` | [OWID: Median Age](https://ourworldindata.org/grapher/median-age) | Dashboard 3 (Scatter plots), Đặc trưng ML |
+| **Life expectancy** | `life-expectancy.csv` | [OWID: Life Expectancy](https://ourworldindata.org/grapher/life-expectancy) | Dashboard 3 (Tuổi thọ vs Mức sinh), Đặc trưng Logistic Regression |
 | **Age groups (0-14, 15-64, 65+)** | `population-young-working-elderly-with-projections.csv` | [OWID: Age Groups with Projections](https://ourworldindata.org/grapher/population-young-working-elderly-with-projections) | Chart 8 (100% Stacked Area), Chart 9 (Heatmap), Chart 10 (Dual-Axis), KPI 3 |
 | **Share 65+ (dẫn xuất)** | *(Tính từ Age groups / Population)* | [OWID: Age Structure](https://ourworldindata.org/age-structure) | Chart 9, Chart 10, KPI 3, Ageing Stage classification |
 | **Old-age dependency ratio (dẫn xuất)** | *(Tính từ 65+ / 15-64)* | [OWID: Dependency Ratios](https://ourworldindata.org/grapher/age-dependency-ratio-projected-to-2100) | Phân tích EDA, đặc trưng mô hình ML |
