@@ -1,0 +1,238 @@
+Entity,Code,Depopulation_Risk_Score,Depopulation_Category,Super_Aged_Risk_Score,Super_Aged_Category,Actual_Depopulation_Flag,Actual_Super_Aged_Flag,Continent
+Afghanistan,AFG,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Albania,ALB,0.9479,High Risk,0.9999,Super-Aged Expected,1,1,Europe
+Algeria,DZA,0.0054,Low Risk,0.0004,Non-Super-Aged,0,0,Africa
+American Samoa,ASM,0.9954,High Risk,0.0002,Non-Super-Aged,1,0,Oceania
+Andorra,AND,0.0439,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Angola,AGO,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Anguilla,AIA,0.1605,Low Risk,0.9998,Super-Aged Expected,0,1,North America
+Antigua and Barbuda,ATG,0.1611,Low Risk,0.9889,Super-Aged Expected,0,1,North America
+Argentina,ARG,0.1337,Low Risk,0.6813,Super-Aged Expected,0,0,South America
+Armenia,ARM,0.9418,High Risk,0.9924,Super-Aged Expected,1,1,Asia
+Aruba,ABW,0.6953,High Risk,1.0,Super-Aged Expected,1,1,North America
+Australia,AUS,0.0418,Low Risk,1.0,Super-Aged Expected,0,1,Oceania
+Austria,AUT,0.7317,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Azerbaijan,AZE,0.0651,Low Risk,0.1961,Non-Super-Aged,0,0,Asia
+Bahamas,BHS,0.1445,Low Risk,0.7842,Super-Aged Expected,0,1,North America
+Bahrain,BHR,0.0004,Low Risk,0.3356,Non-Super-Aged,0,0,Asia
+Bangladesh,BGD,0.0031,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Barbados,BRB,0.616,High Risk,0.9998,Super-Aged Expected,0,1,North America
+Belarus,BLR,0.9476,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Belgium,BEL,0.5452,Moderate Risk,1.0,Super-Aged Expected,0,1,Europe
+Belize,BLZ,0.0024,Low Risk,0.0,Non-Super-Aged,0,0,North America
+Benin,BEN,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Bermuda,BMU,0.8759,High Risk,1.0,Super-Aged Expected,1,1,North America
+Bhutan,BTN,0.0231,Low Risk,0.0011,Non-Super-Aged,0,0,Asia
+Bolivia,BOL,0.0026,Low Risk,0.0,Non-Super-Aged,0,0,South America
+Bonaire Sint Eustatius and Saba,BES,0.0029,Low Risk,0.9998,Super-Aged Expected,0,1,North America
+Bosnia and Herzegovina,BIH,0.9876,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Botswana,BWA,0.0008,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Brazil,BRA,0.1309,Low Risk,0.8394,Super-Aged Expected,0,1,South America
+British Virgin Islands,VGB,0.1199,Low Risk,0.9977,Super-Aged Expected,0,1,North America
+Brunei,BRN,0.0317,Low Risk,0.0358,Non-Super-Aged,0,0,Asia
+Bulgaria,BGR,0.9802,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Burkina Faso,BFA,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Burundi,BDI,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Cambodia,KHM,0.0062,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Cameroon,CMR,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Canada,CAN,0.0707,Low Risk,1.0,Super-Aged Expected,0,1,North America
+Cape Verde,CPV,0.0635,Low Risk,0.0019,Non-Super-Aged,0,0,Africa
+Cayman Islands,CYM,0.0013,Low Risk,0.9995,Super-Aged Expected,0,1,North America
+Central African Republic,CAF,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Chad,TCD,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Chile,CHL,0.1258,Low Risk,0.9998,Super-Aged Expected,0,1,South America
+China,CHN,0.5857,Moderate Risk,1.0,Super-Aged Expected,1,1,Asia
+Colombia,COL,0.0142,Low Risk,0.4308,Non-Super-Aged,0,1,South America
+Comoros,COM,0.0007,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Congo,COG,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Cook Islands,COK,1.0,High Risk,0.997,Super-Aged Expected,1,1,Oceania
+Costa Rica,CRI,0.1191,Low Risk,0.9964,Super-Aged Expected,0,1,North America
+Cote d'Ivoire,CIV,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Croatia,HRV,0.9752,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Cuba,CUB,0.8755,High Risk,1.0,Super-Aged Expected,1,1,North America
+Curacao,CUW,0.5714,Moderate Risk,0.9999,Super-Aged Expected,1,1,North America
+Cyprus,CYP,0.0482,Low Risk,1.0,Super-Aged Expected,0,1,Asia
+Czechia,CZE,0.8307,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Democratic Republic of Congo,COD,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Denmark,DNK,0.3875,Moderate Risk,1.0,Super-Aged Expected,0,1,Europe
+Djibouti,DJI,0.0028,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Dominica,DMA,0.8753,High Risk,0.6694,Super-Aged Expected,1,0,North America
+Dominican Republic,DOM,0.0261,Low Risk,0.0002,Non-Super-Aged,0,0,North America
+East Timor,TLS,0.0022,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Ecuador,ECU,0.0159,Low Risk,0.0069,Non-Super-Aged,0,0,South America
+Egypt,EGY,0.0015,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+El Salvador,SLV,0.0724,Low Risk,0.0001,Non-Super-Aged,0,0,North America
+Equatorial Guinea,GNQ,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Eritrea,ERI,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Estonia,EST,0.9472,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Eswatini,SWZ,0.0058,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Ethiopia,ETH,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Falkland Islands,FLK,0.76,High Risk,1.0,Super-Aged Expected,1,1,South America
+Faroe Islands,FRO,0.0808,Low Risk,0.9997,Super-Aged Expected,0,1,Europe
+Fiji,FJI,0.0835,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+Finland,FIN,0.7832,High Risk,1.0,Super-Aged Expected,1,1,Europe
+France,FRA,0.585,Moderate Risk,1.0,Super-Aged Expected,0,1,Europe
+French Guiana,GUF,0.0017,Low Risk,0.0,Non-Super-Aged,0,0,South America
+French Polynesia,PYF,0.274,Low Risk,0.9998,Super-Aged Expected,0,1,Oceania
+Gabon,GAB,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Gambia,GMB,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Georgia,GEO,0.6153,High Risk,0.9941,Super-Aged Expected,1,1,Asia
+Germany,DEU,0.8717,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Ghana,GHA,0.0005,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Gibraltar,GIB,0.0033,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Greece,GRC,0.9449,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Greenland,GRL,0.7173,High Risk,0.1593,Non-Super-Aged,1,0,Europe
+Grenada,GRD,0.4161,Moderate Risk,0.7736,Super-Aged Expected,0,1,North America
+Guadeloupe,GLP,0.9636,High Risk,1.0,Super-Aged Expected,1,1,North America
+Guam,GUM,0.0986,Low Risk,0.1716,Non-Super-Aged,0,0,Oceania
+Guatemala,GTM,0.001,Low Risk,0.0,Non-Super-Aged,0,0,North America
+Guernsey,GGY,0.6502,High Risk,1.0,Super-Aged Expected,0,1,Europe
+Guinea,GIN,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Guinea-Bissau,GNB,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Guyana,GUY,0.0482,Low Risk,0.0,Non-Super-Aged,0,0,South America
+Haiti,HTI,0.0055,Low Risk,0.0,Non-Super-Aged,0,0,North America
+Honduras,HND,0.0008,Low Risk,0.0,Non-Super-Aged,0,0,North America
+Hong Kong,HKG,0.9311,High Risk,1.0,Super-Aged Expected,1,1,Asia
+Hungary,HUN,0.8918,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Iceland,ISL,0.0343,Low Risk,0.9999,Super-Aged Expected,0,1,Europe
+India,IND,0.0113,Low Risk,0.0001,Non-Super-Aged,0,0,Asia
+Indonesia,IDN,0.0231,Low Risk,0.0002,Non-Super-Aged,0,0,Asia
+Iran,IRN,0.0245,Low Risk,0.6358,Super-Aged Expected,0,1,Asia
+Iraq,IRQ,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Ireland,IRL,0.0446,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Isle of Man,IMN,0.8573,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Israel,ISR,0.0059,Low Risk,0.2365,Non-Super-Aged,0,0,Asia
+Italy,ITA,0.936,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Jamaica,JAM,0.4151,Moderate Risk,0.0099,Non-Super-Aged,1,0,North America
+Japan,JPN,0.9775,High Risk,1.0,Super-Aged Expected,1,1,Asia
+Jersey,JEY,0.6168,High Risk,1.0,Super-Aged Expected,0,1,Europe
+Jordan,JOR,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Kazakhstan,KAZ,0.0125,Low Risk,0.0009,Non-Super-Aged,0,0,Asia
+Kenya,KEN,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Kiribati,KIR,0.0025,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+Kosovo,OWID_KOS,0.6328,High Risk,0.5976,Super-Aged Expected,1,1,Europe
+Kuwait,KWT,0.0016,Low Risk,0.4665,Non-Super-Aged,0,0,Asia
+Kyrgyzstan,KGZ,0.0023,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Laos,LAO,0.0028,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Latvia,LVA,0.9791,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Lebanon,LBN,0.0244,Low Risk,0.0079,Non-Super-Aged,0,0,Asia
+Lesotho,LSO,0.0048,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Liberia,LBR,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Libya,LBY,0.0052,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Liechtenstein,LIE,0.2912,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Lithuania,LTU,0.9765,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Luxembourg,LUX,0.0294,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Macao,MAC,0.2512,Low Risk,1.0,Super-Aged Expected,0,1,Asia
+Madagascar,MDG,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Malawi,MWI,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Malaysia,MYS,0.0052,Low Risk,0.0219,Non-Super-Aged,0,0,Asia
+Maldives,MDV,0.0899,Low Risk,0.4529,Non-Super-Aged,0,1,Asia
+Mali,MLI,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Malta,MLT,0.3015,Moderate Risk,1.0,Super-Aged Expected,0,1,Europe
+Marshall Islands,MHL,1.0,High Risk,0.0,Non-Super-Aged,1,0,Oceania
+Martinique,MTQ,0.9946,High Risk,1.0,Super-Aged Expected,1,1,North America
+Mauritania,MRT,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Mauritius,MUS,0.6966,High Risk,0.9963,Super-Aged Expected,1,1,Africa
+Mayotte,MYT,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Mexico,MEX,0.019,Low Risk,0.0017,Non-Super-Aged,0,0,North America
+Micronesia (country),FSM,0.0877,Low Risk,0.0,Non-Super-Aged,1,0,Oceania
+Moldova,MDA,0.983,High Risk,0.9947,Super-Aged Expected,1,1,Europe
+Monaco,MCO,0.9957,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Mongolia,MNG,0.0072,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Montenegro,MNE,0.9408,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Montserrat,MSR,0.9837,High Risk,1.0,Super-Aged Expected,1,1,North America
+Morocco,MAR,0.02,Low Risk,0.0029,Non-Super-Aged,0,0,Africa
+Mozambique,MOZ,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Myanmar,MMR,0.0418,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Namibia,NAM,0.0003,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Nauru,NRU,0.0417,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+Nepal,NPL,0.1309,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Netherlands,NLD,0.2132,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+New Caledonia,NCL,0.0404,Low Risk,0.9417,Super-Aged Expected,0,1,Oceania
+New Zealand,NZL,0.1047,Low Risk,1.0,Super-Aged Expected,0,1,Oceania
+Nicaragua,NIC,0.0029,Low Risk,0.0,Non-Super-Aged,0,0,North America
+Niger,NER,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Nigeria,NGA,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Niue,NIU,0.4402,Moderate Risk,0.4486,Non-Super-Aged,1,0,Oceania
+North Korea,PRK,0.2628,Low Risk,0.9172,Super-Aged Expected,0,1,Asia
+North Macedonia,MKD,0.9326,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Northern Mariana Islands,MNP,0.9953,High Risk,0.9985,Super-Aged Expected,1,1,Oceania
+Norway,NOR,0.2741,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Oman,OMN,0.0,Low Risk,0.0017,Non-Super-Aged,0,0,Asia
+Pakistan,PAK,0.0009,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Palau,PLW,0.8079,High Risk,0.8239,Super-Aged Expected,1,1,Oceania
+Palestine,PSE,0.0003,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Panama,PAN,0.0071,Low Risk,0.0936,Non-Super-Aged,0,0,North America
+Papua New Guinea,PNG,0.0006,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+Paraguay,PRY,0.0057,Low Risk,0.0,Non-Super-Aged,0,0,South America
+Peru,PER,0.0117,Low Risk,0.0328,Non-Super-Aged,0,0,South America
+Philippines,PHL,0.0116,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Poland,POL,0.8806,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Portugal,PRT,0.8806,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Puerto Rico,PRI,0.9427,High Risk,1.0,Super-Aged Expected,1,1,North America
+Qatar,QAT,0.0006,Low Risk,0.2352,Non-Super-Aged,0,0,Asia
+Reunion,REU,0.257,Low Risk,1.0,Super-Aged Expected,0,1,Africa
+Romania,ROU,0.9512,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Russia,RUS,0.7446,High Risk,0.9999,Super-Aged Expected,1,1,Europe
+Rwanda,RWA,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Saint Barthelemy,BLM,0.0244,Low Risk,1.0,Super-Aged Expected,0,1,North America
+Saint Helena,SHN,0.9987,High Risk,1.0,Super-Aged Expected,1,1,Africa
+Saint Kitts and Nevis,KNA,0.348,Moderate Risk,0.6461,Super-Aged Expected,0,1,North America
+Saint Lucia,LCA,0.2375,Low Risk,0.1976,Non-Super-Aged,0,1,North America
+Saint Martin (French part),MAF,1.0,High Risk,1.0,Super-Aged Expected,1,1,North America
+Saint Pierre and Miquelon,SPM,0.9964,High Risk,1.0,Super-Aged Expected,1,1,North America
+Saint Vincent and the Grenadines,VCT,0.9213,High Risk,0.1391,Non-Super-Aged,1,0,North America
+Samoa,WSM,0.0804,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+San Marino,SMR,0.7564,High Risk,1.0,Super-Aged Expected,0,1,Europe
+Sao Tome and Principe,STP,0.0003,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Saudi Arabia,SAU,0.0005,Low Risk,0.0009,Non-Super-Aged,0,0,Asia
+Senegal,SEN,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Serbia,SRB,0.9723,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Seychelles,SYC,0.0026,Low Risk,0.0562,Non-Super-Aged,0,0,Africa
+Sierra Leone,SLE,0.0003,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Singapore,SGP,0.0697,Low Risk,0.9999,Super-Aged Expected,0,1,Asia
+Sint Maarten (Dutch part),SXM,0.0235,Low Risk,1.0,Super-Aged Expected,0,1,North America
+Slovakia,SVK,0.7847,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Slovenia,SVN,0.8384,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Solomon Islands,SLB,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+Somalia,SOM,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+South Africa,ZAF,0.007,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+South Korea,KOR,0.7213,High Risk,1.0,Super-Aged Expected,1,1,Asia
+South Sudan,SSD,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Spain,ESP,0.7634,High Risk,1.0,Super-Aged Expected,1,1,Europe
+Sri Lanka,LKA,0.1017,Low Risk,0.761,Super-Aged Expected,0,1,Asia
+Sudan,SDN,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Suriname,SUR,0.0235,Low Risk,0.0002,Non-Super-Aged,0,0,South America
+Sweden,SWE,0.2893,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Switzerland,CHE,0.2991,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+Syria,SYR,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Taiwan,TWN,0.8891,High Risk,1.0,Super-Aged Expected,1,1,Asia
+Tajikistan,TJK,0.0005,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Tanzania,TZA,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Thailand,THA,0.572,Moderate Risk,1.0,Super-Aged Expected,1,1,Asia
+Togo,TGO,0.0001,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Tokelau,TKL,0.0001,Low Risk,0.0004,Non-Super-Aged,0,0,Oceania
+Tonga,TON,0.7301,High Risk,0.0,Non-Super-Aged,1,0,Oceania
+Trinidad and Tobago,TTO,0.3866,Moderate Risk,0.9832,Super-Aged Expected,0,1,North America
+Tunisia,TUN,0.0739,Low Risk,0.2638,Non-Super-Aged,0,1,Africa
+Turkey,TUR,0.1363,Low Risk,0.6388,Super-Aged Expected,0,1,Asia
+Turkmenistan,TKM,0.0016,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Turks and Caicos Islands,TCA,0.103,Low Risk,0.9995,Super-Aged Expected,0,1,North America
+Tuvalu,TUV,0.9884,High Risk,0.0,Non-Super-Aged,1,0,Oceania
+Uganda,UGA,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Ukraine,UKR,0.9466,High Risk,1.0,Super-Aged Expected,1,1,Europe
+United Arab Emirates,ARE,0.0003,Low Risk,0.0711,Non-Super-Aged,0,0,Asia
+United Kingdom,GBR,0.1738,Low Risk,1.0,Super-Aged Expected,0,1,Europe
+United States,USA,0.1594,Low Risk,1.0,Super-Aged Expected,0,1,North America
+United States Virgin Islands,VIR,0.9934,High Risk,1.0,Super-Aged Expected,1,1,North America
+Uruguay,URY,0.5502,Moderate Risk,0.9987,Super-Aged Expected,1,1,South America
+Uzbekistan,UZB,0.001,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Vanuatu,VUT,0.0002,Low Risk,0.0,Non-Super-Aged,0,0,Oceania
+Vatican,VAT,0.1514,Low Risk,1.0,Super-Aged Expected,1,1,Europe
+Venezuela,VEN,0.0915,Low Risk,0.0004,Non-Super-Aged,0,0,South America
+Vietnam,VNM,0.0615,Low Risk,0.1293,Non-Super-Aged,0,0,Asia
+Wallis and Futuna,WLF,0.9535,High Risk,0.9998,Super-Aged Expected,1,1,Oceania
+Western Sahara,ESH,0.0016,Low Risk,0.0021,Non-Super-Aged,0,0,Africa
+Yemen,YEM,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Asia
+Zambia,ZMB,0.0,Low Risk,0.0,Non-Super-Aged,0,0,Africa
+Zimbabwe,ZWE,0.0003,Low Risk,0.0,Non-Super-Aged,0,0,Africa

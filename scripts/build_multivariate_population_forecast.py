@@ -95,17 +95,33 @@ def main():
         sub["Natural_Growth_Rate"] = sub["Natural population growth rate"].round(3)
         sub["Median_Age"] = sub["Median age"].round(2)
         sub["Share_65plus"] = sub["Share of population aged 65+"].round(2)
+        p_gr = sub.get("Population growth rate", 0)
+        n_gr = sub.get("Natural population growth rate", 0)
+        sub["Net_Migration_Rate"] = (p_gr - n_gr).round(3)
 
         keep_cols = [
             "Entity", "Code", "Continent", "Region_Type", "Year", "DataStatus",
             "Population_Actual", "Population_UN", "Population_Single_ML", "Population_Multi_ML",
             "Residual_Multi", "Residual_Multi_Pct", "Residual_Single", "Residual_Single_Pct",
             "Theoretical_Quantiles", "Standardized_Residuals",
-            "Total_Fertility_Rate", "Life_Expectancy", "Natural_Growth_Rate", "Median_Age", "Share_65plus"
+            "Total_Fertility_Rate", "Life_Expectancy", "Natural_Growth_Rate", "Median_Age", "Share_65plus",
+            "Net_Migration_Rate"
         ]
         all_chunks.append(sub[keep_cols])
 
     out_df = pd.concat(all_chunks, ignore_index=True)
+
+    # Impute missing continent Life_Expectancy as population-weighted average of member countries
+    for cont in ["North America", "South America"]:
+        cont_mask = (out_df["Entity"] == cont)
+        country_sub = out_df[(out_df["Continent"] == cont) & (out_df["Region_Type"] == "Quốc Gia")]
+        for yr in out_df.loc[cont_mask, "Year"].unique():
+            yr_countries = country_sub[country_sub["Year"] == yr]
+            if not yr_countries.empty and yr_countries["Life_Expectancy"].notna().any():
+                tot_pop = yr_countries["Population_UN"].sum()
+                w_le = (yr_countries["Life_Expectancy"] * yr_countries["Population_UN"]).sum() / tot_pop if tot_pop > 0 else yr_countries["Life_Expectancy"].mean()
+                out_df.loc[cont_mask & (out_df["Year"] == yr), "Life_Expectancy"] = round(w_le, 2)
+
     out_path = PROCESSED_DIR / "multivariate_population_forecast.csv"
     out_df.to_csv(out_path, index=False)
     print(f"Xuất file thành công: {out_path} ({len(out_df)} dòng)")

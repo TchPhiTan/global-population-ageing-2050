@@ -243,10 +243,12 @@ def main() -> None:
                     "Year": y,
                     "Scenario": "Historical",
                     "Population": p_val,
+                    "Population_UN": p_val,
                     "Older_People_65plus": o_val,
                     "Share_65plus": s_val,
                     "Support_Ratio": sup_ratio,
                     "Continent": continent_map.get(code, "Others"),
+                    "Region_Type": "Quốc Gia",
                 })
 
         # Fit linear regression model using 1994 - 2026 (33 năm) for stable local trend
@@ -268,6 +270,7 @@ def main() -> None:
                 pop_pred = max(p_pop, 500.0)
                 old_pred = max(min(p_old, pop_pred * 0.6), 0.0)  # ceiling at 60%
                 share_pred = round((old_pred / pop_pred) * 100, 2)
+                un_p_val = round(country_pop[entity].get(yr, pop_pred))
 
                 forecast_rows.append({
                     "Entity": entity,
@@ -290,9 +293,10 @@ def main() -> None:
                 # 0. Baseline (Không can thiệp)
                 scenario_rows.append({
                     "Entity": entity, "Code": code, "Year": yr, "Scenario": "0. Baseline (Không can thiệp)",
-                    "Population": round(pop_pred), "Older_People_65plus": round(old_pred),
+                    "Population": round(pop_pred), "Population_UN": un_p_val, "Older_People_65plus": round(old_pred),
                     "Share_65plus": share_pred, "Support_Ratio": base_sup,
                     "Continent": continent_map.get(code, "Others"),
+                    "Region_Type": "Quốc Gia",
                 })
                 # 1. Fertility Boost (+0.3 con -> tăng dân số trẻ, giảm nhẹ % già)
                 t_step = (yr - 2026) / 24.0
@@ -301,9 +305,10 @@ def main() -> None:
                 fert_sup = round(base_sup * (1.0 + 0.12 * t_step), 2)
                 scenario_rows.append({
                     "Entity": entity, "Code": code, "Year": yr, "Scenario": "1. Khuyến sinh phục hồi",
-                    "Population": round(fert_pop), "Older_People_65plus": round(old_pred),
+                    "Population": round(fert_pop), "Population_UN": un_p_val, "Older_People_65plus": round(old_pred),
                     "Share_65plus": fert_share, "Support_Ratio": fert_sup,
                     "Continent": continent_map.get(code, "Others"),
+                    "Region_Type": "Quốc Gia",
                 })
                 # 2. Retirement Reform (Nâng tuổi hưu 67 -> chuyển 25% người già sang lao động tích cực)
                 ret_old = old_pred * 0.78
@@ -312,9 +317,10 @@ def main() -> None:
                 ret_sup = round(ret_w / ret_old, 2) if ret_old > 0 else 15.0
                 scenario_rows.append({
                     "Entity": entity, "Code": code, "Year": yr, "Scenario": "2. Cải cách Tuổi hưu (Kinh tế bạc)",
-                    "Population": round(pop_pred), "Older_People_65plus": round(ret_old),
+                    "Population": round(pop_pred), "Population_UN": un_p_val, "Older_People_65plus": round(ret_old),
                     "Share_65plus": ret_share, "Support_Ratio": ret_sup,
                     "Continent": continent_map.get(code, "Others"),
+                    "Region_Type": "Quốc Gia",
                 })
                 # 3. Comprehensive (Toàn diện: Khuyến sinh + Tuổi hưu)
                 comp_pop = fert_pop
@@ -323,9 +329,10 @@ def main() -> None:
                 comp_sup = round(ret_sup * 1.15, 2)
                 scenario_rows.append({
                     "Entity": entity, "Code": code, "Year": yr, "Scenario": "3. Can thiệp Toàn diện",
-                    "Population": round(comp_pop), "Older_People_65plus": round(comp_old),
+                    "Population": round(comp_pop), "Population_UN": un_p_val, "Older_People_65plus": round(comp_old),
                     "Share_65plus": comp_share, "Support_Ratio": comp_sup,
                     "Continent": continent_map.get(code, "Others"),
+                    "Region_Type": "Quốc Gia",
                 })
 
         else:
@@ -335,6 +342,7 @@ def main() -> None:
             forecast_2050_pop[entity] = last_pop
             forecast_2050_share65[entity] = last_share
             for yr in range(2027, 2051):
+                un_p_val = round(country_pop[entity].get(yr, last_pop))
                 forecast_rows.append({
                     "Entity": entity,
                     "Code": code,
@@ -347,9 +355,10 @@ def main() -> None:
                 })
                 scenario_rows.append({
                     "Entity": entity, "Code": code, "Year": yr, "Scenario": "0. Baseline (Không can thiệp)",
-                    "Population": round(last_pop), "Older_People_65plus": round(last_old),
+                    "Population": round(last_pop), "Population_UN": un_p_val, "Older_People_65plus": round(last_old),
                     "Share_65plus": last_share, "Support_Ratio": 5.0,
                     "Continent": continent_map.get(code, "Others"),
+                    "Region_Type": "Quốc Gia",
                 })
 
         # Include UN WPP projected benchmark for 2027 to 2050
@@ -465,10 +474,68 @@ def main() -> None:
         writer.writerows(comparison_rows)
     print(f"Đã lưu bảng so sánh Residual ML vs UN WPP tại: {comp_path} ({len(comparison_rows):,} dòng)")
 
+    # Aggregate Continents and World for policy scenarios
+    continents_list = ["Africa", "Asia", "Europe", "North America", "Oceania", "South America"]
+    country_scenarios = [r for r in scenario_rows if r.get("Region_Type") == "Quốc Gia"]
+    unique_years = sorted(list(set(r["Year"] for r in country_scenarios)))
+    unique_scenarios = sorted(list(set(r["Scenario"] for r in country_scenarios)))
+
+    # Aggregating by Continent
+    for cont in continents_list:
+        for yr in unique_years:
+            for sc in unique_scenarios:
+                match_rows = [r for r in country_scenarios if r["Continent"] == cont and r["Year"] == yr and r["Scenario"] == sc]
+                if match_rows:
+                    tot_pop = sum(r["Population"] for r in match_rows)
+                    tot_un = sum(r.get("Population_UN", r["Population"]) for r in match_rows)
+                    tot_old = sum(r["Older_People_65plus"] for r in match_rows)
+                    s_share = round((tot_old / tot_pop) * 100, 2) if tot_pop > 0 else 0.0
+                    s_sup = round(sum(r["Support_Ratio"] * r["Older_People_65plus"] for r in match_rows) / tot_old, 2) if tot_old > 0 else 10.0
+                    scenario_rows.append({
+                        "Entity": cont,
+                        "Code": "",
+                        "Year": yr,
+                        "Scenario": sc,
+                        "Population": tot_pop,
+                        "Population_UN": tot_un,
+                        "Older_People_65plus": tot_old,
+                        "Share_65plus": s_share,
+                        "Support_Ratio": s_sup,
+                        "Continent": cont,
+                        "Region_Type": "Châu Lục",
+                    })
+
+    # Aggregating for World
+    for yr in unique_years:
+        for sc in unique_scenarios:
+            match_rows = [r for r in country_scenarios if r["Year"] == yr and r["Scenario"] == sc]
+            if match_rows:
+                tot_pop = sum(r["Population"] for r in match_rows)
+                tot_un = sum(r.get("Population_UN", r["Population"]) for r in match_rows)
+                tot_old = sum(r["Older_People_65plus"] for r in match_rows)
+                s_share = round((tot_old / tot_pop) * 100, 2) if tot_pop > 0 else 0.0
+                s_sup = round(sum(r["Support_Ratio"] * r["Older_People_65plus"] for r in match_rows) / tot_old, 2) if tot_old > 0 else 10.0
+                scenario_rows.append({
+                    "Entity": "World",
+                    "Code": "",
+                    "Year": yr,
+                    "Scenario": sc,
+                    "Population": tot_pop,
+                    "Population_UN": tot_un,
+                    "Older_People_65plus": tot_old,
+                    "Share_65plus": s_share,
+                    "Support_Ratio": s_sup,
+                    "Continent": "World",
+                    "Region_Type": "Thế Giới",
+                })
+
     # Save policy scenarios file
     scenario_path = OUTPUT_DIR / "population_policy_scenarios_2050.csv"
     with scenario_path.open("w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["Entity", "Code", "Year", "Scenario", "Population", "Older_People_65plus", "Share_65plus", "Support_Ratio", "Continent"])
+        writer = csv.DictWriter(f, fieldnames=[
+            "Entity", "Code", "Year", "Scenario", "Population", "Population_UN", "Older_People_65plus",
+            "Share_65plus", "Support_Ratio", "Continent", "Region_Type"
+        ])
         writer.writeheader()
         writer.writerows(scenario_rows)
     print(f"Đã lưu bảng kịch bản can thiệp chính sách tại: {scenario_path} ({len(scenario_rows):,} dòng)")
